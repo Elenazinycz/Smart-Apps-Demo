@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id                       String           @id @default(cuid())
+  name                     String
+  geburtsdatum             DateTime
+  versicherungsart         String
+  versichertennummer       String
+  internePatientennummer   String           @unique
+  telefonnummer            String
+  email                    String?
+  einwilligungEmail        Boolean          @default(false)
+  einwilligungSms          Boolean          @default(false)
+  noShowZaehlerJahr        Int              @default(0)
+  status                   String           @default("aktiv")
+  konto                    PatientenKonto?
+  termine                  TerminSlot[]
+  createdAt                DateTime         @default(now())
+  updatedAt                DateTime         @updatedAt
+}
+
+model PatientenKonto {
+  id                    String       @id @default(cuid())
+  patientId             String       @unique
+  benutzername          String       @unique
+  passwortHash          String
+  erstelltVonNutzerId   String
+  buchungsStatus        String       @default("aktiv")
+  letzterLogin          DateTime?
+  erstelltAm            DateTime     @default(now())
+  patient               Patient      @relation(fields: [patientId], references: [id])
+  erstelltVon           PraxisNutzer @relation(fields: [erstelltVonNutzerId], references: [id])
+}
+
+model Arzt {
+  id                       String                    @id @default(cuid())
+  name                     String
+  fachrichtung             String
+  zusatzqualifikation      String?
+  aktiv                    Boolean                   @default(true)
+  termine                  TerminSlot[]
+  sperrzeiten              Sperrzeit[]
+  termintypZuordnungen     ArztTermintypZuordnung[]
+}
+
+model PraxisNutzer {
+  id                        String           @id @default(cuid())
+  name                      String
+  rolle                     String
+  emailDienstlich           String           @unique
+  aktiv                     Boolean          @default(true)
+  berechtigung              String
+  angelegteKonten           PatientenKonto[]
+  erstellteSperrzeiten      Sperrzeit[]
+}
+
+model Termintyp {
+  id                       String                    @id @default(cuid())
+  bezeichnung              String                    @unique
+  dauerStandardMinuten     Int
+  onlineBuchbar            Boolean                   @default(false)
+  beschreibung             String?
+  prioritaet               String                    @default("normal")
+  termine                  TerminSlot[]
+  arztZuordnungen          ArztTermintypZuordnung[]
+}
+
+model TerminSlot {
+  id               String    @id @default(cuid())
+  datum            DateTime
+  startzeit        DateTime
+  endzeit          DateTime
+  status           String    @default("frei")
+  slotArt          String    @default("planbar")
+  buchungsquelle   String?
+  patientId        String?
+  arztId           String
+  terminTypId      String
+  patient          Patient?  @relation(fields: [patientId], references: [id])
+  arzt             Arzt      @relation(fields: [arztId], references: [id])
+  terminTyp        Termintyp @relation(fields: [terminTypId], references: [id])
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([datum, arztId, status])
+}
+
+model Sperrzeit {
+  id                     String       @id @default(cuid())
+  titel                  String
+  startdatum             DateTime
+  enddatum               DateTime
+  startzeit              DateTime?
+  endzeit                DateTime?
+  betrifft               String
+  arztId                 String?
+  grund                  String
+  erstelltVonNutzerId    String
+  arzt                   Arzt?        @relation(fields: [arztId], references: [id])
+  erstelltVon            PraxisNutzer @relation(fields: [erstelltVonNutzerId], references: [id])
+}
+
+model ArztTermintypZuordnung {
+  id            String    @id @default(cuid())
+  arztId        String
+  terminTypId   String
+  onlineErlaubt Boolean   @default(false)
+  aktiv         Boolean   @default(true)
+  bemerkung     String?
+  arzt          Arzt      @relation(fields: [arztId], references: [id])
+  terminTyp     Termintyp @relation(fields: [terminTypId], references: [id])
+
+  @@unique([arztId, terminTypId])
+}
