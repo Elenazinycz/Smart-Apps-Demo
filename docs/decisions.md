@@ -49,3 +49,22 @@ Was wurde entschieden?
 - Negativ / Risiken
 
 -->
+
+## 2026-07-03 - F-KERN-1: Datenmodelle Kern implementiert
+
+**Kontext:** F-KERN-1 fasst die sechs Datenmodelle der Kernphase zusammen: PatientenKonto, TerminSlot, Termintyp, Arzt, ArztTermintypZuordnung, Buchungsquelle. Das initiale Prisma-Schema war bereits angelegt.
+
+### Umsetzung
+- **Prisma-Schema:** Index auf TerminSlot.patientId ergänzt für effiziente Abfragen eigener Termine
+- **Typkonstanten:** lib/constants.ts mit typsicheren Geschäftsregeln (Status-Werte, Rollen, Fristen aus spec.md §BR4)
+- **Seed-Skript:** prisma/seed.ts befüllt die Demo mit 7 Termintypen, 3 Ärzt:innen, 1 Admin, 4 MFAs, 3 Patient:innen mit Konten und 19 Arzt-Termintyp-Zuordnungen
+- **package.json:** prisma.seed-Konfiguration und BOM-Bereinigung für Schema und package.json
+
+### Status
+- F-KERN-1: done
+- STD-001: done (bereits vorhanden)
+- STD-006, STD-007, STD-010, STD-011, STD-015: done (Schema validiert, Seed deployed)
+
+### Konsequenzen
+- Seed muss bei Datenmodell-Änderungen neu aufgesetzt werden (prisma migrate reset)
+- TypeScript-Konstanten in lib/constants.ts sind die Single Source of Truth für Geschäftsregeln

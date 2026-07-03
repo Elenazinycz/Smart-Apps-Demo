@@ -1,4 +1,4 @@
-﻿# backlog.md - Smart-Apps-Demo
+# backlog.md - Smart-Apps-Demo
 
 _Stand: 2026-07-03_
 
@@ -44,11 +44,11 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
 | STD-001 | PatientenKonto-Datenmodell | Kern | F-KERN-1 | done | docs/spec.md 4.2 | Implementiert in `prisma/schema.prisma` und Migration `20260626143205_init`; Konto mit Patientenzuordnung, Login-Name, Passwort-Hash, Erstelldaten, Buchungsstatus und letztem Login |
-| STD-006 | TerminSlot-Datenmodell | Kern | F-KERN-1 | hypo | docs/spec.md 4.6 | Slot mit Datum, Start, Ende, Status, Slot-Art, Buchungsquelle, Patient, Arzt und Termintyp |
-| STD-007 | Termintyp-Datenmodell | Kern | F-KERN-1 | hypo | docs/spec.md 4.5 | Termintyp mit Dauer, Online-Buchbarkeit, Beschreibung und Prioritaet |
-| STD-010 | Arzt-Datenmodell | Kern | F-KERN-1 | hypo | docs/spec.md 4.3 | Arzt mit Fachrichtung, Zusatzqualifikation und Aktivstatus |
-| STD-011 | Arzt-Termintyp-Zuordnung | Kern | F-KERN-1 | hypo | docs/spec.md 4.8, 8 | N:M-Zuordnung zwischen Aerzt:innen und Termintypen mit Online-Erlaubnis und Aktivstatus |
-| STD-015 | Buchungsquelle speichern | Kern | F-KERN-1 | hypo | docs/spec.md 4.6, 12 | TerminSlot speichert online, telefonisch oder intern als Buchungsweg |
+| STD-006 | TerminSlot-Datenmodell | Kern | F-KERN-1 | done | docs/spec.md 4.6 | Slot mit Datum, Start, Ende, Status, Slot-Art, Buchungsquelle, Patient, Arzt und Termintyp |
+| STD-007 | Termintyp-Datenmodell | Kern | F-KERN-1 | done | docs/spec.md 4.5 | Termintyp mit Dauer, Online-Buchbarkeit, Beschreibung und Prioritaet |
+| STD-010 | Arzt-Datenmodell | Kern | F-KERN-1 | done | docs/spec.md 4.3 | Arzt mit Fachrichtung, Zusatzqualifikation und Aktivstatus |
+| STD-011 | Arzt-Termintyp-Zuordnung | Kern | F-KERN-1 | done | docs/spec.md 4.8, 8 | N:M-Zuordnung zwischen Aerzt:innen und Termintypen mit Online-Erlaubnis und Aktivstatus |
+| STD-015 | Buchungsquelle speichern | Kern | F-KERN-1 | done | docs/spec.md 4.6, 12 | TerminSlot speichert online, telefonisch oder intern als Buchungsweg |
 
 ### F-KERN-2: Login & Berechtigung
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
@@ -214,7 +214,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 
 | Feature-ID | Name | Phase | Enthaltene IDs | Status |
 |---|---|---|---|---|
-| F-KERN-1 | Datenmodelle Kern | Kern | STD-001, STD-006, STD-007, STD-010, STD-011, STD-015 | in-progress |
+| F-KERN-1 | Datenmodelle Kern | Kern | STD-001, STD-006, STD-007, STD-010, STD-011, STD-015 | done |
 | F-KERN-2 | Login & Berechtigung | Kern | STD-003, STD-004, STD-005 | hypo |
 | F-KERN-3 | Buchungslogik & Slot-Anzeige | Kern | STD-008, STD-009, STD-012, STD-013, STD-014 | hypo |
 | F-KERN-4 | Eigene Termine verwalten | Kern | STD-002, STD-016, STD-017, STD-018, STD-019 | hypo |

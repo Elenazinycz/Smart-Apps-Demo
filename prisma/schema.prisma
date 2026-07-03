@@ -90,6 +90,8 @@ model TerminSlot {
   updatedAt        DateTime  @updatedAt
 
   @@index([datum, arztId, status])
+
+  @@index([patientId])
 }
 
 model Sperrzeit {
