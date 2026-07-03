@@ -1,6 +1,6 @@
-# backlog.md - Smart-Apps-Demo
+﻿# backlog.md - Smart-Apps-Demo
 
-_Stand: 2026-06-26_
+_Stand: 2026-07-03_
 
 _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 
@@ -10,6 +10,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 
 - **ID-Schema:** `STD-NNN`
 - **Prefix:** `STD` fuer Smart-Apps-Demo
+- **Feature-ID-Schema:** `F-{PHASE}-NN` (z. B. `F-KERN-1`)
 - **Nummerierung:** fortlaufend, nie wiederverwenden
 - **Referenzierung:** In Commits, Konzepten und Doku immer per ID
 - **Produktgrundlage:** `docs/spec.md` ersetzt `prd.md`
@@ -39,104 +40,159 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 
 ## Phase: Kern
 
-| ID | Name | Phase | Status | Quelle | Notiz |
-|---|---|---|---|---|---|
-| STD-001 | PatientenKonto-Datenmodell | Kern | hypo | docs/spec.md 4.2 | Konto mit Patientenzuordnung, Login-Name, Passwort-Hash, Erstelldaten, Buchungsstatus und letztem Login |
-| STD-002 | Patientendaten anzeigen | Kern | hypo | docs/spec.md 4.1, 12 | Patientendaten mit Versicherungsart, Kontaktdaten, Opt-ins, No-Show-Zaehler und Status; PVS bleibt fuehrend |
-| STD-003 | Stammpatienten-Login | Kern | hypo | docs/spec.md 3, BR1 | Nur Stammpatient:innen mit aktivem PatientenKonto duerfen online buchen |
-| STD-004 | Self-Registration verhindern | Kern | hypo | docs/spec.md 3, BR1 | Patientenkonten werden durch MFA/Admin angelegt, nicht durch Patient:innen selbst |
-| STD-005 | Buchungsberechtigung pruefen | Kern | hypo | docs/spec.md BR1, 14 | Vor jeder Buchung muss die Identifikation und Kontoaktivitaet geprueft werden |
-| STD-006 | TerminSlot-Datenmodell | Kern | hypo | docs/spec.md 4.6 | Slot mit Datum, Start, Ende, Status, Slot-Art, Buchungsquelle, Patient, Arzt und Termintyp |
-| STD-007 | Termintyp-Datenmodell | Kern | hypo | docs/spec.md 4.5 | Termintyp mit Dauer, Online-Buchbarkeit, Beschreibung und Prioritaet |
-| STD-008 | Planbare Online-Termintypen erlauben | Kern | hypo | docs/spec.md 5, BR2 | Vorsorge, Beratung, Impfung/Reisemedizin und Wiederholungsrezept-Abholung sind online buchbar |
-| STD-009 | Nicht online buchbare Termintypen sperren | Kern | hypo | docs/spec.md 5, BR2 | Akut, Blutabnahme und Erstgespraech sind nicht online buchbar |
-| STD-010 | Arzt-Datenmodell | Kern | hypo | docs/spec.md 4.3 | Arzt mit Fachrichtung, Zusatzqualifikation und Aktivstatus |
-| STD-011 | Arzt-Termintyp-Zuordnung | Kern | hypo | docs/spec.md 4.8, 8 | N:M-Zuordnung zwischen Aerzt:innen und Termintypen mit Online-Erlaubnis und Aktivstatus |
-| STD-012 | Online-Termin verbindlich buchen | Kern | hypo | docs/spec.md 3, BR4 | Online-Buchungen sind sofort verbindlich |
-| STD-013 | Freie Slots anzeigen | Kern | hypo | docs/spec.md 2, 9 | Patient:innen sehen nur buchbare, freie und regelkonforme Slots |
-| STD-014 | Doppelbuchung technisch verhindern | Kern | hypo | docs/spec.md 2, BR3, 14 | Slot-Sperre oder gleichwertiger Mechanismus verhindert parallele Buchungen |
-| STD-015 | Buchungsquelle speichern | Kern | hypo | docs/spec.md 4.6, 12 | TerminSlot speichert online, telefonisch oder intern als Buchungsweg |
-| STD-016 | Eigene Termine fuer Patient:innen anzeigen | Kern | hypo | docs/spec.md 11 | Patient:innen koennen eigene Online-Termine einsehen |
-| STD-017 | Online-Stornierung bis 24h vorher | Kern | hypo | docs/spec.md 2, 3, BR4 | Patient:innen koennen eigene Termine bis 24 Stunden vorher stornieren |
-| STD-018 | Online-Umbuchung bis 24h vorher | Kern | hypo | docs/spec.md 2, 3, BR4 | Patient:innen koennen eigene Termine bis 24 Stunden vorher umbuchen |
-| STD-019 | Rechtzeitige Stornierung nicht als No-Show zaehlen | Kern | hypo | docs/spec.md 16 | Stornierungen innerhalb der Regel zaehlen nicht als No-Show |
+### F-KERN-1: Datenmodelle Kern
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-001 | PatientenKonto-Datenmodell | Kern | F-KERN-1 | done | docs/spec.md 4.2 | Implementiert in `prisma/schema.prisma` und Migration `20260626143205_init`; Konto mit Patientenzuordnung, Login-Name, Passwort-Hash, Erstelldaten, Buchungsstatus und letztem Login |
+| STD-006 | TerminSlot-Datenmodell | Kern | F-KERN-1 | hypo | docs/spec.md 4.6 | Slot mit Datum, Start, Ende, Status, Slot-Art, Buchungsquelle, Patient, Arzt und Termintyp |
+| STD-007 | Termintyp-Datenmodell | Kern | F-KERN-1 | hypo | docs/spec.md 4.5 | Termintyp mit Dauer, Online-Buchbarkeit, Beschreibung und Prioritaet |
+| STD-010 | Arzt-Datenmodell | Kern | F-KERN-1 | hypo | docs/spec.md 4.3 | Arzt mit Fachrichtung, Zusatzqualifikation und Aktivstatus |
+| STD-011 | Arzt-Termintyp-Zuordnung | Kern | F-KERN-1 | hypo | docs/spec.md 4.8, 8 | N:M-Zuordnung zwischen Aerzt:innen und Termintypen mit Online-Erlaubnis und Aktivstatus |
+| STD-015 | Buchungsquelle speichern | Kern | F-KERN-1 | hypo | docs/spec.md 4.6, 12 | TerminSlot speichert online, telefonisch oder intern als Buchungsweg |
+
+### F-KERN-2: Login & Berechtigung
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-003 | Stammpatienten-Login | Kern | F-KERN-2 | hypo | docs/spec.md 3, BR1 | Nur Stammpatient:innen mit aktivem PatientenKonto duerfen online buchen |
+| STD-004 | Self-Registration verhindern | Kern | F-KERN-2 | hypo | docs/spec.md 3, BR1 | Patientenkonten werden durch MFA/Admin angelegt, nicht durch Patient:innen selbst |
+| STD-005 | Buchungsberechtigung pruefen | Kern | F-KERN-2 | hypo | docs/spec.md BR1, 14 | Vor jeder Buchung muss die Identifikation und Kontoaktivitaet geprueft werden |
+
+### F-KERN-3: Buchungslogik & Slot-Anzeige
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-008 | Planbare Online-Termintypen erlauben | Kern | F-KERN-3 | hypo | docs/spec.md 5, BR2 | Vorsorge, Beratung, Impfung/Reisemedizin und Wiederholungsrezept-Abholung sind online buchbar |
+| STD-009 | Nicht online buchbare Termintypen sperren | Kern | F-KERN-3 | hypo | docs/spec.md 5, BR2 | Akut, Blutabnahme und Erstgespraech sind nicht online buchbar |
+| STD-012 | Online-Termin verbindlich buchen | Kern | F-KERN-3 | hypo | docs/spec.md 3, BR4 | Online-Buchungen sind sofort verbindlich |
+| STD-013 | Freie Slots anzeigen | Kern | F-KERN-3 | hypo | docs/spec.md 2, 9 | Patient:innen sehen nur buchbare, freie und regelkonforme Slots |
+| STD-014 | Doppelbuchung technisch verhindern | Kern | F-KERN-3 | hypo | docs/spec.md 2, BR3, 14 | Slot-Sperre oder gleichwertiger Mechanismus verhindert parallele Buchungen |
+
+### F-KERN-4: Eigene Termine verwalten
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-002 | Patientendaten anzeigen | Kern | F-KERN-4 | hypo | docs/spec.md 4.1, 12 | Patientendaten mit Versicherungsart, Kontaktdaten, Opt-ins, No-Show-Zaehler und Status; PVS bleibt fuehrend |
+| STD-016 | Eigene Termine fuer Patient:innen anzeigen | Kern | F-KERN-4 | hypo | docs/spec.md 11 | Patient:innen koennen eigene Online-Termine einsehen |
+| STD-017 | Online-Stornierung bis 24h vorher | Kern | F-KERN-4 | hypo | docs/spec.md 2, 3, BR4 | Patient:innen koennen eigene Termine bis 24 Stunden vorher stornieren |
+| STD-018 | Online-Umbuchung bis 24h vorher | Kern | F-KERN-4 | hypo | docs/spec.md 2, 3, BR4 | Patient:innen koennen eigene Termine bis 24 Stunden vorher umbuchen |
+| STD-019 | Rechtzeitige Stornierung nicht als No-Show zaehlen | Kern | F-KERN-4 | hypo | docs/spec.md 16 | Stornierungen innerhalb der Regel zaehlen nicht als No-Show |
+
+---
 
 ## Phase: Verwaltung
 
-| ID | Name | Phase | Status | Quelle | Notiz |
-|---|---|---|---|---|---|
-| STD-020 | PraxisNutzer-Datenmodell | Verwaltung | hypo | docs/spec.md 4.4 | Nutzer mit Rolle MFA, Arzt oder Admin, Dienstmail, Aktivstatus und Berechtigungen |
-| STD-021 | Rollen und Berechtigungen umsetzen | Verwaltung | hypo | docs/spec.md 11 | Patient:in, MFA, Arzt/Aerztin und Admin erhalten getrennte Rechte |
-| STD-022 | MFA/Admin kann PatientenKonten anlegen | Verwaltung | hypo | docs/spec.md 4.2, 11 | Kontoerstellung wird mit erstellendem PraxisNutzer dokumentiert |
-| STD-023 | Admin kann Sprechzeiten verwalten | Verwaltung | hypo | docs/spec.md 6, 11 | Sprechzeiten sind pflegbar und nicht hardcoded |
-| STD-024 | Oeffnungszeiten und Tagesbereiche pflegen | Verwaltung | hypo | docs/spec.md 6 | Mo-Fr 08:00-18:00, Mittagspause, Vormittag und Nachmittag als pflegbare Regeln |
-| STD-025 | Arztindividuelle Sprechzeiten pflegen | Verwaltung | hypo | docs/spec.md 6, 17.1 | Unterschiedliche Arbeitszeiten je Arzt/Aerztin abbilden |
-| STD-026 | Sperrzeit-Datenmodell | Verwaltung | hypo | docs/spec.md 4.7 | Sperrzeit mit Titel, Zeitraum, Betroffenheit, Arztbezug, Grund und Ersteller |
-| STD-027 | Praxisschliessungen pflegen | Verwaltung | hypo | docs/spec.md 2, 3, 11 | MFA/Admin kann Schliessungen und Sperrzeiten fuer die Praxis eintragen |
-| STD-028 | Arzt-Abwesenheiten pflegen | Verwaltung | hypo | docs/spec.md 4.7, 11 | Aerzt:innen koennen eigene Abwesenheiten eintragen |
-| STD-029 | Mittagspause als Sperrregel beachten | Verwaltung | hypo | docs/spec.md 6, BR3 | Keine Buchung in der Mittagspause |
-| STD-030 | Urlaub, Krankheit, Fortbildung und Feiertage beachten | Verwaltung | hypo | docs/spec.md 4.7, BR3 | Sperrgruende verhindern passende Buchungen |
-| STD-031 | Admin kann Termintyp-Zuordnungen verwalten | Verwaltung | hypo | docs/spec.md 11 | Admin pflegt, welcher Arzt welchen Termintyp online anbietet |
-| STD-032 | Admin kann Rollen und Praxisregeln verwalten | Verwaltung | hypo | docs/spec.md 11 | Rechte- und Regelverwaltung fuer die Praxis |
-| STD-033 | Impfung/Reisemedizin nur bei Dr. Demir anbieten | Verwaltung | hypo | docs/spec.md 5 | Fachliche Sonderregel fuer Termintyp-Zuordnung |
-| STD-034 | Wiederholungsrezept-Abholung als 5-Minuten-Slot anbieten | Verwaltung | hypo | docs/spec.md 5, 17.2 | Nur Abholung online, Beantragung/Freigabe bleibt intern |
+### F-VERW-1: Nutzer & Rollen
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-020 | PraxisNutzer-Datenmodell | Verwaltung | F-VERW-1 | hypo | docs/spec.md 4.4 | Nutzer mit Rolle MFA, Arzt oder Admin, Dienstmail, Aktivstatus und Berechtigungen |
+| STD-021 | Rollen und Berechtigungen umsetzen | Verwaltung | F-VERW-1 | hypo | docs/spec.md 11 | Patient:in, MFA, Arzt/Aerztin und Admin erhalten getrennte Rechte |
+| STD-022 | MFA/Admin kann PatientenKonten anlegen | Verwaltung | F-VERW-1 | hypo | docs/spec.md 4.2, 11 | Kontoerstellung wird mit erstellendem PraxisNutzer dokumentiert |
+| STD-035 | Admin kann Termintyp-Arzt-Zuordnung verwalten | Verwaltung | F-VERW-1 | hypo | docs/spec.md 11 | Nur Admin darf Zuordnungen aendern |
+
+### F-VERW-2: Sprechzeiten & Sperrzeiten
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-023 | Admin kann Sprechzeiten verwalten | Verwaltung | F-VERW-2 | hypo | docs/spec.md 6, 11 | Sprechzeiten pro Wochentag und Arzt pflegbar |
+| STD-024 | Sprechzeiten-Datenmodell | Verwaltung | F-VERW-2 | hypo | docs/spec.md 4.7, 6 | Modell fuer regelbasierte Sprechzeiten pro Wochentag, Arzt und Schicht |
+| STD-025 | Sperrzeit-Datenmodell | Verwaltung | F-VERW-2 | hypo | docs/spec.md 4.7 | Sperrzeit mit Titel, Datumsbereich, Zeitbereich, betrifft, Grund und Ersteller |
+| STD-026 | Sperrzeiten durch Admin verwalten | Verwaltung | F-VERW-2 | hypo | docs/spec.md 11 | CRUD fuer Sperrzeiten durch Admin |
+| STD-027 | Arzt kann eigene Abwesenheiten eintragen | Verwaltung | F-VERW-2 | hypo | docs/spec.md 11 | Arzt/Aerztin darf Urlaub/Krankheit selbst eintragen |
+| STD-028 | Sperrzeiten bei Terminbuchung pruefen | Verwaltung | F-VERW-2 | hypo | docs/spec.md 14, BR3 | Buchung trotz Praxisschliessung oder Arzt-Urlaub verhindern |
+| STD-029 | Mittagspause als Sperrzeit abbilden | Verwaltung | F-VERW-2 | hypo | docs/spec.md 6 | Mittagspause (13:00-14:00) ueber Sperrzeit-Modell abgedeckt |
+
+### F-VERW-3: Termintypen & Arzt-Zuordnung
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-030 | Termintypen durch Admin verwalten | Verwaltung | F-VERW-3 | hypo | docs/spec.md 11 | CRUD fuer Termintypen |
+| STD-031 | Admin kann Arzt-Termintyp-Zuordnung pflegen | Verwaltung | F-VERW-3 | hypo | docs/spec.md 4.8, 11 | Zuordnung mit Online-Erlaubnis und Aktivstatus |
+| STD-032 | Nur aktive Zuordnungen bei Buchung beruecksichtigen | Verwaltung | F-VERW-3 | hypo | docs/spec.md 4.8 | Inaktive Zuordnungen duerfen nicht zur Buchung angeboten werden |
+| STD-033 | Sperrzeit-Grund standardisieren | Verwaltung | F-VERW-3 | hypo | docs/spec.md 4.7 | Gruende: Urlaub, Krankheit, Fortbildung, Feiertag, Brueckentag, Mittagspause |
+| STD-034 | Admin kann Praxisregeln verwalten | Verwaltung | F-VERW-3 | hypo | docs/spec.md 11 | Zentrale Konfiguration fuer Buchungsfristen, No-Show-Grenzen etc. |
+
+---
 
 ## Phase: Sicherheit & Sync
 
-| ID | Name | Phase | Status | Quelle | Notiz |
-|---|---|---|---|---|---|
-| STD-035 | Slot-Pruefung gegen alle Buchungsregeln | Sicherheit & Sync | hypo | docs/spec.md BR3 | Slot muss frei sein, innerhalb Sprechzeit liegen, nicht gesperrt sein und Arzt muss verfuegbar sein |
-| STD-036 | Buchung trotz Praxisschliessung verhindern | Sicherheit & Sync | hypo | docs/spec.md 14 | Sperrzeiten der gesamten Praxis pruefen |
-| STD-037 | Buchung trotz Arzt-Urlaub verhindern | Sicherheit & Sync | hypo | docs/spec.md 14 | Arzt-Abwesenheiten pruefen |
-| STD-038 | Nachrichtenversand nur mit Opt-in | Sicherheit & Sync | hypo | docs/spec.md 2, BR5, 10, 14 | Vor jeder E-Mail/SMS muss die passende Einwilligung geprueft werden |
-| STD-039 | Buchungsbestaetigung versenden | Sicherheit & Sync | hypo | docs/spec.md 10 | Sofort nach Buchung, nur mit Opt-in |
-| STD-040 | Stornierungsbestaetigung versenden | Sicherheit & Sync | hypo | docs/spec.md 10 | Sofort nach Stornierung, nur mit Opt-in |
-| STD-041 | Umbuchungsbestaetigung versenden | Sicherheit & Sync | hypo | docs/spec.md 10 | Sofort nach Umbuchung, nur mit Opt-in |
-| STD-042 | Terminerinnerung 24h vorher versenden | Sicherheit & Sync | hypo | docs/spec.md 3, 10 | Erinnerung 24 Stunden vor Termin, nur mit Opt-in |
-| STD-043 | PVS bleibt fuehrend fuer Patientenstammdaten | Sicherheit & Sync | hypo | docs/spec.md 12, BR5 | App darf Patientenstammdaten anzeigen, aber nicht fuehrend veraendern |
-| STD-044 | PVS-Synchronisation fuer Buchungen | Sicherheit & Sync | hypo | docs/spec.md 3, 12, BR5 | Neue Buchungen muessen sofort synchronisiert werden |
-| STD-045 | PVS-Synchronisation fuer Umbuchungen | Sicherheit & Sync | hypo | docs/spec.md 3, 12, BR5 | Umbuchungen muessen sofort synchronisiert werden |
-| STD-046 | PVS-Synchronisation fuer Stornierungen | Sicherheit & Sync | hypo | docs/spec.md 3, 12, BR5 | Stornierungen muessen sofort synchronisiert werden |
-| STD-047 | PVS bleibt fuehrend fuer No-Shows | Sicherheit & Sync | hypo | docs/spec.md 12, BR5 | No-Shows werden angezeigt bzw. Aktionen ausgeloest, aber PVS bleibt fuehrend |
-| STD-048 | PVS bleibt fuehrend fuer medizinische Workflows | Sicherheit & Sync | hypo | docs/spec.md 12, BR5 | Wiederholungsrezept-Status wird angezeigt bzw. Workflow ausgeloest |
-| STD-049 | Opt-in fuer E-Mail/SMS speichern | Sicherheit & Sync | hypo | docs/spec.md 4.1, 12 | App speichert Kommunikations-Einwilligungen |
-| STD-050 | PVS-Synchronisationsfehler klaeren | Sicherheit & Sync | hypo | docs/spec.md 18 OP1 | Offener Punkt: Was passiert bei PVS-Synchronisationsfehlern? |
-| STD-051 | PVS-Schnittstelle klaeren | Sicherheit & Sync | hypo | docs/spec.md 18 OP2 | Offener Punkt: Welche technische PVS-Schnittstelle existiert? |
-| STD-052 | PVS-Fehleranzeige fuer MFAs klaeren | Sicherheit & Sync | hypo | docs/spec.md 18 OP3 | Offener Punkt: Wie werden PVS-Fehler MFAs angezeigt? |
+### F-SICH-1: Authentifizierung & Schutz
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-036 | Passwort-Hash mit bcrypt | Sicherheit & Sync | F-SICH-1 | hypo | docs/spec.md 4.2, 14 | Sicheres Speichern von Passwoertern |
+| STD-037 | Session-Handling fuer Patient:innen | Sicherheit & Sync | F-SICH-1 | hypo | docs/spec.md 14 | Session nach Login aufrechterhalten |
+| STD-038 | Session-Handling fuer PraxisNutzer | Sicherheit & Sync | F-SICH-1 | hypo | docs/spec.md 11, 14 | Getrennte Sessions fuer MFAs/Aerzt:innen/Admins |
+| STD-039 | Berechtigungspruefung bei jeder Aktion | Sicherheit & Sync | F-SICH-1 | hypo | docs/spec.md 11, 14 | Jede Aktion prueft, ob der Nutzer berechtigt ist |
+| STD-040 | Login-Versuch limitieren | Sicherheit & Sync | F-SICH-1 | hypo | docs/spec.md 14 | Rate-Limiting oder Account-Sperre nach Fehlversuchen |
+| STD-041 | Fehlerhafte Buchung ohne Aenderung protokollieren | Sicherheit & Sync | F-SICH-1 | hypo | docs/spec.md 14 | Log bei abgewiesenen Buchungsversuchen |
+
+### F-SICH-2: DSGVO & Opt-in
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-042 | Opt-in-Einwilligungen speichern | Sicherheit & Sync | F-SICH-2 | hypo | docs/spec.md 4.1, 10 | Einwilligung fuer E-Mail und SMS im Patientendatensatz |
+| STD-043 | Opt-in vor Nachrichtenversand pruefen | Sicherheit & Sync | F-SICH-2 | hypo | docs/spec.md 5, 10, BR5 | Keine Nachricht ohne Opt-in |
+| STD-044 | Buchungsbestaetigung per E-Mail/SMS | Sicherheit & Sync | F-SICH-2 | hypo | docs/spec.md 10 | Nur mit Opt-in |
+| STD-045 | Terminerinnerung 24h vorher senden | Sicherheit & Sync | F-SICH-2 | hypo | docs/spec.md 10, BR4 | Automatische Erinnerung nur mit Opt-in |
+| STD-046 | Stornierungs-/Umbuchungsbestaetigung senden | Sicherheit & Sync | F-SICH-2 | hypo | docs/spec.md 10 | Nur mit Opt-in |
+
+### F-SICH-3: PVS-Synchronisation
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-047 | Synchronisationslogik vorbereiten | Sicherheit & Sync | F-SICH-3 | hypo | docs/spec.md 12, OP1, OP2 | Struktur fuer bidirektionalen Sync vorbereiten |
+| STD-048 | Termin-Aenderungen an PVS melden | Sicherheit & Sync | F-SICH-3 | hypo | docs/spec.md BR5, 12 | Buchung, Umbuchung, Stornierung sofort syncen |
+| STD-049 | PVS-Daten importieren | Sicherheit & Sync | F-SICH-3 | hypo | docs/spec.md 12, OP2 | Patientenstammdaten, Termine, No-Shows aus PVS uebernehmen |
+| STD-050 | Synchronisationsfehler protokollieren | Sicherheit & Sync | F-SICH-3 | hypo | docs/spec.md OP1, OP3 | Fehlerbehandlung fuer Sync-Ausfaelle |
+| STD-051 | MFA bei Sync-Fehlern informieren | Sicherheit & Sync | F-SICH-3 | hypo | docs/spec.md OP3 | Sichtbarkeit von Sync-Problemen |
+| STD-052 | Wiederholungsrezept-Status aus PVS anzeigen | Sicherheit & Sync | F-SICH-3 | hypo | docs/spec.md 12 | Rezeptstatus lesend aus PVS uebernehmen |
+
+---
 
 ## Phase: Betrieb
 
-| ID | Name | Phase | Status | Quelle | Notiz |
-|---|---|---|---|---|---|
-| STD-053 | Akutslot-Daten und Slot-Art abbilden | Betrieb | hypo | docs/spec.md 4.6, 7 | Slots unterscheiden planbar und akut |
-| STD-054 | Acht Akutslots pro Tag verwalten | Betrieb | hypo | docs/spec.md 7 | 4 vormittags, 4 nachmittags |
-| STD-055 | MFA kann Akutslots morgens freigeben | Betrieb | hypo | docs/spec.md 7, 11 | Freigabe und Zuordnung zum diensthabenden Arzt durch MFA |
-| STD-056 | Akutslots nicht online buchbar machen | Betrieb | hypo | docs/spec.md 7, BR2 | Akutfallentscheidung bleibt telefonische MFA-Triage |
-| STD-057 | Diensthabenden Arzt fuer Akutslots zuweisen | Betrieb | hypo | docs/spec.md 7 | Informelle Rotation wird durch manuelle Zuweisung abgebildet |
-| STD-058 | No-Show-Zaehler fuehren | Betrieb | hypo | docs/spec.md 4.1, 16 | No-Shows pro Jahr zaehlen |
-| STD-059 | Erinnerung bei zweitem No-Show ausloesen | Betrieb | hypo | docs/spec.md BR4, 16 | Bei 2 No-Shows/Jahr erfolgt schriftliche Erinnerung |
-| STD-060 | Online-Buchung ab drittem No-Show sperren | Betrieb | hypo | docs/spec.md BR4, 16 | Ab 3 No-Shows/Jahr wird Online-Buchung gesperrt |
-| STD-061 | No-Show-Sperren manuell setzen | Betrieb | hypo | docs/spec.md 11 | MFA darf No-Show-Sperren setzen |
-| STD-062 | Aufhebung von No-Show-Sperren klaeren | Betrieb | hypo | docs/spec.md 18 OP4 | Offener Punkt: automatisch oder manuell? |
-| STD-063 | MFA-Tagesliste anzeigen | Betrieb | hypo | docs/spec.md 13 | Alle Termine mit Uhrzeit, Patient:in, Arzt, Termintyp und Buchungsweg |
-| STD-064 | Arzt-Tagesliste anzeigen | Betrieb | hypo | docs/spec.md 13 | Aerzt:innen sehen standardmaessig nur eigene Termine |
-| STD-065 | MFA sieht offene Wiederholungsrezepte | Betrieb | hypo | docs/spec.md 13 | Uebersicht fuer interne Rezeptbearbeitung |
-| STD-066 | Arzt sieht offene Rezeptfreigaben | Betrieb | hypo | docs/spec.md 13 | Aerzt:innen koennen Rezeptfreigaben bearbeiten |
-| STD-067 | MFA sieht freie Akutslots live | Betrieb | hypo | docs/spec.md 13 | Live-Uebersicht fuer Tagessteuerung |
-| STD-068 | MFA sieht gesperrte Patient:innen | Betrieb | hypo | docs/spec.md 13 | Uebersicht ueber Buchungssperren |
-| STD-069 | Akutslots bei kurzfristigem Arzt-Ausfall sperren | Betrieb | hypo | docs/spec.md 15 | Bei Ausfall werden Akutslots gesperrt |
-| STD-070 | Betroffene Termine bei Arzt-Ausfall anzeigen | Betrieb | hypo | docs/spec.md 13, 15 | Liste aller betroffenen geplanten Termine |
-| STD-071 | Termine als umbuchungErforderlich markieren | Betrieb | hypo | docs/spec.md 4.6, 15 | Sammelmarkierung fuer betroffene Termine |
-| STD-072 | Liste betroffener Patient:innen erzeugen | Betrieb | hypo | docs/spec.md 15 | MFAs koennen Patient:innen telefonisch neu vergeben |
+### F-BETR-1: Akutslots
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-053 | Akutslot-Daten und Slot-Art abbilden | Betrieb | F-BETR-1 | hypo | docs/spec.md 4.6, 7 | Slots unterscheiden planbar und akut |
+| STD-054 | Acht Akutslots pro Tag verwalten | Betrieb | F-BETR-1 | hypo | docs/spec.md 7 | 4 vormittags, 4 nachmittags |
+| STD-055 | MFA kann Akutslots morgens freigeben | Betrieb | F-BETR-1 | hypo | docs/spec.md 7, 11 | Freigabe und Zuordnung zum diensthabenden Arzt durch MFA |
+| STD-056 | Akutslots nicht online buchbar machen | Betrieb | F-BETR-1 | hypo | docs/spec.md 7, BR2 | Akutfallentscheidung bleibt telefonische MFA-Triage |
+| STD-057 | Diensthabenden Arzt fuer Akutslots zuweisen | Betrieb | F-BETR-1 | hypo | docs/spec.md 7 | Informelle Rotation wird durch manuelle Zuweisung abgebildet |
+
+### F-BETR-2: No-Show-Tracking
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-058 | No-Show-Zaehler fuehren | Betrieb | F-BETR-2 | hypo | docs/spec.md 4.1, 16 | No-Shows pro Jahr zaehlen |
+| STD-059 | Erinnerung bei zweitem No-Show ausloesen | Betrieb | F-BETR-2 | hypo | docs/spec.md BR4, 16 | Bei 2 No-Shows/Jahr erfolgt schriftliche Erinnerung |
+| STD-060 | Online-Buchung ab drittem No-Show sperren | Betrieb | F-BETR-2 | hypo | docs/spec.md BR4, 16 | Ab 3 No-Shows/Jahr wird Online-Buchung gesperrt |
+| STD-061 | No-Show-Sperren manuell setzen | Betrieb | F-BETR-2 | hypo | docs/spec.md 11 | MFA darf No-Show-Sperren setzen |
+| STD-062 | Aufhebung von No-Show-Sperren klaeren | Betrieb | F-BETR-2 | hypo | docs/spec.md 18 OP4 | Offener Punkt: automatisch oder manuell? |
+
+### F-BETR-3: Tageslisten & Uebersichten
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-063 | MFA-Tagesliste anzeigen | Betrieb | F-BETR-3 | hypo | docs/spec.md 13 | Alle Termine mit Uhrzeit, Patient:in, Arzt, Termintyp und Buchungsweg |
+| STD-064 | Arzt-Tagesliste anzeigen | Betrieb | F-BETR-3 | hypo | docs/spec.md 13 | Aerzt:innen sehen standardmaessig nur eigene Termine |
+| STD-065 | MFA sieht offene Wiederholungsrezepte | Betrieb | F-BETR-3 | hypo | docs/spec.md 13 | Uebersicht fuer interne Rezeptbearbeitung |
+| STD-066 | Arzt sieht offene Rezeptfreigaben | Betrieb | F-BETR-3 | hypo | docs/spec.md 13 | Aerzt:innen koennen Rezeptfreigaben bearbeiten |
+| STD-067 | MFA sieht freie Akutslots live | Betrieb | F-BETR-3 | hypo | docs/spec.md 13 | Live-Uebersicht fuer Tagessteuerung |
+| STD-068 | MFA sieht gesperrte Patient:innen | Betrieb | F-BETR-3 | hypo | docs/spec.md 13 | Uebersicht ueber Buchungssperren |
+
+### F-BETR-4: Arzt-Ausfall
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-069 | Akutslots bei kurzfristigem Arzt-Ausfall sperren | Betrieb | F-BETR-4 | hypo | docs/spec.md 15 | Bei Ausfall werden Akutslots gesperrt |
+| STD-070 | Betroffene Termine bei Arzt-Ausfall anzeigen | Betrieb | F-BETR-4 | hypo | docs/spec.md 13, 15 | Liste aller betroffenen geplanten Termine |
+| STD-071 | Termine als umbuchungErforderlich markieren | Betrieb | F-BETR-4 | hypo | docs/spec.md 4.6, 15 | Sammelmarkierung fuer betroffene Termine |
+| STD-072 | Liste betroffener Patient:innen erzeugen | Betrieb | F-BETR-4 | hypo | docs/spec.md 15 | MFAs koennen Patient:innen telefonisch neu vergeben |
+
+---
 
 ## Phase: v1.1
 
-| ID | Name | Phase | Status | Quelle | Notiz |
-|---|---|---|---|---|---|
-| STD-073 | Erweiterter Wiederholungsrezept-Workflow | v1.1 | hypo | docs/spec.md 19 | Nice-to-have nach Version 1 |
-| STD-074 | Automatische Umbuchungsvorschlaege | v1.1 | hypo | docs/spec.md 19 | Nur Vorschlaege, keine vollautomatische Umbuchung |
-| STD-075 | No-Show-Auswertung | v1.1 | hypo | docs/spec.md 19 | Auswertung fuer Praxissteuerung |
-| STD-076 | Admin-Statistiken | v1.1 | hypo | docs/spec.md 19 | Nice-to-have nach Version 1 |
+### F-V11-1: Erweiterungen
+| ID | Name | Phase | Feature | Status | Quelle | Notiz |
+|---|---|---|---|---|---|---|
+| STD-073 | Erweiterter Wiederholungsrezept-Workflow | v1.1 | F-V11-1 | hypo | docs/spec.md 19 | Nice-to-have nach Version 1 |
+| STD-074 | Automatische Umbuchungsvorschlaege | v1.1 | F-V11-1 | hypo | docs/spec.md 19 | Nur Vorschlaege, keine vollautomatische Umbuchung |
+| STD-075 | No-Show-Auswertung | v1.1 | F-V11-1 | hypo | docs/spec.md 19 | Auswertung fuer Praxissteuerung |
+| STD-076 | Admin-Statistiken | v1.1 | F-V11-1 | hypo | docs/spec.md 19 | Nice-to-have nach Version 1 |
+
+---
 
 ## Phase: Out of Scope
 
@@ -154,14 +210,36 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 
 ---
 
+## Feature-Uebersicht
+
+| Feature-ID | Name | Phase | Enthaltene IDs | Status |
+|---|---|---|---|---|
+| F-KERN-1 | Datenmodelle Kern | Kern | STD-001, STD-006, STD-007, STD-010, STD-011, STD-015 | in-progress |
+| F-KERN-2 | Login & Berechtigung | Kern | STD-003, STD-004, STD-005 | hypo |
+| F-KERN-3 | Buchungslogik & Slot-Anzeige | Kern | STD-008, STD-009, STD-012, STD-013, STD-014 | hypo |
+| F-KERN-4 | Eigene Termine verwalten | Kern | STD-002, STD-016, STD-017, STD-018, STD-019 | hypo |
+| F-VERW-1 | Nutzer & Rollen | Verwaltung | STD-020, STD-021, STD-022, STD-035 | hypo |
+| F-VERW-2 | Sprechzeiten & Sperrzeiten | Verwaltung | STD-023, STD-024, STD-025, STD-026, STD-027, STD-028, STD-029 | hypo |
+| F-VERW-3 | Termintypen & Arzt-Zuordnung | Verwaltung | STD-030, STD-031, STD-032, STD-033, STD-034 | hypo |
+| F-SICH-1 | Authentifizierung & Schutz | Sicherheit & Sync | STD-036, STD-037, STD-038, STD-039, STD-040, STD-041 | hypo |
+| F-SICH-2 | DSGVO & Opt-in | Sicherheit & Sync | STD-042, STD-043, STD-044, STD-045, STD-046 | hypo |
+| F-SICH-3 | PVS-Synchronisation | Sicherheit & Sync | STD-047, STD-048, STD-049, STD-050, STD-051, STD-052 | hypo |
+| F-BETR-1 | Akutslots | Betrieb | STD-053, STD-054, STD-055, STD-056, STD-057 | hypo |
+| F-BETR-2 | No-Show-Tracking | Betrieb | STD-058, STD-059, STD-060, STD-061, STD-062 | hypo |
+| F-BETR-3 | Tageslisten & Uebersichten | Betrieb | STD-063, STD-064, STD-065, STD-066, STD-067, STD-068 | hypo |
+| F-BETR-4 | Arzt-Ausfall | Betrieb | STD-069, STD-070, STD-071, STD-072 | hypo |
+| F-V11-1 | Erweiterungen | v1.1 | STD-073, STD-074, STD-075, STD-076 | hypo |
+
 ## Workflow
 
 **Feature wird gebaut:**
-- Status `hypo` oder `validated` -> `in-progress`
-- Commit-Message nach Moeglichkeit mit Feature-ID, z.B. `feat: STD-012 verbindliche terminbuchung`
+- Feature-Status in der Feature-Uebersicht auf `in-progress` setzen
+- Einzelne IDs bei Bedarf ebenfalls auf `in-progress` oder `done` setzen
+- Commit-Message nach Moeglichkeit mit Feature-ID und/oder STD-ID, z.B. `feat: F-KERN-3 verbindliche terminbuchung (STD-012)`
 
 **Feature fertig:**
-- Status `in-progress` -> `done`
+- Feature-Status in der Feature-Uebersicht auf `done` setzen
+- Einzelne IDs auf `done` setzen
 - Commit-Hash in der Notiz ergaenzen
 
 **Feature verworfen:**
