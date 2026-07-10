@@ -1,4 +1,4 @@
-﻿# decisions.md - Architektur- und Produktentscheidungen
+# decisions.md - Architektur- und Produktentscheidungen
 
 _Chronologisches Log aller Architektur- und Produktentscheidungen._
 
@@ -190,3 +190,25 @@ Was wurde entschieden?
 - Ohne hinterlegte Sprechzeiten ist ein Arzt komplett blockiert (ganzer Tag gesperrt). Seed muss Sprechzeiten enthalten.
 - Sprechzeiten werden als erlaubte Fenster modelliert, alles außerhalb ist blockiert. Das erspart die Berechnung von Öffnungs-/Mittagspause-Logik.
 - Keine Änderung an der bisherigen Sperrzeit-Logik – getSperrzeitenBlocking() läuft parallel zu getSprechzeitenBlocking().
+
+## 2026-07-10 - F-VERW-3: Termintypen & Arzt-Zuordnung implementiert
+
+**Kontext:** F-VERW-3 umfasst Termintypen-CRUD durch Admin (STD-030), Arzt-Termintyp-Zuordnung (STD-031, bereits in F-VERW-1 gebaut), Aktivpruefung bei Buchung (STD-032, bereits via istArztFreigegeben()), standardisierte Sperrzeit-Gruende (STD-033, bereits via SPERRGRUND-Konstanten) und Praxisregeln-Konfiguration (STD-034).
+
+### Umsetzung
+- **STD-030 (Termintypen-CRUD):** Neue API-Route app/api/termintypen/admin/route.ts mit GET (Liste + Einzel), POST (Anlegen), PUT (Bearbeiten), DELETE (Loeschen mit Termin-Pruefung). Admin-UI unter /praxis/termintypen mit Tabelle, Anlegen/Bearbeiten/Loeschen.
+- **STD-031 (Arzt-Termintyp-Zuordnung):** Bereits mit F-VERW-1 implementiert (/praxis/termintyp-zuordnung + /api/zuordnungen). Validated und auf done gesetzt.
+- **STD-032 (Aktive Zuordnungen):** Bereits in lib/slots.ts via istArztFreigegeben() mit aktiv && onlineErlaubt. Buchungslogik und API pruefen dies. Validated und auf done gesetzt.
+- **STD-033 (Sperrzeit-Gruende):** Bereits in lib/constants.ts via SPERRGRUND-Konstanten (Urlaub, Krankheit, Fortbildung, Feiertag, Brueckentag, Mittagspause). Validated und auf done gesetzt.
+- **STD-034 (Praxisregeln):** Neues Prisma-Modell PraxisRegel (schluessel, wert, beschreibung). API /api/praxisregeln mit GET (liest/initialisiert Defaults) und PUT (Wert aktualisieren). Admin-UI /praxis/praxisregeln mit Tabelle aller Regeln. 7 Default-Regeln aus lib/constants.ts: Stornierungsfrist, Umbuchungsfrist, Erinnerungsfrist, No-Show-Limits, Akutslot-Anzahlen. Seed um 7 Default-Regeln ergaenzt.
+- **Praxis-Dashboard:** Navigation unter "Verwaltung" um Links zu Termintypen und Praxisregeln ergaenzt.
+
+### Status
+- F-VERW-3: done
+- STD-030, STD-031, STD-032, STD-033, STD-034: done
+
+### Konsequenzen
+- Termintypen sind jetzt vollstaendig ueber die Admin-UI pflegbar (CRUD) – bisher nur ueber Seed.
+- Praxisregeln sind als key-value-Modell umgesetzt und koennen ohne Schema-Aenderung erweitert werden.
+- Die Buchungslogik in lib/slots.ts verwendet noch harte Konstanten (REGEL-Objekt); ein naechster Schritt waere, die Logik auf DB-Werte aus der PraxisRegel-Tabelle umzustellen.
+- Migration 20260710150437_add_praxisregel fuegt das PraxisRegel-Modell hinzu.

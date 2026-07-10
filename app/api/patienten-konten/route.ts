@@ -15,12 +15,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'patientId und benutzername erforderlich.' }, { status: 400 });
   }
 
-  // Prüfen ob Patient existiert
+  // Prï¿½fen ob Patient existiert
   const patient = await prisma.patient.findUnique({ where: { id: patientId }, select: { id: true, name: true, status: true } });
   if (!patient) return NextResponse.json({ error: 'Patient nicht gefunden.' }, { status: 404 });
   if (patient.status !== 'aktiv') return NextResponse.json({ error: 'Patient ist nicht aktiv.' }, { status: 400 });
 
-  // Prüfen ob Konto bereits existiert
+  // Prï¿½fen ob Konto bereits existiert
   const exist = await prisma.patientenKonto.findUnique({ where: { benutzername } });
   if (exist) return NextResponse.json({ error: 'Benutzername bereits vergeben.' }, { status: 409 });
 

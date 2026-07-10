@@ -61,9 +61,9 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
 | STD-008 | Planbare Online-Termintypen erlauben | Kern | F-KERN-3 | done | docs/spec.md 5, BR2 | Vorsorge, Beratung, Impfung/Reisemedizin und Wiederholungsrezept-Abholung via istOnlineBuchbar() + Arzt-Freigabe; lib/slots.ts, app/api/termintypen/route.ts, app/api/aerzte/route.ts |
-| STD-009 | Nicht online buchbare Termintypen sperren | Kern | F-KERN-3 | done | docs/spec.md 5, BR2 | ONLINE_BUCHBARE_TYPEN-Whitelist in lib/slots.ts blockiert Akut, Blutabnahme, Erstgespraech; API gibt nur online-buchbare Typen zurück |
+| STD-009 | Nicht online buchbare Termintypen sperren | Kern | F-KERN-3 | done | docs/spec.md 5, BR2 | ONLINE_BUCHBARE_TYPEN-Whitelist in lib/slots.ts blockiert Akut, Blutabnahme, Erstgespraech; API gibt nur online-buchbare Typen zurï¿½ck |
 | STD-012 | Online-Termin verbindlich buchen | Kern | F-KERN-3 | done | docs/spec.md 3, BR4 | bucheOnlineTermin() in lib/slots.ts: Slot-Status sofort auf "gebucht" + patientId + buchungsquelle=online; API POST /api/appointments
-| STD-013 | Freie Slots anzeigen | Kern | F-KERN-3 | done | docs/spec.md 2, 9 | getFreieSlots() in lib/slots.ts: Slots via /api/slots mit Sperrzeiten-Filter; BuchungsFormular.tsx zeigt Auswahl; Doppelbuchung durch Slot-Status-Prüfung verhindert
+| STD-013 | Freie Slots anzeigen | Kern | F-KERN-3 | done | docs/spec.md 2, 9 | getFreieSlots() in lib/slots.ts: Slots via /api/slots mit Sperrzeiten-Filter; BuchungsFormular.tsx zeigt Auswahl; Doppelbuchung durch Slot-Status-Prï¿½fung verhindert
 | STD-014 | Doppelbuchung technisch verhindern | Kern | F-KERN-3 | done | docs/spec.md 2, BR3, 14 | findFirst mit status=frei + atomares update; Slot-Sperre verhindert parallele Buchungen; DB-Index auf datum+arztId+status
 
 ### F-KERN-4: Eigene Termine verwalten
@@ -101,11 +101,11 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 ### F-VERW-3: Termintypen & Arzt-Zuordnung
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-030 | Termintypen durch Admin verwalten | Verwaltung | F-VERW-3 | hypo | docs/spec.md 11 | CRUD fuer Termintypen |
-| STD-031 | Admin kann Arzt-Termintyp-Zuordnung pflegen | Verwaltung | F-VERW-3 | hypo | docs/spec.md 4.8, 11 | Zuordnung mit Online-Erlaubnis und Aktivstatus |
-| STD-032 | Nur aktive Zuordnungen bei Buchung beruecksichtigen | Verwaltung | F-VERW-3 | hypo | docs/spec.md 4.8 | Inaktive Zuordnungen duerfen nicht zur Buchung angeboten werden |
-| STD-033 | Sperrzeit-Grund standardisieren | Verwaltung | F-VERW-3 | hypo | docs/spec.md 4.7 | Gruende: Urlaub, Krankheit, Fortbildung, Feiertag, Brueckentag, Mittagspause |
-| STD-034 | Admin kann Praxisregeln verwalten | Verwaltung | F-VERW-3 | hypo | docs/spec.md 11 | Zentrale Konfiguration fuer Buchungsfristen, No-Show-Grenzen etc. |
+| STD-030 | Termintypen durch Admin verwalten | Verwaltung | F-VERW-3 | done | docs/spec.md 11 | CRUD fuer Termintypen |
+| STD-031 | Admin kann Arzt-Termintyp-Zuordnung pflegen | Verwaltung | F-VERW-3 | done | docs/spec.md 4.8, 11 | Zuordnung mit Online-Erlaubnis und Aktivstatus |
+| STD-032 | Nur aktive Zuordnungen bei Buchung beruecksichtigen | Verwaltung | F-VERW-3 | done | docs/spec.md 4.8 | Inaktive Zuordnungen duerfen nicht zur Buchung angeboten werden |
+| STD-033 | Sperrzeit-Grund standardisieren | Verwaltung | F-VERW-3 | done | docs/spec.md 4.7 | Gruende: Urlaub, Krankheit, Fortbildung, Feiertag, Brueckentag, Mittagspause |
+| STD-034 | Admin kann Praxisregeln verwalten | Verwaltung | F-VERW-3 | done | docs/spec.md 11 | Zentrale Konfiguration fuer Buchungsfristen, No-Show-Grenzen etc. |
 
 ---
 
@@ -220,7 +220,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | F-KERN-4 | Eigene Termine verwalten | Kern | STD-002, STD-016, STD-017, STD-018, STD-019 | done |
 | F-VERW-1 | Nutzer & Rollen | Verwaltung | STD-020, STD-021, STD-022, STD-035 | done |
 | F-VERW-2 | Sprechzeiten & Sperrzeiten | Verwaltung | STD-023, STD-024, STD-025, STD-026, STD-027, STD-028, STD-029 | done |
-| F-VERW-3 | Termintypen & Arzt-Zuordnung | Verwaltung | STD-030, STD-031, STD-032, STD-033, STD-034 | hypo |
+| F-VERW-3 | Termintypen & Arzt-Zuordnung | Verwaltung | STD-030, STD-031, STD-032, STD-033, STD-034 | done |
 | F-SICH-1 | Authentifizierung & Schutz | Sicherheit & Sync | STD-036, STD-037, STD-038, STD-039, STD-040, STD-041 | hypo |
 | F-SICH-2 | DSGVO & Opt-in | Sicherheit & Sync | STD-042, STD-043, STD-044, STD-045, STD-046 | hypo |
 | F-SICH-3 | PVS-Synchronisation | Sicherheit & Sync | STD-047, STD-048, STD-049, STD-050, STD-051, STD-052 | hypo |

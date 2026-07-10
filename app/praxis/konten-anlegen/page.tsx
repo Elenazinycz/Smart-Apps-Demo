@@ -68,7 +68,7 @@ export default function KontenAnlegenPage() {
                 <option value=''>-- Bitte waehlen --</option>
                 {patienten.map(p => (
                   <option key={p.id} value={p.id}>
-                    {p.name} ({p.internePatientennummer}) — {p.versicherungsart}
+                    {p.name} ({p.internePatientennummer}) ï¿½ {p.versicherungsart}
                   </option>
                 ))}
               </select>

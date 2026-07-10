@@ -9,7 +9,7 @@ export async function GET() {
   if (!istMfaOderAdmin(session) && !istArzt(session)) return NextResponse.json({ error: 'Nicht berechtigt.' }, { status: 403 });
 
   const where: any = {};
-  // Ärzte sehen nur ihre eigenen Sperrzeiten
+  // ï¿½rzte sehen nur ihre eigenen Sperrzeiten
   if (istArzt(session) && !istAdmin(session)) {
     const arzt = await prisma.arzt.findFirst({ where: { name: session.name }, select: { id: true } });
     if (arzt) where.arztId = arzt.id;
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'titel, startdatum, enddatum, betrifft, grund erforderlich.' }, { status: 400 });
   }
 
-  // Berechtigungsprüfung: Arzt darf nur eigene Abwesenheiten, Admin/MFA alle
+  // Berechtigungsprï¿½fung: Arzt darf nur eigene Abwesenheiten, Admin/MFA alle
   if (session.rolle === 'Arzt') {
     const arzt = await prisma.arzt.findFirst({ where: { name: session.name }, select: { id: true } });
     if (!arzt || arzt.id !== arztId) return NextResponse.json({ error: 'Sie koennen nur eigene Abwesenheiten eintragen.' }, { status: 403 });
@@ -69,7 +69,7 @@ export async function DELETE(req: NextRequest) {
   const sz = await prisma.sperrzeit.findUnique({ where: { id }, select: { erstelltVonNutzerId: true, arztId: true } });
   if (!sz) return NextResponse.json({ error: 'Nicht gefunden.' }, { status: 404 });
 
-  // Berechtigung: Admin/MFA darf alle löschen, Arzt nur eigene
+  // Berechtigung: Admin/MFA darf alle lï¿½schen, Arzt nur eigene
   if (!istMfaOderAdmin(session) && istArzt(session)) {
     const arzt = await prisma.arzt.findFirst({ where: { name: session.name }, select: { id: true } });
     if (!arzt || sz.arztId !== arzt.id) return NextResponse.json({ error: 'Sie koennen nur eigene Sperrzeiten loeschen.' }, { status: 403 });

@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("??  Starte Seed fuer Praxis Demir & Kollegen ...");
 
-  // -- 1. Termintypen (aus spec.md §5) --
+  // -- 1. Termintypen (aus spec.md ï¿½5) --
   const terminTypen = await Promise.all([
     prisma.termintyp.create({
       data: {
@@ -48,7 +48,7 @@ async function main() {
         bezeichnung: "Blutabnahme",
         dauerStandardMinuten: 10,
         onlineBuchbar: false,
-        beschreibung: "Blutabnahme – nur telefonisch oder am Tresen",
+        beschreibung: "Blutabnahme ï¿½ nur telefonisch oder am Tresen",
         prioritaet: "normal",
       },
     }),
@@ -57,7 +57,7 @@ async function main() {
         bezeichnung: "Erstgespraech",
         dauerStandardMinuten: 30,
         onlineBuchbar: false,
-        beschreibung: "Erstgespraech bei Neuaufnahme – nur telefonisch",
+        beschreibung: "Erstgespraech bei Neuaufnahme ï¿½ nur telefonisch",
         prioritaet: "hoch",
       },
     }),
@@ -66,7 +66,7 @@ async function main() {
         bezeichnung: "Akut",
         dauerStandardMinuten: 10,
         onlineBuchbar: false,
-        beschreibung: "Akutfall – nur ueber MFA-Triage",
+        beschreibung: "Akutfall ï¿½ nur ueber MFA-Triage",
         prioritaet: "hoch",
       },
     }),
@@ -131,7 +131,7 @@ async function main() {
 
   console.log("  ?  1 Admin + " + mfaList.length + " MFAs angelegt");
 
-  // -- 3. Aerzt:innen (aus spec.md §6, §8) --
+  // -- 3. Aerzt:innen (aus spec.md ï¿½6, ï¿½8) --
   const aerzte = await Promise.all([
     prisma.arzt.create({
       data: {
@@ -294,6 +294,23 @@ async function main() {
   ];
 
   console.log("  ?  Beispiel-Slots angelegt");
+
+  // -- 9. Standard-Praxisregeln (aus lib/constants.ts, pflegbar) --
+  const defaultRegeln = [
+    { schluessel: 'stornierungsfristStd', wert: '24', beschreibung: 'Stornierungsfrist in Stunden vor Termin' },
+    { schluessel: 'umbuchungsfristStd', wert: '24', beschreibung: 'Umbuchungsfrist in Stunden vor Termin' },
+    { schluessel: 'erinnerungsfristStd', wert: '24', beschreibung: 'Zeitpunkt der Terminerinnerung in Stunden vor Termin' },
+    { schluessel: 'noShowLimitErinnerung', wert: '2', beschreibung: 'No-Shows pro Jahr bis zur schriftlichen Erinnerung' },
+    { schluessel: 'noShowLimitSperre', wert: '3', beschreibung: 'No-Shows pro Jahr bis zur Buchungssperre' },
+    { schluessel: 'akutSlotVormittag', wert: '4', beschreibung: 'Anzahl freier Akutslots am Vormittag' },
+    { schluessel: 'akutSlotNachmittag', wert: '4', beschreibung: 'Anzahl freier Akutslots am Nachmittag' },
+  ];
+
+  for (const r of defaultRegeln) {
+    await prisma.praxisRegel.create({ data: r });
+  }
+
+  console.log("  ?  " + defaultRegeln.length + " Praxisregeln angelegt");
 
   console.log("\n??  Seed erfolgreich abgeschlossen!");
 }

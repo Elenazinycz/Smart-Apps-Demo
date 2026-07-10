@@ -134,3 +134,12 @@ model Sprechzeit {
   aktiv         Boolean  @default(true)
   arzt          Arzt     @relation(fields: [arztId], references: [id])
 }
+
+model PraxisRegel {
+  id            String   @id @default(cuid())
+  schluessel    String   @unique
+  wert          String
+  beschreibung  String?
+  erstelltAm    DateTime @default(now())
+  aktualisiert  DateTime @updatedAt
+}

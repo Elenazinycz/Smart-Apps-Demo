@@ -1,6 +1,6 @@
 import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
-import { istAdmin, istMfa, istMfaOderAdmin, istArzt } from '@/lib/rollen';
+import { istAdmin, istMfaOderAdmin, istArzt } from '@/lib/rollen';
 
 export default async function PraxisPage() {
   const session = await getSession();
@@ -11,7 +11,7 @@ export default async function PraxisPage() {
       <section className='intro'>
         <p className='eyebrow'>Smart-Apps-Demo</p>
         <h1>Praxis-Bereich</h1>
-        <p>Angemeldet als <strong>{session.name}</strong> — Rolle: {session.rolle}</p>
+        <p>Angemeldet als <strong>{session.name}</strong> &mdash; Rolle: {session.rolle}</p>
       </section>
 
       {istMfaOderAdmin(session) && (
@@ -40,7 +40,9 @@ export default async function PraxisPage() {
           <section className='panel' style={{ marginBottom: 24 }}>
             <h2>Verwaltung</h2>
             <ul>
+              <li><a href='/praxis/termintypen'>Termintypen verwalten</a></li>
               <li><a href='/praxis/termintyp-zuordnung'>Termintyp-Arzt-Zuordnung verwalten</a></li>
+              <li><a href='/praxis/praxisregeln'>Praxisregeln verwalten</a></li>
             </ul>
           </section>
         </>

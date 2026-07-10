@@ -23,7 +23,7 @@ function fmtD(iso: string) {
   return new Date(iso).toLocaleDateString('de-DE');
 }
 function fmtT(iso: string | null) {
-  if (!iso) return 'ganztägig';
+  if (!iso) return 'ganztï¿½gig';
   return new Date(iso).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
 }
 
@@ -118,7 +118,7 @@ export default function SperrzeitenPage() {
               {sperrzeiten.map(sz => (
                 <tr key={sz.id}>
                   <td>{sz.titel}</td>
-                  <td>{fmtD(sz.startdatum)} – {fmtD(sz.enddatum)}<br/>{fmtT(sz.startzeit)} – {fmtT(sz.endzeit)}</td>
+                  <td>{fmtD(sz.startdatum)} ï¿½ {fmtD(sz.enddatum)}<br/>{fmtT(sz.startzeit)} ï¿½ {fmtT(sz.endzeit)}</td>
                   <td>{sz.betrifft}{sz.arzt ? ' (' + sz.arzt.name + ')' : ''}</td>
                   <td>{sz.grund}</td>
                   <td>{sz.erstelltVon.name} ({sz.erstelltVon.rolle})</td>
