@@ -1,11 +1,11 @@
-﻿import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱  Starte Seed fuer Praxis Demir & Kollegen ...");
+  console.log("??  Starte Seed fuer Praxis Demir & Kollegen ...");
 
-  // ── 1. Termintypen (aus spec.md §5) ──
+  // -- 1. Termintypen (aus spec.md �5) --
   const terminTypen = await Promise.all([
     prisma.termintyp.create({
       data: {
@@ -48,7 +48,7 @@ async function main() {
         bezeichnung: "Blutabnahme",
         dauerStandardMinuten: 10,
         onlineBuchbar: false,
-        beschreibung: "Blutabnahme – nur telefonisch oder am Tresen",
+        beschreibung: "Blutabnahme � nur telefonisch oder am Tresen",
         prioritaet: "normal",
       },
     }),
@@ -57,7 +57,7 @@ async function main() {
         bezeichnung: "Erstgespraech",
         dauerStandardMinuten: 30,
         onlineBuchbar: false,
-        beschreibung: "Erstgespraech bei Neuaufnahme – nur telefonisch",
+        beschreibung: "Erstgespraech bei Neuaufnahme � nur telefonisch",
         prioritaet: "hoch",
       },
     }),
@@ -66,7 +66,7 @@ async function main() {
         bezeichnung: "Akut",
         dauerStandardMinuten: 10,
         onlineBuchbar: false,
-        beschreibung: "Akutfall – nur ueber MFA-Triage",
+        beschreibung: "Akutfall � nur ueber MFA-Triage",
         prioritaet: "hoch",
       },
     }),
@@ -77,9 +77,9 @@ async function main() {
     terminTypMap[tt.bezeichnung] = tt;
   }
 
-  console.log(`  ✅  ${terminTypen.length} Termintypen angelegt`);
+  console.log("  ?  " + terminTypen.length + " Termintypen angelegt");
 
-  // ── 2. PraxisNutzer (1 Admin + 4 MFAs) ──
+  // -- 2. PraxisNutzer (1 Admin + 4 MFAs) --
   const admin = await prisma.praxisNutzer.create({
     data: {
       name: "Admin Praxis Demir",
@@ -129,9 +129,9 @@ async function main() {
     }),
   ]);
 
-  console.log(`  ✅  1 Admin + ${mfaList.length} MFAs angelegt`);
+  console.log("  ?  1 Admin + " + mfaList.length + " MFAs angelegt");
 
-  // ── 3. Aerzt:innen (aus spec.md §6, §8) ──
+  // -- 3. Aerzt:innen (aus spec.md �6, �8) --
   const aerzte = await Promise.all([
     prisma.arzt.create({
       data: {
@@ -161,28 +161,22 @@ async function main() {
 
   const [drYilmaz, drSchaefer, drDemir] = aerzte;
 
-  console.log(`  ✅  ${aerzte.length} Aerzt:innen angelegt`);
+  console.log("  ?  " + aerzte.length + " Aerzt:innen angelegt");
 
-  // ── 4. Arzt-Termintyp-Zuordnungen (aus spec.md §5, §8) ──
-  // Dr. Demir: Impfung/Reisemedizin + alle online buchbaren
-  // Dr. Yilmaz, Dr. Schaefer: Vorsorge, Beratung, Wiederholungsrezept
-
+  // -- 4. Arzt-Termintyp-Zuordnungen --
   const zuordnungen: { arztId: string; terminTypId: string; onlineErlaubt: boolean }[] = [
-    // Dr. Yilmaz
     { arztId: drYilmaz.id, terminTypId: terminTypMap["Vorsorge"].id, onlineErlaubt: true },
     { arztId: drYilmaz.id, terminTypId: terminTypMap["Beratung"].id, onlineErlaubt: true },
     { arztId: drYilmaz.id, terminTypId: terminTypMap["Wiederholungsrezept-Abholung"].id, onlineErlaubt: true },
     { arztId: drYilmaz.id, terminTypId: terminTypMap["Blutabnahme"].id, onlineErlaubt: false },
     { arztId: drYilmaz.id, terminTypId: terminTypMap["Erstgespraech"].id, onlineErlaubt: false },
     { arztId: drYilmaz.id, terminTypId: terminTypMap["Akut"].id, onlineErlaubt: false },
-    // Dr. Schaefer
     { arztId: drSchaefer.id, terminTypId: terminTypMap["Vorsorge"].id, onlineErlaubt: true },
     { arztId: drSchaefer.id, terminTypId: terminTypMap["Beratung"].id, onlineErlaubt: true },
     { arztId: drSchaefer.id, terminTypId: terminTypMap["Wiederholungsrezept-Abholung"].id, onlineErlaubt: true },
     { arztId: drSchaefer.id, terminTypId: terminTypMap["Blutabnahme"].id, onlineErlaubt: false },
     { arztId: drSchaefer.id, terminTypId: terminTypMap["Erstgespraech"].id, onlineErlaubt: false },
     { arztId: drSchaefer.id, terminTypId: terminTypMap["Akut"].id, onlineErlaubt: false },
-    // Dr. Demir (nur Impfung/Reisemedizin online, plus restliche offline)
     { arztId: drDemir.id, terminTypId: terminTypMap["Impfung / Reisemedizin"].id, onlineErlaubt: true },
     { arztId: drDemir.id, terminTypId: terminTypMap["Vorsorge"].id, onlineErlaubt: true },
     { arztId: drDemir.id, terminTypId: terminTypMap["Beratung"].id, onlineErlaubt: true },
@@ -196,9 +190,9 @@ async function main() {
     await prisma.arztTermintypZuordnung.create({ data: z });
   }
 
-  console.log(`  ✅  ${zuordnungen.length} Arzt-Termintyp-Zuordnungen angelegt`);
+  console.log("  ?  " + zuordnungen.length + " Arzt-Termintyp-Zuordnungen angelegt");
 
-  // ── 5. Beispiel-Patient:innen ──
+  // -- 5. Beispiel-Patient:innen --
   const patienten = await Promise.all([
     prisma.patient.create({
       data: {
@@ -247,9 +241,9 @@ async function main() {
     }),
   ]);
 
-  console.log(`  ✅  ${patienten.length} Patient:innen angelegt`);
+  console.log("  ?  " + patienten.length + " Patient:innen angelegt");
 
-  // ── 6. PatientenKonten (fuer Stammpatient:innen) ──
+  // -- 6. PatientenKonten --
   for (let i = 0; i < patienten.length; i++) {
     const p = patienten[i];
     await prisma.patientenKonto.create({
@@ -264,9 +258,28 @@ async function main() {
     });
   }
 
-  console.log(`  ✅  ${patienten.length} PatientenKonten angelegt`);
+  console.log("  ?  " + patienten.length + " PatientenKonten angelegt");
 
-  // ── 7. Beispiel-Termine (einige gebuchte + freie Slots) ──
+  // -- 7. Sprechzeiten (aus spec.md section 6, pflegbar) --
+  // Dr. Yilmaz: Mo-Do 08:00-13:00
+  for (const tag of [1,2,3,4]) {
+    await prisma.sprechzeit.create({ data: { arztId: drYilmaz.id, wochentag: tag, startZeit: "08:00", endZeit: "13:00" } });
+  }
+  // Dr. Schaefer: Mo-Fr 08:00-13:00 + 14:00-18:00
+  for (const tag of [1,2,3,4,5]) {
+    await prisma.sprechzeit.create({ data: { arztId: drSchaefer.id, wochentag: tag, startZeit: "08:00", endZeit: "13:00" } });
+    await prisma.sprechzeit.create({ data: { arztId: drSchaefer.id, wochentag: tag, startZeit: "14:00", endZeit: "18:00" } });
+  }
+  // Dr. Demir: Di-Do 08:00-13:00 + 14:00-18:00, Fr 08:00-13:00
+  for (const tag of [2,3,4]) {
+    await prisma.sprechzeit.create({ data: { arztId: drDemir.id, wochentag: tag, startZeit: "08:00", endZeit: "13:00" } });
+    await prisma.sprechzeit.create({ data: { arztId: drDemir.id, wochentag: tag, startZeit: "14:00", endZeit: "18:00" } });
+  }
+  await prisma.sprechzeit.create({ data: { arztId: drDemir.id, wochentag: 5, startZeit: "08:00", endZeit: "13:00" } });
+
+  console.log("  ?  Sprechzeiten fuer alle Aerzt:innen angelegt");
+
+  // -- 8. Beispiel-Termine --
   const heute = new Date();
   const exampleSlots = [
     {
@@ -280,14 +293,14 @@ async function main() {
     },
   ];
 
-  console.log(`  ✅  Beispiel-Slots angelegt`);
+  console.log("  ?  Beispiel-Slots angelegt");
 
-  console.log("\n🎉  Seed erfolgreich abgeschlossen!");
+  console.log("\n??  Seed erfolgreich abgeschlossen!");
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Seed fehlgeschlagen:", e);
+    console.error("? Seed fehlgeschlagen:", e);
     process.exit(1);
   })
   .finally(async () => {

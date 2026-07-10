@@ -169,3 +169,24 @@ Was wurde entschieden?
 - Die Rollenprüfung in lib/rollen.ts ist kompakt und wiederverwendbar für alle nachfolgenden Features (F-VERW-2, F-VERW-3, F-SICH-*, F-BETR-*).
 - Keine Änderungen am Prisma-Schema nötig — alle benötigten Felder (rolle, berechtigung, erstelltVonNutzerId) waren bereits vorhanden.
 - PatientenKonto-Erstellung verwendet Mock-Passwort-Hash — für Produktion müsste bcrypt eingebunden werden.
+
+## 2026-07-10 - F-VERW-2: Sprechzeiten & Sperrzeiten implementiert
+
+**Kontext:** F-VERW-2 umfasst pflegbare Sprechzeiten (STD-023/024), Sperrzeit-Datenmodell (STD-025, existiert bereits), Sperrzeiten-CRUD durch Admin (STD-026), Arzt-Abwesenheiten (STD-027), Buchungsprüfung (STD-028) und Mittagspause (STD-029).
+
+### Umsetzung
+- **Sprechzeit-Datenmodell:** Neues Prisma-Modell Sprechzeit mit arztId, wochentag (1-7), startZeit/endZeit (HH:mm), gueltigVon/gueltigBis, aktiv. Migration erstellt.
+- **Sprechzeiten API + Admin-UI:** GET/POST/PUT/DELETE /api/sprechzeiten (nur Admin). UI unter /praxis/sprechzeiten mit Tabelle, Anlegen/Löschen/Toggle.
+- **Sperrzeiten CRUD (Admin/MFA/Arzt):** POST /api/sperrzeiten mit Berechtigungsprüfung: Admin/MFA darf alles, Ärzte nur eigene Abwesenheiten. Ärzte sehen nur eigene Sperrzeiten. Standardisierte Gründe (Urlaub, Krankheit, Fortbildung, Feiertag, Brückentag, Mittagspause).
+- **Buchungsprüfung (Sprechzeiten):** Neue getSprechzeitenBlocking() invertiert Sprechzeiten zu Blockade-Zeiträumen. Wird in getFreieSlots() und bucheOnlineTermin() zusätzlich zu getSperrzeitenBlocking() geprüft.
+- **Buchungsprüfung (Sperrzeiten):** Bereits implementiert via getSperrzeitenBlocking().
+- **Mittagspause:** Über Sperrzeit-Modell abbildbar (Grund "Mittagspause"). Beispiel: Sperrzeit 13:00-14:00 für Praxis an Werktagen.
+
+### Status
+- F-VERW-2: done
+- STD-023, STD-024, STD-025, STD-026, STD-027, STD-028, STD-029: done
+
+### Konsequenzen
+- Ohne hinterlegte Sprechzeiten ist ein Arzt komplett blockiert (ganzer Tag gesperrt). Seed muss Sprechzeiten enthalten.
+- Sprechzeiten werden als erlaubte Fenster modelliert, alles außerhalb ist blockiert. Das erspart die Berechnung von Öffnungs-/Mittagspause-Logik.
+- Keine Änderung an der bisherigen Sperrzeit-Logik – getSperrzeitenBlocking() läuft parallel zu getSprechzeitenBlocking().

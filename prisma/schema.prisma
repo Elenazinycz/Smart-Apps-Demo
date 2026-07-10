@@ -47,6 +47,7 @@ model Arzt {
   aktiv                    Boolean                   @default(true)
   termine                  TerminSlot[]
   sperrzeiten              Sperrzeit[]
+  sprechzeiten           Sprechzeit[]
   termintypZuordnungen     ArztTermintypZuordnung[]
 }
 
@@ -120,4 +121,16 @@ model ArztTermintypZuordnung {
   terminTyp     Termintyp @relation(fields: [terminTypId], references: [id])
 
   @@unique([arztId, terminTypId])
+}
+
+model Sprechzeit {
+  id            String   @id @default(cuid())
+  arztId        String
+  wochentag     Int      // 1=Montag .. 7=Sonntag
+  startZeit     String   // HH:mm, z.B. ""08:00""
+  endZeit       String   // HH:mm, z.B. ""12:00""
+  gueltigVon    DateTime?
+  gueltigBis    DateTime?
+  aktiv         Boolean  @default(true)
+  arzt          Arzt     @relation(fields: [arztId], references: [id])
 }

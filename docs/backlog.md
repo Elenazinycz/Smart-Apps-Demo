@@ -90,13 +90,13 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 ### F-VERW-2: Sprechzeiten & Sperrzeiten
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-023 | Admin kann Sprechzeiten verwalten | Verwaltung | F-VERW-2 | hypo | docs/spec.md 6, 11 | Sprechzeiten pro Wochentag und Arzt pflegbar |
-| STD-024 | Sprechzeiten-Datenmodell | Verwaltung | F-VERW-2 | hypo | docs/spec.md 4.7, 6 | Modell fuer regelbasierte Sprechzeiten pro Wochentag, Arzt und Schicht |
-| STD-025 | Sperrzeit-Datenmodell | Verwaltung | F-VERW-2 | hypo | docs/spec.md 4.7 | Sperrzeit mit Titel, Datumsbereich, Zeitbereich, betrifft, Grund und Ersteller |
-| STD-026 | Sperrzeiten durch Admin verwalten | Verwaltung | F-VERW-2 | hypo | docs/spec.md 11 | CRUD fuer Sperrzeiten durch Admin |
-| STD-027 | Arzt kann eigene Abwesenheiten eintragen | Verwaltung | F-VERW-2 | hypo | docs/spec.md 11 | Arzt/Aerztin darf Urlaub/Krankheit selbst eintragen |
-| STD-028 | Sperrzeiten bei Terminbuchung pruefen | Verwaltung | F-VERW-2 | hypo | docs/spec.md 14, BR3 | Buchung trotz Praxisschliessung oder Arzt-Urlaub verhindern |
-| STD-029 | Mittagspause als Sperrzeit abbilden | Verwaltung | F-VERW-2 | hypo | docs/spec.md 6 | Mittagspause (13:00-14:00) ueber Sperrzeit-Modell abgedeckt |
+| STD-023 | Admin kann Sprechzeiten verwalten | Verwaltung | F-VERW-2 | done | docs/spec.md 6, 11 | Sprechzeiten pro Wochentag und Arzt pflegbar |
+| STD-024 | Sprechzeiten-Datenmodell | Verwaltung | F-VERW-2 | done | docs/spec.md 4.7, 6 | Modell fuer regelbasierte Sprechzeiten pro Wochentag, Arzt und Schicht |
+| STD-025 | Sperrzeit-Datenmodell | Verwaltung | F-VERW-2 | done | docs/spec.md 4.7 | Sperrzeit mit Titel, Datumsbereich, Zeitbereich, betrifft, Grund und Ersteller |
+| STD-026 | Sperrzeiten durch Admin verwalten | Verwaltung | F-VERW-2 | done | docs/spec.md 11 | CRUD fuer Sperrzeiten durch Admin |
+| STD-027 | Arzt kann eigene Abwesenheiten eintragen | Verwaltung | F-VERW-2 | done | docs/spec.md 11 | Arzt/Aerztin darf Urlaub/Krankheit selbst eintragen |
+| STD-028 | Sperrzeiten bei Terminbuchung pruefen | Verwaltung | F-VERW-2 | done | docs/spec.md 14, BR3 | Buchung trotz Praxisschliessung oder Arzt-Urlaub verhindern |
+| STD-029 | Mittagspause als Sperrzeit abbilden | Verwaltung | F-VERW-2 | done | docs/spec.md 6 | Mittagspause (13:00-14:00) ueber Sperrzeit-Modell abgedeckt |
 
 ### F-VERW-3: Termintypen & Arzt-Zuordnung
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
@@ -219,7 +219,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | F-KERN-3 | Buchungslogik & Slot-Anzeige | Kern | STD-008, STD-009, STD-012, STD-013, STD-014 | done |
 | F-KERN-4 | Eigene Termine verwalten | Kern | STD-002, STD-016, STD-017, STD-018, STD-019 | done |
 | F-VERW-1 | Nutzer & Rollen | Verwaltung | STD-020, STD-021, STD-022, STD-035 | done |
-| F-VERW-2 | Sprechzeiten & Sperrzeiten | Verwaltung | STD-023, STD-024, STD-025, STD-026, STD-027, STD-028, STD-029 | hypo |
+| F-VERW-2 | Sprechzeiten & Sperrzeiten | Verwaltung | STD-023, STD-024, STD-025, STD-026, STD-027, STD-028, STD-029 | done |
 | F-VERW-3 | Termintypen & Arzt-Zuordnung | Verwaltung | STD-030, STD-031, STD-032, STD-033, STD-034 | hypo |
 | F-SICH-1 | Authentifizierung & Schutz | Sicherheit & Sync | STD-036, STD-037, STD-038, STD-039, STD-040, STD-041 | hypo |
 | F-SICH-2 | DSGVO & Opt-in | Sicherheit & Sync | STD-042, STD-043, STD-044, STD-045, STD-046 | hypo |

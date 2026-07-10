@@ -1,7 +1,6 @@
 import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { istAdmin, istMfa, istMfaOderAdmin, istArzt } from '@/lib/rollen';
-import Link from 'next/link';
 
 export default async function PraxisPage() {
   const session = await getSession();
@@ -25,10 +24,33 @@ export default async function PraxisPage() {
       )}
 
       {istAdmin(session) && (
+        <>
+          <section className='panel' style={{ marginBottom: 24 }}>
+            <h2>Sprechzeiten</h2>
+            <ul>
+              <li><a href='/praxis/sprechzeiten'>Sprechzeiten verwalten</a></li>
+            </ul>
+          </section>
+          <section className='panel' style={{ marginBottom: 24 }}>
+            <h2>Sperrzeiten</h2>
+            <ul>
+              <li><a href='/praxis/sperrzeiten'>Sperrzeiten verwalten</a></li>
+            </ul>
+          </section>
+          <section className='panel' style={{ marginBottom: 24 }}>
+            <h2>Verwaltung</h2>
+            <ul>
+              <li><a href='/praxis/termintyp-zuordnung'>Termintyp-Arzt-Zuordnung verwalten</a></li>
+            </ul>
+          </section>
+        </>
+      )}
+
+      {istArzt(session) && (
         <section className='panel' style={{ marginBottom: 24 }}>
-          <h2>Verwaltung</h2>
+          <h2>Meine Abwesenheiten</h2>
           <ul>
-            <li><a href='/praxis/termintyp-zuordnung'>Termintyp-Arzt-Zuordnung verwalten</a></li>
+            <li><a href='/praxis/sperrzeiten'>Eigene Abwesenheiten eintragen</a></li>
           </ul>
         </section>
       )}

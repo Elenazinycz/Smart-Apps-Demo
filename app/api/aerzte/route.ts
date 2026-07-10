@@ -11,21 +11,28 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const terminTypId = searchParams.get('terminTypId');
-  if (!terminTypId) {
-    return NextResponse.json({ error: 'terminTypId erforderlich.' }, { status: 400 });
-  }
 
-  const alle = await prisma.arzt.findMany({
-    where: { aktiv: true },
-    include: { termintypZuordnungen: true },
-  });
+  if (terminTypId) {
+    // Gefiltert nach Freigabe (fuer Buchungsformular)
+    const alle = await prisma.arzt.findMany({
+      where: { aktiv: true },
+      include: { termintypZuordnungen: true },
+    });
 
-  const freigegeben = [];
-  for (const arzt of alle) {
-    if (await istArztFreigegeben(arzt.id, terminTypId)) {
-      freigegeben.push({ id: arzt.id, name: arzt.name });
+    const freigegeben = [];
+    for (const arzt of alle) {
+      if (await istArztFreigegeben(arzt.id, terminTypId)) {
+        freigegeben.push({ id: arzt.id, name: arzt.name });
+      }
     }
+    return NextResponse.json({ aerzte: freigegeben });
   }
 
-  return NextResponse.json({ aerzte: freigegeben });
+  // Alle aktiven Aerzte (fuer Verwaltung)
+  const aerzte = await prisma.arzt.findMany({
+    where: { aktiv: true },
+    select: { id: true, name: true, fachrichtung: true },
+    orderBy: { name: 'asc' },
+  });
+  return NextResponse.json({ aerzte });
 }
