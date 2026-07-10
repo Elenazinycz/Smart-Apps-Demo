@@ -1,6 +1,6 @@
-# backlog.md - Smart-Apps-Demo
+﻿# backlog.md - Smart-Apps-Demo
 
-_Stand: 2026-07-03_
+_Stand: 2026-07-10_
 
 _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 
@@ -60,11 +60,11 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 ### F-KERN-3: Buchungslogik & Slot-Anzeige
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-008 | Planbare Online-Termintypen erlauben | Kern | F-KERN-3 | hypo | docs/spec.md 5, BR2 | Vorsorge, Beratung, Impfung/Reisemedizin und Wiederholungsrezept-Abholung sind online buchbar |
-| STD-009 | Nicht online buchbare Termintypen sperren | Kern | F-KERN-3 | hypo | docs/spec.md 5, BR2 | Akut, Blutabnahme und Erstgespraech sind nicht online buchbar |
-| STD-012 | Online-Termin verbindlich buchen | Kern | F-KERN-3 | hypo | docs/spec.md 3, BR4 | Online-Buchungen sind sofort verbindlich |
-| STD-013 | Freie Slots anzeigen | Kern | F-KERN-3 | hypo | docs/spec.md 2, 9 | Patient:innen sehen nur buchbare, freie und regelkonforme Slots |
-| STD-014 | Doppelbuchung technisch verhindern | Kern | F-KERN-3 | hypo | docs/spec.md 2, BR3, 14 | Slot-Sperre oder gleichwertiger Mechanismus verhindert parallele Buchungen |
+| STD-008 | Planbare Online-Termintypen erlauben | Kern | F-KERN-3 | done | docs/spec.md 5, BR2 | Vorsorge, Beratung, Impfung/Reisemedizin und Wiederholungsrezept-Abholung via istOnlineBuchbar() + Arzt-Freigabe; lib/slots.ts, app/api/termintypen/route.ts, app/api/aerzte/route.ts |
+| STD-009 | Nicht online buchbare Termintypen sperren | Kern | F-KERN-3 | done | docs/spec.md 5, BR2 | ONLINE_BUCHBARE_TYPEN-Whitelist in lib/slots.ts blockiert Akut, Blutabnahme, Erstgespraech; API gibt nur online-buchbare Typen zurück |
+| STD-012 | Online-Termin verbindlich buchen | Kern | F-KERN-3 | done | docs/spec.md 3, BR4 | bucheOnlineTermin() in lib/slots.ts: Slot-Status sofort auf "gebucht" + patientId + buchungsquelle=online; API POST /api/appointments
+| STD-013 | Freie Slots anzeigen | Kern | F-KERN-3 | done | docs/spec.md 2, 9 | getFreieSlots() in lib/slots.ts: Slots via /api/slots mit Sperrzeiten-Filter; BuchungsFormular.tsx zeigt Auswahl; Doppelbuchung durch Slot-Status-Prüfung verhindert
+| STD-014 | Doppelbuchung technisch verhindern | Kern | F-KERN-3 | done | docs/spec.md 2, BR3, 14 | findFirst mit status=frei + atomares update; Slot-Sperre verhindert parallele Buchungen; DB-Index auf datum+arztId+status
 
 ### F-KERN-4: Eigene Termine verwalten
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
@@ -216,7 +216,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 |---|---|---|---|---|
 | F-KERN-1 | Datenmodelle Kern | Kern | STD-001, STD-006, STD-007, STD-010, STD-011, STD-015 | done |
 | F-KERN-2 | Login & Berechtigung | Kern | STD-003, STD-004, STD-005 | done |
-| F-KERN-3 | Buchungslogik & Slot-Anzeige | Kern | STD-008, STD-009, STD-012, STD-013, STD-014 | hypo |
+| F-KERN-3 | Buchungslogik & Slot-Anzeige | Kern | STD-008, STD-009, STD-012, STD-013, STD-014 | done |
 | F-KERN-4 | Eigene Termine verwalten | Kern | STD-002, STD-016, STD-017, STD-018, STD-019 | hypo |
 | F-VERW-1 | Nutzer & Rollen | Verwaltung | STD-020, STD-021, STD-022, STD-035 | hypo |
 | F-VERW-2 | Sprechzeiten & Sperrzeiten | Verwaltung | STD-023, STD-024, STD-025, STD-026, STD-027, STD-028, STD-029 | hypo |
@@ -245,3 +245,5 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 **Feature verworfen:**
 - Status -> `killed`
 - Entscheidung mit Begruendung in `docs/decisions.md` dokumentieren, wenn sie nicht bereits explizit in `docs/spec.md` steht
+
+

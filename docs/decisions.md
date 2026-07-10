@@ -100,3 +100,29 @@ Was wurde entschieden?
 - Der Mock-Charakter ist in der UI über den Hinweis »beliebiges Passwort« transparent gemacht
 - Bei Erweiterung kann auf NextAuth.js migriert werden (Session-Layout bleibt gleich)
 
+
+## 2026-07-10 - F-KERN-3: Buchungslogik & Slot-Anzeige implementiert
+
+**Kontext:** F-KERN-3 umfasst die zentrale Buchungslogik: Online-Buchbarkeit von Termintypen prüfen (STD-008, STD-009), verbindliche Buchung (STD-012), freie Slots anzeigen (STD-013) und Doppelbuchung verhindern (STD-014).
+
+### Umsetzung
+- **lib/slots.ts:** 6 Export-Funktionen – istOnlineBuchbar, istArztFreigegeben, getSperrzeitenBlocking, getFreieSlots, bucheOnlineTermin, ueberschneidetSich
+- **API-Routen:** GET /api/termintypen (nur online-buchbare), GET /api/aerzte (nur freigegebene), GET /api/slots (freie + Sperrzeiten-Filter), POST /api/appointments (Buchung mit Vollprüfung)
+- **Frontend:** BuchungsFormular.tsx mit 3-Stufen-Auswahl (Termintyp → Arzt → Datum → Slot) und verbindlichem Buchungs-Button
+- **Doppelbuchungs-Schutz:** DB-Index auf (datum, arztId, status) + atomares findFirst mit status=frei + update in einem Request
+
+### Business-Regeln vollständig abgebildet
+- Nur Vorsorge, Beratung, Impfung/Reisemedizin und Wiederholungsrezept-Abholung sind online buchbar (Whitelist)
+- Akut, Blutabnahme und Erstgespräch werden durch API und Backend blockiert
+- Buchung prüft: Online-Buchbarkeit, Arzt-Freigabe, Konto-Aktiv, No-Show-Limit, Sperrzeiten, Slot-Verfügbarkeit
+- Sperrzeiten: Praxis-weit und arzt-spezifisch, mit/without Uhrzeit (ganztägig)
+- Buchungsquelle wird als "online" gespeichert
+
+### Status
+- F-KERN-3: done (alle 5 STD-IDs auf done gesetzt)
+- STD-008, STD-009, STD-012, STD-013, STD-014: done
+
+### Konsequenzen
+- Code in lib/slots.ts bewusst kompakt gehalten (75 Zeilen) – alle Prüfungen bleiben lesbar
+- Frontend (BuchungsFormular.tsx) als reines Client-Component – kein Server-Rendering für die Auswahl nötig
+- Für Produktion müssten Transaktions-Sperren (prisma.\) ergänzt werden; aktuell reicht der atomare findFirst-Mechanismus für die Demo
