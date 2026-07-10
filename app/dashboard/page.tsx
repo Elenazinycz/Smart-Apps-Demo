@@ -1,6 +1,7 @@
 import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import LogoutButton from './LogoutButton';
+import { istAdmin, istMfa, istMfaOderAdmin, istArzt } from '@/lib/rollen';
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -31,6 +32,7 @@ export default async function DashboardPage() {
           <li><a href='/'>Startseite</a></li>
           <li><a href='/dashboard'>Dashboard</a></li>
           {session.type === 'patient' && <li><a href='/termine'>Meine Termine</a></li>}
+          {session.type === 'praxis' && <li><a href='/praxis'>Praxis-Bereich</a></li>}
         </ul>
       </section>
 

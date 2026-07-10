@@ -82,10 +82,10 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 ### F-VERW-1: Nutzer & Rollen
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-020 | PraxisNutzer-Datenmodell | Verwaltung | F-VERW-1 | hypo | docs/spec.md 4.4 | Nutzer mit Rolle MFA, Arzt oder Admin, Dienstmail, Aktivstatus und Berechtigungen |
-| STD-021 | Rollen und Berechtigungen umsetzen | Verwaltung | F-VERW-1 | hypo | docs/spec.md 11 | Patient:in, MFA, Arzt/Aerztin und Admin erhalten getrennte Rechte |
-| STD-022 | MFA/Admin kann PatientenKonten anlegen | Verwaltung | F-VERW-1 | hypo | docs/spec.md 4.2, 11 | Kontoerstellung wird mit erstellendem PraxisNutzer dokumentiert |
-| STD-035 | Admin kann Termintyp-Arzt-Zuordnung verwalten | Verwaltung | F-VERW-1 | hypo | docs/spec.md 11 | Nur Admin darf Zuordnungen aendern |
+| STD-020 | PraxisNutzer-Datenmodell | Verwaltung | F-VERW-1 | done | docs/spec.md 4.4 | Nutzer mit Rolle MFA, Arzt oder Admin, Dienstmail, Aktivstatus und Berechtigungen |
+| STD-021 | Rollen und Berechtigungen umsetzen | Verwaltung | F-VERW-1 | done | docs/spec.md 11 | Patient:in, MFA, Arzt/Aerztin und Admin erhalten getrennte Rechte |
+| STD-022 | MFA/Admin kann PatientenKonten anlegen | Verwaltung | F-VERW-1 | done | docs/spec.md 4.2, 11 | Kontoerstellung wird mit erstellendem PraxisNutzer dokumentiert |
+| STD-035 | Admin kann Termintyp-Arzt-Zuordnung verwalten | Verwaltung | F-VERW-1 | done | docs/spec.md 11 | Nur Admin darf Zuordnungen aendern |
 
 ### F-VERW-2: Sprechzeiten & Sperrzeiten
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
@@ -218,7 +218,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | F-KERN-2 | Login & Berechtigung | Kern | STD-003, STD-004, STD-005 | done |
 | F-KERN-3 | Buchungslogik & Slot-Anzeige | Kern | STD-008, STD-009, STD-012, STD-013, STD-014 | done |
 | F-KERN-4 | Eigene Termine verwalten | Kern | STD-002, STD-016, STD-017, STD-018, STD-019 | done |
-| F-VERW-1 | Nutzer & Rollen | Verwaltung | STD-020, STD-021, STD-022, STD-035 | hypo |
+| F-VERW-1 | Nutzer & Rollen | Verwaltung | STD-020, STD-021, STD-022, STD-035 | done |
 | F-VERW-2 | Sprechzeiten & Sperrzeiten | Verwaltung | STD-023, STD-024, STD-025, STD-026, STD-027, STD-028, STD-029 | hypo |
 | F-VERW-3 | Termintypen & Arzt-Zuordnung | Verwaltung | STD-030, STD-031, STD-032, STD-033, STD-034 | hypo |
 | F-SICH-1 | Authentifizierung & Schutz | Sicherheit & Sync | STD-036, STD-037, STD-038, STD-039, STD-040, STD-041 | hypo |

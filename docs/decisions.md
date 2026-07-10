@@ -148,3 +148,24 @@ Was wurde entschieden?
 - Die Umbuchungslogik verwendet ein Storno+NeuBuch-Pattern mit Rollback bei Fehler – fuer die Demo ausreichend, fuer Produktion waere eine Transaktionssperre zu empfehlen.
 - /termine ist jetzt der zentrale Einstiegspunkt fuer Patient:innen; /termine/buchen ist die eigenstaendige Buchungsseite.
 - Keine Aenderungen am Prisma-Schema noetig – die bestehenden Felder (status, patientId, buchungsquelle) decken alle Anforderungen ab.
+
+## 2026-07-10 - F-VERW-1: Nutzer & Rollen implementiert
+
+**Kontext:** F-VERW-1 umfasst das PraxisNutzer-Datenmodell (STD-020, existiert bereits), rollenbasierte Berechtigungen (STD-021), Anlegen von PatientenKonten durch MFA/Admin (STD-022) und Verwaltung der Termintyp-Arzt-Zuordnung durch Admin (STD-035).
+
+### Umsetzung
+- **lib/rollen.ts** — Neue Hilfsfunktionen: hatRolle(), istAdmin(), istMfa(), istArzt(), istMfaOderAdmin()
+- **Praxis-Bereich** (/praxis) — Neuer geschützter Bereich für PraxisNutzer mit Layout-Guard (session.type !== 'praxis' blockt Patient:innen). Dynamische Navigation basierend auf Rolle.
+- **Rollen-Guard im Dashboard** — Navigation zeigt "Praxis-Bereich" nur für PraxisNutzer, "Meine Termine" nur für Patient:innen.
+- **PatientenKonto anlegen** (/praxis/konten-anlegen) — UI mit Auswahl aller aktiven Patienten ohne Konto, automatischer Benutzername-Vorschlag, API POST /api/patienten-konten mit Berechtigungsprüfung (MFA/Admin). GET /api/patienten-konten liefert Patienten ohne Konto.
+- **Termintyp-Arzt-Zuordnung** (/praxis/termintyp-zuordnung) — Admin-UI mit Tabelle aller Zuordnungen, Checkboxen für onlineErlaubt und aktiv, API PUT /api/zuordnungen mit sofortigem Speichern.
+
+### Status
+- F-VERW-1: done
+- STD-020: done (bereits vorhanden)
+- STD-021, STD-022, STD-035: done
+
+### Konsequenzen
+- Die Rollenprüfung in lib/rollen.ts ist kompakt und wiederverwendbar für alle nachfolgenden Features (F-VERW-2, F-VERW-3, F-SICH-*, F-BETR-*).
+- Keine Änderungen am Prisma-Schema nötig — alle benötigten Felder (rolle, berechtigung, erstelltVonNutzerId) waren bereits vorhanden.
+- PatientenKonto-Erstellung verwendet Mock-Passwort-Hash — für Produktion müsste bcrypt eingebunden werden.
