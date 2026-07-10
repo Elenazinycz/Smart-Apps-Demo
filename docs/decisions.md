@@ -126,3 +126,25 @@ Was wurde entschieden?
 - Code in lib/slots.ts bewusst kompakt gehalten (75 Zeilen) – alle Prüfungen bleiben lesbar
 - Frontend (BuchungsFormular.tsx) als reines Client-Component – kein Server-Rendering für die Auswahl nötig
 - Für Produktion müssten Transaktions-Sperren (prisma.\) ergänzt werden; aktuell reicht der atomare findFirst-Mechanismus für die Demo
+
+## 2026-07-10 - F-KERN-4: Eigene Termine verwalten implementiert
+
+**Kontext:** F-KERN-4 umfasst das Anzeigen von Patientendaten (STD-002), das Anzeigen eigener Termine (STD-016), Online-Stornierung (STD-017), Online-Umbuchung (STD-018) und die No-Show-Regel fuer rechtzeitige Stornierung (STD-019).
+
+### Umsetzung
+- **Patientendaten anzeigen:** Neue API /api/patient gibt Name, Geburtsdatum, Versicherungsart, E-Mail, Opt-ins, No-Show-Zaehler und Status zurueck. Anzeige in einem eigenen Panel auf /termine.
+- **Eigene Termine anzeigen:** Server-Component auf /termine listet alle zukuenftigen Termine des Patienten mit Datum, Arzt, Termintyp und Dauer.
+- **Online-Stornierung:** Neue Funktion storniereTermin() in lib/slots.ts mit Pruefung auf Eigentum, Status, Buchungsquelle und 24h-Frist. API POST /api/appointments/cancel.
+- **Online-Umbuchung:** Neue Funktion umbucheOnlineTermin() kombiniert Stornierung des Alt-Slots + Buchung eines Neuen. Bei Fehler erfolgt automatischer Rollback. API POST /api/appointments/reschedule.
+- **Frontend:** TerminListeClient.tsx bietet Stornieren- und Umbuchen-Buttons mit 24h-Frist-Prüfung. Umbuchungs-Formular mit Termintyp/Arzt/Datum/Slot-Auswahl.
+- **Navigation:** Dashboard zeigt "Meine Termine" Link nur fuer Patient:innen. /termine/buchen als eigener Pfad.
+- **No-Show-Regel:** Stornierte Termine erhalten Status "abgesagt" (nicht "noShow") und werden vom noShowZaehlerJahr nicht erhoeht (spec BR4/16).
+
+### Status
+- F-KERN-4: done
+- STD-002, STD-016, STD-017, STD-018, STD-019: done
+
+### Konsequenzen
+- Die Umbuchungslogik verwendet ein Storno+NeuBuch-Pattern mit Rollback bei Fehler – fuer die Demo ausreichend, fuer Produktion waere eine Transaktionssperre zu empfehlen.
+- /termine ist jetzt der zentrale Einstiegspunkt fuer Patient:innen; /termine/buchen ist die eigenstaendige Buchungsseite.
+- Keine Aenderungen am Prisma-Schema noetig – die bestehenden Felder (status, patientId, buchungsquelle) decken alle Anforderungen ab.

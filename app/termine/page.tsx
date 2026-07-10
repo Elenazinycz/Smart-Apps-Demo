@@ -1,7 +1,8 @@
-﻿import { getSession } from '@/lib/session';
+import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
-import BuchungsFormular from './BuchungsFormular';
 import { prisma } from '@/lib/prisma';
+import { REGEL } from '@/lib/constants';
+import TerminListeClient from './TerminListeClient';
 
 function fmtDate(d: Date) {
   return d.toLocaleDateString('de-DE');
@@ -14,37 +15,59 @@ export default async function TerminePage() {
   const session = await getSession();
   if (!session) redirect('/login');
   if (session.type !== 'patient') {
-    return <div className='page'><p>Dieser Bereich ist nur fÃ¼r Patient:innen.</p></div>
+    return <div className='page'><p>Dieser Bereich ist nur fuer Patient:innen.</p></div>
   }
 
-  const gebuchte = await prisma.terminSlot.findMany({
-    where: { patientId: session.id, status: 'gebucht', datum: { gte: new Date() } },
-    include: { arzt: { select: { name: true } }, terminTyp: { select: { bezeichnung: true, dauerStandardMinuten: true } } },
-    orderBy: { datum: 'asc' },
-  });
-
-  const rows = gebuchte.map(t => (
-    <tr key={t.id}>
-      <td>{fmtDate(t.datum)} {fmtTime(t.startzeit)}</td>
-      <td>{t.arzt.name}</td>
-      <td>{t.terminTyp.bezeichnung} ({t.terminTyp.dauerStandardMinuten} min)</td>
-    </tr>
-  ));
+  const [patient, gebuchte] = await Promise.all([
+    prisma.patient.findUnique({
+      where: { id: session.id },
+      select: { name: true, geburtsdatum: true, versicherungsart: true, email: true, einwilligungEmail: true, einwilligungSms: true, noShowZaehlerJahr: true, status: true },
+    }),
+    prisma.terminSlot.findMany({
+      where: { patientId: session.id, status: 'gebucht', datum: { gte: new Date() } },
+      include: { arzt: { select: { name: true } }, terminTyp: { select: { bezeichnung: true, dauerStandardMinuten: true } } },
+      orderBy: { datum: 'asc' },
+    }),
+  ]);
 
   return (
     <div className='page'>
       <section className='intro'>
         <p className='eyebrow'>Smart-Apps-Demo</p>
-        <h1>Online-Terminbuchung</h1>
+        <h1>Meine Termine</h1>
         <p>Willkommen, <strong>{session.name}</strong></p>
       </section>
+
+      {patient && (
+        <section className='panel' style={{marginBottom:24}}>
+          <h2>Meine Daten</h2>
+          <table className='patient-daten'>
+            <tbody>
+              <tr><td>Name</td><td>{patient.name}</td></tr>
+              <tr><td>Geburtsdatum</td><td>{fmtDate(patient.geburtsdatum)}</td></tr>
+              <tr><td>Versicherung</td><td>{patient.versicherungsart}</td></tr>
+              <tr><td>E-Mail</td><td>{patient.email ?? '\u2014'}</td></tr>
+              <tr><td>E-Mail-Opt-in</td><td>{patient.einwilligungEmail ? 'Ja' : 'Nein'}</td></tr>
+              <tr><td>SMS-Opt-in</td><td>{patient.einwilligungSms ? 'Ja' : 'Nein'}</td></tr>
+              <tr><td>No-Shows (dieses Jahr)</td><td>{patient.noShowZaehlerJahr}</td></tr>
+              <tr><td>Status</td><td>{patient.status === 'aktiv' ? 'Aktiv' : 'Gesperrt'}</td></tr>
+            </tbody>
+          </table>
+        </section>
+      )}
+
       <section className='panel' style={{marginBottom:24}}>
-        <h2>Neuen Termin buchen</h2>
-        <BuchungsFormular />
-      </section>
-      <section className='panel'>
         <h2>Meine Termine</h2>
-        {gebuchte.length === 0 ? <p>Keine bevorstehenden Termine.</p> : <table className='termin-tabelle'><thead><tr><th>Datum/Zeit</th><th>Arzt</th><th>Typ</th></tr></thead><tbody>{rows}</tbody></table>}
+        {gebuchte.length === 0 ? (
+          <p>Keine bevorstehenden Termine.</p>
+        ) : (
+          <TerminListeClient termine={gebuchte} />
+        )}
+      </section>
+
+      <section className='panel'>
+        <h2>Neuen Termin buchen</h2>
+        <p><a href='/termine/buchen'>Hier klicken, um einen neuen Termin zu buchen</a></p>
       </section>
     </div>
   );

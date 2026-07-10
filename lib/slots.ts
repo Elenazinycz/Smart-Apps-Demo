@@ -1,4 +1,4 @@
-﻿import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import {
   SLOT_STATUS, BUCHUNGSQUELLE,
   REGEL, TERMINTYP_BEZEICHNUNG,
@@ -101,4 +101,46 @@ export async function bucheOnlineTermin(anfrage: BuchungsAnfrage): Promise<{ suc
 
   await prisma.terminSlot.update({ where: { id: slot.id }, data: { status: SLOT_STATUS.GEBAUT, patientId: anfrage.patientId, buchungsquelle: BUCHUNGSQUELLE.ONLINE } });
   return { success: true };
+}
+
+
+export async function storniereTermin(slotId: string, patientId: string): Promise<{ success: boolean; error?: string }> {
+  const slot = await prisma.terminSlot.findUnique({ where: { id: slotId }, select: { id: true, patientId: true, startzeit: true, status: true, buchungsquelle: true } });
+  if (!slot) return { success: false, error: 'Termin nicht gefunden.' };
+  if (slot.patientId !== patientId) return { success: false, error: 'Dieser Termin gehoert nicht Ihnen.' };
+  if (slot.status !== SLOT_STATUS.GEBAUT) return { success: false, error: 'Dieser Termin kann nicht storniert werden.' };
+  if (slot.buchungsquelle !== BUCHUNGSQUELLE.ONLINE) return { success: false, error: 'Nur online gebuchte Termine koennen online storniert werden.' };
+
+  const jetzt = new Date();
+  const frist = new Date(slot.startzeit.getTime() - REGEL.STORNIERUNGSFRIST_STD * 60 * 60 * 1000);
+  if (jetzt > frist) return { success: false, error: `Stornierung nur bis ${REGEL.STORNIERUNGSFRIST_STD} Stunden vor dem Termin moeglich.` };
+
+  await prisma.terminSlot.update({ where: { id: slotId }, data: { status: SLOT_STATUS.ABGESAGT, patientId: null, buchungsquelle: null } });
+  return { success: true };
+}
+
+export async function umbucheOnlineTermin(
+  slotId: string,
+  patientId: string,
+  neueAnfrage: { terminTypId: string; arztId: string; datum: string; startzeit: string }
+): Promise<{ success: boolean; error?: string }> {
+  // 1. Alten Slot stornieren (mit Fristpruefung)
+  const storno = await storniereTermin(slotId, patientId);
+  if (!storno.success) return storno;
+
+  // 2. Neuen Slot buchen
+  const buchung = await bucheOnlineTermin({
+    terminTypId: neueAnfrage.terminTypId,
+    arztId: neueAnfrage.arztId,
+    datum: neueAnfrage.datum,
+    startzeit: neueAnfrage.startzeit,
+    patientId,
+  });
+
+  if (!buchung.success) {
+    // Rollback: alten Slot wiederherstellen
+    await prisma.terminSlot.update({ where: { id: slotId }, data: { status: SLOT_STATUS.GEBAUT, patientId, buchungsquelle: BUCHUNGSQUELLE.ONLINE } });
+  }
+
+  return buchung;
 }

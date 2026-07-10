@@ -179,3 +179,67 @@ li {
 .btn-logout:disabled {
   opacity: 0.6;
 }
+
+.termin-tabelle {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.termin-tabelle th,
+.termin-tabelle td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.termin-tabelle th {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.termin-tabelle td {
+  font-size: 0.95rem;
+}
+
+.patient-daten {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.patient-daten td {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+
+.patient-daten td:first-child {
+  font-weight: 600;
+  width: 200px;
+  color: var(--muted);
+}
+
+.btn-secondary {
+  padding: 6px 16px;
+  font-size: 0.85rem;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-secondary:hover {
+  background: #e5e7eb;
+}
+
+.umbuchung-form {
+  padding: 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  margin-top: 16px;
+}
