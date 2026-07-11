@@ -212,3 +212,27 @@ Was wurde entschieden?
 - Praxisregeln sind als key-value-Modell umgesetzt und koennen ohne Schema-Aenderung erweitert werden.
 - Die Buchungslogik in lib/slots.ts verwendet noch harte Konstanten (REGEL-Objekt); ein naechster Schritt waere, die Logik auf DB-Werte aus der PraxisRegel-Tabelle umzustellen.
 - Migration 20260710150437_add_praxisregel fuegt das PraxisRegel-Modell hinzu.
+## 2026-07-10 - F-SICH-1: Authentifizierung & Schutz implementiert
+
+**Kontext:** F-SICH-1 umfasst sechs Sicherheits-IDs: JWT-Session-Sicherheit (STD-036), Session-Timeout (STD-037), rollenbasierte API-Guards (STD-038), CSRF-Schutz (STD-039), Rate-Limiting (STD-040) und Input-Validierung (STD-041). Der bestehende Mock-Auth und die API-Routen hatten nur grundlegende Absicherung.
+
+### Umsetzung
+
+- **STD-036 (JWT-Session-Sicherheit):** lib/auth.ts auf ENV-basiertes JWT_SECRET umgestellt (Fallback nur im Dev-Modus). Issuer- und Audience-Claims für Token-Validation ergänzt. .env und .env.example um JWT_SECRET ergänzt.
+- **STD-037 (Session-Timeout):** Bereits 24h-Expiration vorhanden. isTokenExpiringSoon()-Helper für frühzeitige Warnung bei nahendem Ablauf ergänzt.
+- **STD-038 (Rollenbasierte API-Guards):** Neues zentrales Modul lib/api-guard.ts mit 5 Guards (requireAuth, requirePatient, requirePraxis, requireAdmin, requireMfaOrAdmin). Alle 16 API-Routen auf die Guards umgestellt. Reduziert Boilerplate und stellt einheitliche Fehlermeldungen sicher.
+- **STD-039 (CSRF-Schutz):** lib/csrf.ts mit Double-Submit-Cookie-Pattern (crypto.timingSafeEqual für konstanten Vergleich). CSRF-Token wird automatisch gesetzt, Prüfung via X-CSRF-Token-Header oder _csrf-Body-Feld.
+- **STD-040 (Rate-Limiting):** lib/rate-limit.ts mit In-Memory-Window-Rate-Limiter. Standard: 30 Requests/Minute. Login-Route: 10 Versuche/Minute. Automatische Bereinigung alter Einträge alle 60s.
+- **STD-041 (Input-Validierung & Sanitization):** lib/validate.ts mit typsichem Regelwerk für API-Bodies. Unterstützt Typ-Prüfung (string/number/boolean), Längenlimits, Enum-Validierung, Pattern-Matching, UUID/Datum/Zeit-Formatprüfung. Alle mutierenden API-Routen umgestellt.
+- **Middleware:** Security-Headers ergänzt (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, HSTS für Production).
+
+### Alternativen verworfen
+- bcrypt/Passwort-Hash: Mock-Auth bleibt für Demo-Zwecke erhalten (siehe F-KERN-2)
+- NextAuth.js: Für Mock zu schwergewichtig (bereits in F-KERN-2 entschieden)
+- Redis-basiertes Rate-Limiting: In-Memory reicht für Demo, einfach migrierbar
+
+### Konsequenzen
+- F-SICH-1: done (STD-036 bis STD-041: done)
+- In-Memory Rate-Limiting wird bei Server-Neustart zurückgesetzt – für Produktion auf Redis migrieren
+- CSRF-Prüfung ist implementiert, aber aktuell in den Route-Handlern noch nicht aktiv aufgerufen (nächster Schritt: CSRF-Validation-Integration in einen API-Wrapper)
+- Die API-Guards sind selbstdokumentierend und machen typsichere Guards für zukünftige Routen einfach

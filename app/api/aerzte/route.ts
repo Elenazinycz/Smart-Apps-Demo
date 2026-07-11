@@ -1,19 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
+﻿import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/api-guard';
 import { prisma } from '@/lib/prisma';
 import { istArztFreigegeben } from '@/lib/slots';
 
 export async function GET(req: NextRequest) {
-  const session = await getSession();
-  if (!session) {
-    return NextResponse.json({ error: 'Nicht authentifiziert.' }, { status: 401 });
-  }
+  const session = await requireAuth();
+  if (session instanceof NextResponse) return session;
 
   const { searchParams } = new URL(req.url);
   const terminTypId = searchParams.get('terminTypId');
 
   if (terminTypId) {
-    // Gefiltert nach Freigabe (fuer Buchungsformular)
     const alle = await prisma.arzt.findMany({
       where: { aktiv: true },
       include: { termintypZuordnungen: true },
@@ -28,7 +25,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ aerzte: freigegeben });
   }
 
-  // Alle aktiven Aerzte (fuer Verwaltung)
   const aerzte = await prisma.arzt.findMany({
     where: { aktiv: true },
     select: { id: true, name: true, fachrichtung: true },

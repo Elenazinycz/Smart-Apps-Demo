@@ -1,4 +1,4 @@
-﻿import { cookies } from "next/headers";
+import { cookies } from "next/headers";
 import { createSessionToken, verifySessionToken, SessionPayload } from "@/lib/auth";
 
 const COOKIE_NAME = "session";

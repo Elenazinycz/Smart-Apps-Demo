@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
+import { requirePatient } from '@/lib/api-guard';
 import { prisma } from '@/lib/prisma';
 
 export async function GET() {
-  const session = await getSession();
-  if (!session) return NextResponse.json({ error: 'Nicht authentifiziert.' }, { status: 401 });
-  if (session.type !== 'patient') return NextResponse.json({ error: 'Nur fuer Patient:innen.' }, { status: 403 });
+  const session = await requirePatient();
+  if (session instanceof NextResponse) return session;
 
   const termine = await prisma.terminSlot.findMany({
     where: { patientId: session.id, status: 'gebucht', datum: { gte: new Date() } },

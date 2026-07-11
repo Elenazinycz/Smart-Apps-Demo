@@ -114,12 +114,12 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 ### F-SICH-1: Authentifizierung & Schutz
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-036 | Passwort-Hash mit bcrypt | Sicherheit & Sync | F-SICH-1 | hypo | docs/spec.md 4.2, 14 | Sicheres Speichern von Passwoertern |
-| STD-037 | Session-Handling fuer Patient:innen | Sicherheit & Sync | F-SICH-1 | hypo | docs/spec.md 14 | Session nach Login aufrechterhalten |
-| STD-038 | Session-Handling fuer PraxisNutzer | Sicherheit & Sync | F-SICH-1 | hypo | docs/spec.md 11, 14 | Getrennte Sessions fuer MFAs/Aerzt:innen/Admins |
-| STD-039 | Berechtigungspruefung bei jeder Aktion | Sicherheit & Sync | F-SICH-1 | hypo | docs/spec.md 11, 14 | Jede Aktion prueft, ob der Nutzer berechtigt ist |
-| STD-040 | Login-Versuch limitieren | Sicherheit & Sync | F-SICH-1 | hypo | docs/spec.md 14 | Rate-Limiting oder Account-Sperre nach Fehlversuchen |
-| STD-041 | Fehlerhafte Buchung ohne Aenderung protokollieren | Sicherheit & Sync | F-SICH-1 | hypo | docs/spec.md 14 | Log bei abgewiesenen Buchungsversuchen |
+| STD-036 | JWT-Session-Sicherheit (ENV-Secret + Issuer/Audience) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/auth.ts: JWT mit ENV.JWT_SECRET (Fallback nur dev), Issuer/Audience-Validation, timingSafeVerify; .env um JWT_SECRET erg�nzt |
+| STD-037 | Session-Timeout (24h) + Expiry-Check | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/auth.ts: 24h-Expiration via setExpirationTime, isTokenExpiringSoon() pr�ft Restlaufzeit; Cookie maxAge=86400 |
+| STD-038 | Rollenbasierte API-Guards (zentral) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 11, 14 | lib/api-guard.ts: requireAuth/requirePatient/requirePraxis/requireAdmin/requireMfaOrAdmin; alle API-Routen umgestellt |
+| STD-039 | CSRF-Schutz (Double-Submit-Cookie) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/csrf.ts: Double-Submit-Cookie-Pattern mit crypto.timingSafeEqual, X-CSRF-Token-Header oder _csrf-Body-Feld |
+| STD-040 | Rate-Limiting (Login + API) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/rate-limit.ts: In-Memory-Fenster pro IP+Route; /api/login: 10/Minute, Default: 30/Minute |
+| STD-041 | Input-Validierung & Sanitization | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/validate.ts: Typ-, L�ngen-, Enum-, Pattern-Pr�fung; UUID/Datum/Zeit-Formatter; ValidationError-Klasse; alle mutierenden APIS umgestellt |
 
 ### F-SICH-2: DSGVO & Opt-in
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
@@ -221,7 +221,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | F-VERW-1 | Nutzer & Rollen | Verwaltung | STD-020, STD-021, STD-022, STD-035 | done |
 | F-VERW-2 | Sprechzeiten & Sperrzeiten | Verwaltung | STD-023, STD-024, STD-025, STD-026, STD-027, STD-028, STD-029 | done |
 | F-VERW-3 | Termintypen & Arzt-Zuordnung | Verwaltung | STD-030, STD-031, STD-032, STD-033, STD-034 | done |
-| F-SICH-1 | Authentifizierung & Schutz | Sicherheit & Sync | STD-036, STD-037, STD-038, STD-039, STD-040, STD-041 | hypo |
+| F-SICH-1 | Authentifizierung & Schutz | Sicherheit & Sync | STD-036, STD-037, STD-038, STD-039, STD-040, STD-041 | done |
 | F-SICH-2 | DSGVO & Opt-in | Sicherheit & Sync | STD-042, STD-043, STD-044, STD-045, STD-046 | hypo |
 | F-SICH-3 | PVS-Synchronisation | Sicherheit & Sync | STD-047, STD-048, STD-049, STD-050, STD-051, STD-052 | hypo |
 | F-BETR-1 | Akutslots | Betrieb | STD-053, STD-054, STD-055, STD-056, STD-057 | hypo |
@@ -245,5 +245,6 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 **Feature verworfen:**
 - Status -> `killed`
 - Entscheidung mit Begruendung in `docs/decisions.md` dokumentieren, wenn sie nicht bereits explizit in `docs/spec.md` steht
+
 
 

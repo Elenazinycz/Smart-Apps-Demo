@@ -1,21 +1,39 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { setSessionCookie } from "@/lib/session";
+import { checkRateLimit, rateLimitKey } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
-  const { benutzername, passwort } = await req.json();
+  const rl = checkRateLimit(rateLimitKey(req, "login"), { windowSeconds: 60, maxRequests: 10 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Zu viele Login-Versuche. Bitte warten Sie einen Moment." },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfter) } }
+    );
+  }
+
+  let body: { benutzername?: string; passwort?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Ungueltiger JSON-Body." }, { status: 400 });
+  }
+
+  const { benutzername, passwort } = body;
 
   if (!benutzername || !passwort) {
     return NextResponse.json({ error: "Benutzername und Passwort erforderlich" }, { status: 400 });
   }
 
-  // 1. Versuche PraxisNutzer-Login (MFA, Arzt, Admin)
+  if (benutzername.length > 100 || passwort.length > 200) {
+    return NextResponse.json({ error: "Ungueltige Eingabe." }, { status: 400 });
+  }
+
   const praxisUser = await prisma.praxisNutzer.findFirst({
     where: { emailDienstlich: benutzername, aktiv: true },
   });
 
   if (praxisUser) {
-    // Mock: jedes nicht-leere Passwort akzeptieren
     if (passwort.length === 0) {
       return NextResponse.json({ error: "Passwort erforderlich" }, { status: 401 });
     }
@@ -34,7 +52,6 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // 2. Versuche PatientenKonto-Login
   const konto = await prisma.patientenKonto.findFirst({
     where: { benutzername, buchungsStatus: "aktiv" },
     include: { patient: true },
@@ -45,7 +62,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Passwort erforderlich" }, { status: 401 });
     }
 
-    // Mock: Patientenkonto ohne echten Hash – jedes Passwort ok
     await setSessionCookie({
       type: "patient",
       id: konto.patientId,
@@ -59,6 +75,5 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // 3. Kein Treffer
   return NextResponse.json({ error: "Benutzername oder Passwort falsch" }, { status: 401 });
 }

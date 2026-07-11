@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
+import { requireAdmin } from '@/lib/api-guard';
 import { prisma } from '@/lib/prisma';
-import { istAdmin } from '@/lib/rollen';
+import { validate, ValidationError } from '@/lib/validate';
 import { PRIORITAET } from '@/lib/constants';
 
 const PRIO_LISTE = Object.values(PRIORITAET);
 
 export async function GET(req: NextRequest) {
-  const session = await getSession();
-  if (!session) return NextResponse.json({ error: 'Nicht authentifiziert.' }, { status: 401 });
-  if (!istAdmin(session)) return NextResponse.json({ error: 'Nur Admin.' }, { status: 403 });
+  const session = await requireAdmin();
+  if (session instanceof NextResponse) return session;
 
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
@@ -27,59 +26,98 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getSession();
-  if (!session) return NextResponse.json({ error: 'Nicht authentifiziert.' }, { status: 401 });
-  if (!istAdmin(session)) return NextResponse.json({ error: 'Nur Admin.' }, { status: 403 });
+  const session = await requireAdmin();
+  if (session instanceof NextResponse) return session;
 
-  const { bezeichnung, dauerStandardMinuten, onlineBuchbar, beschreibung, prioritaet } = await req.json();
-  if (!bezeichnung || !dauerStandardMinuten) {
-    return NextResponse.json({ error: 'bezeichnung und dauerStandardMinuten erforderlich.' }, { status: 400 });
-  }
-  if (prioritaet && !PRIO_LISTE.includes(prioritaet)) {
-    return NextResponse.json({ error: 'Ungueltige Prioritaet.' }, { status: 400 });
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Ungültiger JSON-Body.' }, { status: 400 });
   }
 
-  const exist = await prisma.termintyp.findUnique({ where: { bezeichnung } });
-  if (exist) return NextResponse.json({ error: 'Termintyp existiert bereits.' }, { status: 409 });
+  try {
+    const cleaned = validate(body, [
+      { name: 'bezeichnung', type: 'string', minLength: 1, maxLength: 100 },
+      { name: 'dauerStandardMinuten', type: 'number', min: 1, max: 480 },
+      { name: 'onlineBuchbar', type: 'boolean?' },
+      { name: 'beschreibung', type: 'string?', maxLength: 500 },
+      { name: 'prioritaet', type: 'string?', enum: PRIO_LISTE },
+    ]);
 
-  const tt = await prisma.termintyp.create({
-    data: {
-      bezeichnung,
-      dauerStandardMinuten,
-      onlineBuchbar: onlineBuchbar ?? false,
-      beschreibung: beschreibung ?? null,
-      prioritaet: prioritaet ?? 'normal',
-    },
-  });
-  return NextResponse.json({ success: true, termintyp: tt });
+    const { bezeichnung, dauerStandardMinuten, onlineBuchbar, beschreibung, prioritaet } = cleaned as {
+      bezeichnung: string;
+      dauerStandardMinuten: number;
+      onlineBuchbar?: boolean;
+      beschreibung?: string;
+      prioritaet?: string;
+    };
+
+    const exist = await prisma.termintyp.findUnique({ where: { bezeichnung } });
+    if (exist) return NextResponse.json({ error: 'Termintyp existiert bereits.' }, { status: 409 });
+
+    const tt = await prisma.termintyp.create({
+      data: {
+        bezeichnung,
+        dauerStandardMinuten,
+        onlineBuchbar: onlineBuchbar ?? false,
+        beschreibung: beschreibung ?? null,
+        prioritaet: prioritaet ?? 'normal',
+      },
+    });
+    return NextResponse.json({ success: true, termintyp: tt });
+  } catch (err) {
+    if (err instanceof ValidationError) {
+      return NextResponse.json({ error: err.message }, { status: 400 });
+    }
+    throw err;
+  }
 }
 
 export async function PUT(req: NextRequest) {
-  const session = await getSession();
-  if (!session) return NextResponse.json({ error: 'Nicht authentifiziert.' }, { status: 401 });
-  if (!istAdmin(session)) return NextResponse.json({ error: 'Nur Admin.' }, { status: 403 });
+  const session = await requireAdmin();
+  if (session instanceof NextResponse) return session;
 
-  const { id, bezeichnung, dauerStandardMinuten, onlineBuchbar, beschreibung, prioritaet } = await req.json();
-  if (!id) return NextResponse.json({ error: 'id erforderlich.' }, { status: 400 });
-
-  const data: any = {};
-  if (bezeichnung) data.bezeichnung = bezeichnung;
-  if (dauerStandardMinuten) data.dauerStandardMinuten = dauerStandardMinuten;
-  if (typeof onlineBuchbar === 'boolean') data.onlineBuchbar = onlineBuchbar;
-  if (beschreibung !== undefined) data.beschreibung = beschreibung;
-  if (prioritaet) {
-    if (!PRIO_LISTE.includes(prioritaet)) return NextResponse.json({ error: 'Ungueltige Prioritaet.' }, { status: 400 });
-    data.prioritaet = prioritaet;
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Ungültiger JSON-Body.' }, { status: 400 });
   }
 
-  const updated = await prisma.termintyp.update({ where: { id }, data });
-  return NextResponse.json({ success: true, termintyp: updated });
+  try {
+    const cleaned = validate(body, [
+      { name: 'id', type: 'string' },
+      { name: 'bezeichnung', type: 'string?', minLength: 1, maxLength: 100 },
+      { name: 'dauerStandardMinuten', type: 'number?', min: 1, max: 480 },
+      { name: 'onlineBuchbar', type: 'boolean?' },
+      { name: 'beschreibung', type: 'string?', maxLength: 500 },
+      { name: 'prioritaet', type: 'string?', enum: PRIO_LISTE },
+    ]);
+
+    const data: Record<string, unknown> = {};
+    if (cleaned.bezeichnung) data.bezeichnung = cleaned.bezeichnung;
+    if (cleaned.dauerStandardMinuten) data.dauerStandardMinuten = cleaned.dauerStandardMinuten;
+    if (typeof cleaned.onlineBuchbar === 'boolean') data.onlineBuchbar = cleaned.onlineBuchbar;
+    if (cleaned.beschreibung !== undefined) data.beschreibung = cleaned.beschreibung || null;
+    if (cleaned.prioritaet) data.prioritaet = cleaned.prioritaet;
+
+    const updated = await prisma.termintyp.update({
+      where: { id: cleaned.id as string },
+      data,
+    });
+    return NextResponse.json({ success: true, termintyp: updated });
+  } catch (err) {
+    if (err instanceof ValidationError) {
+      return NextResponse.json({ error: err.message }, { status: 400 });
+    }
+    throw err;
+  }
 }
 
 export async function DELETE(req: NextRequest) {
-  const session = await getSession();
-  if (!session) return NextResponse.json({ error: 'Nicht authentifiziert.' }, { status: 401 });
-  if (!istAdmin(session)) return NextResponse.json({ error: 'Nur Admin.' }, { status: 403 });
+  const session = await requireAdmin();
+  if (session instanceof NextResponse) return session;
 
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');

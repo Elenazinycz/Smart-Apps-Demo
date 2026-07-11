@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
+import { requireAuth } from '@/lib/api-guard';
 import { getFreieSlots } from '@/lib/slots';
 
 export async function GET(req: NextRequest) {
-  const session = await getSession();
-  if (!session) {
-    return NextResponse.json({ error: 'Nicht authentifiziert.' }, { status: 401 });
-  }
+  const session = await requireAuth();
+  if (session instanceof NextResponse) return session;
 
   const { searchParams } = new URL(req.url);
   const arztId = searchParams.get('arztId');

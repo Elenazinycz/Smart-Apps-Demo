@@ -1,13 +1,11 @@
-﻿import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
+import { NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/api-guard';
 import { prisma } from '@/lib/prisma';
 import { istOnlineBuchbar } from '@/lib/slots';
 
 export async function GET() {
-  const session = await getSession();
-  if (!session) {
-    return NextResponse.json({ error: 'Nicht authentifiziert.' }, { status: 401 });
-  }
+  const session = await requireAuth();
+  if (session instanceof NextResponse) return session;
 
   const alle = await prisma.termintyp.findMany({
     orderBy: { bezeichnung: 'asc' },

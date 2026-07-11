@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
+import { requireAdmin } from '@/lib/api-guard';
 import { prisma } from '@/lib/prisma';
-import { istAdmin } from '@/lib/rollen';
+import { validate, ValidationError } from '@/lib/validate';
 
 export async function GET() {
-  const session = await getSession();
-  if (!session) return NextResponse.json({ error: 'Nicht authentifiziert.' }, { status: 401 });
-  if (!istAdmin(session)) return NextResponse.json({ error: 'Nur Admin.' }, { status: 403 });
+  const session = await requireAdmin();
+  if (session instanceof NextResponse) return session;
 
   const zuordnungen = await prisma.arztTermintypZuordnung.findMany({
     include: {
@@ -20,17 +19,36 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
-  const session = await getSession();
-  if (!session) return NextResponse.json({ error: 'Nicht authentifiziert.' }, { status: 401 });
-  if (!istAdmin(session)) return NextResponse.json({ error: 'Nur Admin.' }, { status: 403 });
+  const session = await requireAdmin();
+  if (session instanceof NextResponse) return session;
 
-  const { zuordnungId, onlineErlaubt, aktiv } = await req.json();
-  if (!zuordnungId) return NextResponse.json({ error: 'zuordnungId erforderlich.' }, { status: 400 });
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Ungültiger JSON-Body.' }, { status: 400 });
+  }
 
-  const data: any = {};
-  if (typeof onlineErlaubt === 'boolean') data.onlineErlaubt = onlineErlaubt;
-  if (typeof aktiv === 'boolean') data.aktiv = aktiv;
+  try {
+    const cleaned = validate(body, [
+      { name: 'zuordnungId', type: 'string' },
+      { name: 'onlineErlaubt', type: 'boolean?' },
+      { name: 'aktiv', type: 'boolean?' },
+    ]);
 
-  const updated = await prisma.arztTermintypZuordnung.update({ where: { id: zuordnungId }, data });
-  return NextResponse.json({ success: true, zuordnung: updated });
+    const data: Record<string, unknown> = {};
+    if (typeof cleaned.onlineErlaubt === 'boolean') data.onlineErlaubt = cleaned.onlineErlaubt;
+    if (typeof cleaned.aktiv === 'boolean') data.aktiv = cleaned.aktiv;
+
+    const updated = await prisma.arztTermintypZuordnung.update({
+      where: { id: cleaned.zuordnungId as string },
+      data,
+    });
+    return NextResponse.json({ success: true, zuordnung: updated });
+  } catch (err) {
+    if (err instanceof ValidationError) {
+      return NextResponse.json({ error: err.message }, { status: 400 });
+    }
+    throw err;
+  }
 }
