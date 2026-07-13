@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requirePatient } from '@/lib/api-guard';
 import { bucheOnlineTermin } from '@/lib/slots';
+import { prisma } from '@/lib/prisma';
+import { sendeBuchungsbestaetigung } from '@/lib/notifications';
 import { validate, ValidationError } from '@/lib/validate';
 
 export async function POST(req: NextRequest) {
@@ -33,6 +35,17 @@ export async function POST(req: NextRequest) {
     if (!ergebnis.success) {
       return NextResponse.json({ error: ergebnis.error }, { status: 409 });
     }
+
+    // Bestaetigung senden (nur mit Opt-in)
+    const tt = await prisma.termintyp.findUnique({ where: { id: cleaned.terminTypId as string }, select: { bezeichnung: true } });
+    const arzt = await prisma.arzt.findUnique({ where: { id: cleaned.arztId as string }, select: { name: true } });
+    await sendeBuchungsbestaetigung(session.id, {
+      datum: cleaned.datum as string,
+      startzeit: cleaned.startzeit as string,
+      arztName: arzt?.name ?? '',
+      terminTypName: tt?.bezeichnung ?? '',
+    });
+
     return NextResponse.json({ success: true });
   } catch (err) {
     if (err instanceof ValidationError) {

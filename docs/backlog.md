@@ -124,11 +124,11 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 ### F-SICH-2: DSGVO & Opt-in
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-042 | Opt-in-Einwilligungen speichern | Sicherheit & Sync | F-SICH-2 | hypo | docs/spec.md 4.1, 10 | Einwilligung fuer E-Mail und SMS im Patientendatensatz |
-| STD-043 | Opt-in vor Nachrichtenversand pruefen | Sicherheit & Sync | F-SICH-2 | hypo | docs/spec.md 5, 10, BR5 | Keine Nachricht ohne Opt-in |
-| STD-044 | Buchungsbestaetigung per E-Mail/SMS | Sicherheit & Sync | F-SICH-2 | hypo | docs/spec.md 10 | Nur mit Opt-in |
-| STD-045 | Terminerinnerung 24h vorher senden | Sicherheit & Sync | F-SICH-2 | hypo | docs/spec.md 10, BR4 | Automatische Erinnerung nur mit Opt-in |
-| STD-046 | Stornierungs-/Umbuchungsbestaetigung senden | Sicherheit & Sync | F-SICH-2 | hypo | docs/spec.md 10 | Nur mit Opt-in |
+| STD-042 | Opt-in-Einwilligungen speichern/ändern | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 4.1, 10 | EinwilligungEmail/einwilligungSms im Patient-Modell (bereits vorhanden); PUT /api/patient/einwilligung zum Ändern durch Patient:in |
+| STD-043 | Opt-in vor Nachrichtenversand prüfen | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 5, 10, BR5 | lib/notifications.ts: darfBenachrichtigen() prüft Opt-in + Kontaktdaten vor jedem Versand |
+| STD-044 | Buchungsbestätigung per E-Mail/SMS | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 10 | sendeBuchungsbestaetigung() in appointments/route.ts nach erfolgreicher Buchung; nur mit Opt-in |
+| STD-045 | Terminerinnerung 24h vorher senden | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 10, BR4 | sendeTerminerinnerung() in lib/notifications.ts (für Cron-Job/Edge); prüft Opt-in + Kontaktdaten |
+| STD-046 | Storno-/Umbuchungsbestätigung senden | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 10 | sendeStornierungsbestaetigung() in cancel/route.ts + sendeUmbuchungsbestaetigung() in reschedule/route.ts; nur mit Opt-in |
 
 ### F-SICH-3: PVS-Synchronisation
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
@@ -222,7 +222,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | F-VERW-2 | Sprechzeiten & Sperrzeiten | Verwaltung | STD-023, STD-024, STD-025, STD-026, STD-027, STD-028, STD-029 | done |
 | F-VERW-3 | Termintypen & Arzt-Zuordnung | Verwaltung | STD-030, STD-031, STD-032, STD-033, STD-034 | done |
 | F-SICH-1 | Authentifizierung & Schutz | Sicherheit & Sync | STD-036, STD-037, STD-038, STD-039, STD-040, STD-041 | done |
-| F-SICH-2 | DSGVO & Opt-in | Sicherheit & Sync | STD-042, STD-043, STD-044, STD-045, STD-046 | hypo |
+| F-SICH-2 | DSGVO & Opt-in | Sicherheit & Sync | STD-042, STD-043, STD-044, STD-045, STD-046 | done |
 | F-SICH-3 | PVS-Synchronisation | Sicherheit & Sync | STD-047, STD-048, STD-049, STD-050, STD-051, STD-052 | hypo |
 | F-BETR-1 | Akutslots | Betrieb | STD-053, STD-054, STD-055, STD-056, STD-057 | hypo |
 | F-BETR-2 | No-Show-Tracking | Betrieb | STD-058, STD-059, STD-060, STD-061, STD-062 | hypo |
@@ -245,6 +245,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 **Feature verworfen:**
 - Status -> `killed`
 - Entscheidung mit Begruendung in `docs/decisions.md` dokumentieren, wenn sie nicht bereits explizit in `docs/spec.md` steht
+
 
 
 

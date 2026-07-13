@@ -1,7 +1,8 @@
-import { getSession } from '@/lib/session';
+﻿import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { REGEL } from '@/lib/constants';
+import EinwilligungForm from './EinwilligungForm';
 import TerminListeClient from './TerminListeClient';
 
 function fmtDate(d: Date) {
@@ -21,7 +22,7 @@ export default async function TerminePage() {
   const [patient, gebuchte] = await Promise.all([
     prisma.patient.findUnique({
       where: { id: session.id },
-      select: { name: true, geburtsdatum: true, versicherungsart: true, email: true, einwilligungEmail: true, einwilligungSms: true, noShowZaehlerJahr: true, status: true },
+      select: { name: true, geburtsdatum: true, versicherungsart: true, email: true, telefonnummer: true, einwilligungEmail: true, einwilligungSms: true, noShowZaehlerJahr: true, status: true },
     }),
     prisma.terminSlot.findMany({
       where: { patientId: session.id, status: 'gebucht', datum: { gte: new Date() } },
@@ -39,21 +40,37 @@ export default async function TerminePage() {
       </section>
 
       {patient && (
-        <section className='panel' style={{marginBottom:24}}>
-          <h2>Meine Daten</h2>
-          <table className='patient-daten'>
-            <tbody>
-              <tr><td>Name</td><td>{patient.name}</td></tr>
-              <tr><td>Geburtsdatum</td><td>{fmtDate(patient.geburtsdatum)}</td></tr>
-              <tr><td>Versicherung</td><td>{patient.versicherungsart}</td></tr>
-              <tr><td>E-Mail</td><td>{patient.email ?? '\u2014'}</td></tr>
-              <tr><td>E-Mail-Opt-in</td><td>{patient.einwilligungEmail ? 'Ja' : 'Nein'}</td></tr>
-              <tr><td>SMS-Opt-in</td><td>{patient.einwilligungSms ? 'Ja' : 'Nein'}</td></tr>
-              <tr><td>No-Shows (dieses Jahr)</td><td>{patient.noShowZaehlerJahr}</td></tr>
-              <tr><td>Status</td><td>{patient.status === 'aktiv' ? 'Aktiv' : 'Gesperrt'}</td></tr>
-            </tbody>
-          </table>
-        </section>
+        <>
+          <section className='panel' style={{marginBottom:24}}>
+            <h2>Meine Daten</h2>
+            <table className='patient-daten'>
+              <tbody>
+                <tr><td>Name</td><td>{patient.name}</td></tr>
+                <tr><td>Geburtsdatum</td><td>{fmtDate(patient.geburtsdatum)}</td></tr>
+                <tr><td>Versicherung</td><td>{patient.versicherungsart}</td></tr>
+                <tr><td>E-Mail</td><td>{patient.email ?? '\u2014'}</td></tr>
+                <tr><td>E-Mail-Opt-in</td><td>{patient.einwilligungEmail ? 'Ja' : 'Nein'}</td></tr>
+                <tr><td>SMS-Opt-in</td><td>{patient.einwilligungSms ? 'Ja' : 'Nein'}</td></tr>
+                <tr><td>No-Shows (dieses Jahr)</td><td>{patient.noShowZaehlerJahr}</td></tr>
+                <tr><td>Status</td><td>{patient.status === 'aktiv' ? 'Aktiv' : 'Gesperrt'}</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section className='panel' style={{marginBottom:24}}>
+            <h2>Einwilligungen für Benachrichtigungen</h2>
+            <p style={{fontSize:'0.85rem', color:'#555', marginBottom:12}}>
+              Sie k&ouml;nnen hier festlegen, ob Sie Benachrichtigungen per E-Mail und/oder SMS erhalten m&ouml;chten
+              (Buchungsbest&auml;tigung, Stornierung, Umbuchung, Terminerinnerung).
+            </p>
+            <EinwilligungForm
+              einwilligungEmail={patient.einwilligungEmail}
+              einwilligungSms={patient.einwilligungSms}
+              email={patient.email}
+              telefonnummer={patient.telefonnummer}
+            />
+          </section>
+        </>
       )}
 
       <section className='panel' style={{marginBottom:24}}>

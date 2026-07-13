@@ -253,3 +253,24 @@ Was wurde entschieden?
 - In-Memory Rate-Limiting wird bei Server-Neustart zurückgesetzt – für Produktion auf Redis migrieren.
 - CSRF-Prüfung läuft jetzt für alle schreibenden API-Zugriffe (GET-Operationen bleiben ohne CSRF).
 
+
+## 2026-07-13 - F-SICH-2: DSGVO & Opt-in implementiert
+
+**Kontext:** F-SICH-2 umfasst fünf Teil-IDs: Opt-in-Einwilligungen speichern (STD-042), Opt-in-Prüfung vor Nachrichtenversand (STD-043), Buchungsbestätigung (STD-044), Terminerinnerung 24h (STD-045) und Storno-/Umbuchungsbestätigung (STD-046). Die Felder einwilligungEmail und einwilligungSms waren bereits im Patient-Modell vorhanden.
+
+### Umsetzung
+
+- **STD-042 (Einwilligungen speichern/ändern):** Neue API-Route PUT /api/patient/einwilligung, mit der Patient:innen ihre Opt-ins selbst ändern können. Prüft via validate() auf boolean-Werte.
+- **STD-043 (Opt-in-Prüfung):** lib/notifications.ts enthält hatEinwilligung() und darfBenachrichtigen() – beide prüfen das Opt-in-Flag + Vorhandensein der Kontaktdaten vor jedem Versand.
+- **STD-044 (Buchungsbestätigung):** sendeBuchungsbestaetigung() wird nach erfolgreicher Buchung in POST /api/appointments aufgerufen. Versucht zuerst E-Mail, falls kein Opt-in: SMS.
+- **STD-045 (Terminerinnerung):** sendeTerminerinnerung(slotId) in lib/notifications.ts als bereitgestellte Logik für einen späteren Cron-Job/Edge-Trigger. Prüft Opt-in + Kontaktdaten.
+- **STD-046 (Storno-/Umbuchungsbestätigung):** sendeStornierungsbestaetigung() in /api/appointments/cancel, sendeUmbuchungsbestaetigung() in /api/appointments/reschedule. Jeweils nur bei vorhandenem Opt-in.
+- **Frontend:** Neue Client-Komponente EinwilligungForm.tsx in /app/termine mit Checkboxen für E-Mail/SMS, in die Termine-Seite eingebunden. CSRF-geschützter PUT-Request.
+- **sendeBenachrichtigung()** loggt alle Benachrichtigungen auf der Konsole (Mock – in Produktion gegen E-Mail/SMS-Gateway austauschbar).
+
+### Konsequenzen
+
+- F-SICH-2: done (STD-042 bis STD-046: done)
+- Bestätigungen werden nur bei gesetztem Opt-in versendet (BR5 eingehalten)
+- Mock-Versand (console.log) muss für Produktion durch echtes E-Mail/SMS-Gateway ersetzt werden
+- sendeTerminerinnerung ist als Funktion bereit, aber noch nicht an einen Cron-Job gebunden

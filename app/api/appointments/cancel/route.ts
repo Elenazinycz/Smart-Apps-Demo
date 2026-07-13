@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requirePatient } from '@/lib/api-guard';
 import { storniereTermin } from '@/lib/slots';
+import { prisma } from '@/lib/prisma';
+import { sendeStornierungsbestaetigung } from '@/lib/notifications';
 import { validate, ValidationError } from '@/lib/validate';
 
 export async function POST(req: NextRequest) {
@@ -22,6 +24,21 @@ export async function POST(req: NextRequest) {
     ]);
     const ergebnis = await storniereTermin(cleaned.slotId as string, session.id);
     if (!ergebnis.success) return NextResponse.json({ error: ergebnis.error }, { status: 409 });
+
+    // Storno-Bestaetigung senden (nur mit Opt-in)
+    const slot = await prisma.terminSlot.findUnique({
+      where: { id: cleaned.slotId as string },
+      include: { arzt: { select: { name: true } }, terminTyp: { select: { bezeichnung: true } } },
+    });
+    if (slot) {
+      await sendeStornierungsbestaetigung(session.id, {
+        datum: slot.datum.toISOString().split('T')[0],
+        startzeit: slot.startzeit.toISOString().split('T')[1]?.substring(0, 5) ?? '',
+        arztName: slot.arzt.name,
+        terminTypName: slot.terminTyp.bezeichnung,
+      });
+    }
+
     return NextResponse.json({ success: true });
   } catch (err) {
     if (err instanceof ValidationError) {
@@ -30,4 +47,3 @@ export async function POST(req: NextRequest) {
     throw err;
   }
 }
-

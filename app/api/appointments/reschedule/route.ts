@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requirePatient } from '@/lib/api-guard';
 import { umbucheOnlineTermin } from '@/lib/slots';
+import { prisma } from '@/lib/prisma';
+import { sendeUmbuchungsbestaetigung } from '@/lib/notifications';
 import { validate, ValidationError } from '@/lib/validate';
 
 export async function POST(req: NextRequest) {
@@ -35,6 +37,21 @@ export async function POST(req: NextRequest) {
       }
     );
     if (!ergebnis.success) return NextResponse.json({ error: ergebnis.error }, { status: 409 });
+
+    // Umbuchungs-Bestaetigung senden (nur mit Opt-in)
+    const alterSlot = await prisma.terminSlot.findUnique({
+      where: { id: cleaned.slotId as string },
+      include: { arzt: { select: { name: true } }, terminTyp: { select: { bezeichnung: true } } },
+    });
+    if (alterSlot) {
+      const neuerArzt = await prisma.arzt.findUnique({ where: { id: cleaned.arztId as string }, select: { name: true } });
+      const neuerTyp = await prisma.termintyp.findUnique({ where: { id: cleaned.terminTypId as string }, select: { bezeichnung: true } });
+      await sendeUmbuchungsbestaetigung(session.id,
+        { datum: alterSlot.datum.toISOString().split('T')[0], startzeit: alterSlot.startzeit.toISOString().split('T')[1]?.substring(0, 5) ?? '' },
+        { datum: cleaned.datum as string, startzeit: cleaned.startzeit as string, arztName: neuerArzt?.name ?? '', terminTypName: neuerTyp?.bezeichnung ?? '' }
+      );
+    }
+
     return NextResponse.json({ success: true });
   } catch (err) {
     if (err instanceof ValidationError) {
@@ -43,4 +60,3 @@ export async function POST(req: NextRequest) {
     throw err;
   }
 }
-
