@@ -133,12 +133,12 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 ### F-SICH-3: PVS-Synchronisation
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-047 | Synchronisationslogik vorbereiten | Sicherheit & Sync | F-SICH-3 | hypo | docs/spec.md 12, OP1, OP2 | Struktur fuer bidirektionalen Sync vorbereiten |
-| STD-048 | Termin-Aenderungen an PVS melden | Sicherheit & Sync | F-SICH-3 | hypo | docs/spec.md BR5, 12 | Buchung, Umbuchung, Stornierung sofort syncen |
-| STD-049 | PVS-Daten importieren | Sicherheit & Sync | F-SICH-3 | hypo | docs/spec.md 12, OP2 | Patientenstammdaten, Termine, No-Shows aus PVS uebernehmen |
-| STD-050 | Synchronisationsfehler protokollieren | Sicherheit & Sync | F-SICH-3 | hypo | docs/spec.md OP1, OP3 | Fehlerbehandlung fuer Sync-Ausfaelle |
-| STD-051 | MFA bei Sync-Fehlern informieren | Sicherheit & Sync | F-SICH-3 | hypo | docs/spec.md OP3 | Sichtbarkeit von Sync-Problemen |
-| STD-052 | Wiederholungsrezept-Status aus PVS anzeigen | Sicherheit & Sync | F-SICH-3 | hypo | docs/spec.md 12 | Rezeptstatus lesend aus PVS uebernehmen |
+| STD-047 | Synchronisationslogik vorbereiten | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md 12, OP1, OP2 | lib/pvs-sync.ts: Sync-Funktionen mit SyncLog-Einträgen; erweiterbar auf echte PVS-Schnittstelle |
+| STD-048 | Termin-Änderungen an PVS melden | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md BR5, 12 | syncTerminBuchung/Stornierung/Umbuchung in allen 3 Termin-Routen; sofort nach Buchung/Storno/Umbuchung |
+| STD-049 | PVS-Daten importieren | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md 12, OP2 | importPatientAusPvs() + importRezeptAusPvs() in lib/pvs-sync.ts (Mock); manueller Import über /api/pvs-sync |
+| STD-050 | Synchronisationsfehler protokollieren | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md OP1, OP3 | SyncLog-Modell + logSyncEintrag(); Fehler werden mit Status und Meldung gespeichert |
+| STD-051 | MFA bei Sync-Fehlern informieren | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md OP3 | /praxis/pvs-sync mit SyncLogClient.tsx zeigt Fehler-Liste; offeneSyncs-Zähler im Header |
+| STD-052 | Wiederholungsrezept-Status aus PVS anzeigen | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md 12 | Wiederholungsrezept-Modell + /api/wiederholungsrezepte + /praxis/wiederholungsrezepte-Übersicht |
 
 ---
 
@@ -223,7 +223,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | F-VERW-3 | Termintypen & Arzt-Zuordnung | Verwaltung | STD-030, STD-031, STD-032, STD-033, STD-034 | done |
 | F-SICH-1 | Authentifizierung & Schutz | Sicherheit & Sync | STD-036, STD-037, STD-038, STD-039, STD-040, STD-041 | done |
 | F-SICH-2 | DSGVO & Opt-in | Sicherheit & Sync | STD-042, STD-043, STD-044, STD-045, STD-046 | done |
-| F-SICH-3 | PVS-Synchronisation | Sicherheit & Sync | STD-047, STD-048, STD-049, STD-050, STD-051, STD-052 | hypo |
+| F-SICH-3 | PVS-Synchronisation | Sicherheit & Sync | STD-047, STD-048, STD-049, STD-050, STD-051, STD-052 | done |
 | F-BETR-1 | Akutslots | Betrieb | STD-053, STD-054, STD-055, STD-056, STD-057 | hypo |
 | F-BETR-2 | No-Show-Tracking | Betrieb | STD-058, STD-059, STD-060, STD-061, STD-062 | hypo |
 | F-BETR-3 | Tageslisten & Uebersichten | Betrieb | STD-063, STD-064, STD-065, STD-066, STD-067, STD-068 | hypo |
@@ -245,6 +245,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 **Feature verworfen:**
 - Status -> `killed`
 - Entscheidung mit Begruendung in `docs/decisions.md` dokumentieren, wenn sie nicht bereits explizit in `docs/spec.md` steht
+
 
 
 

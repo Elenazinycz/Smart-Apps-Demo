@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requirePatient } from '@/lib/api-guard';
 import { storniereTermin } from '@/lib/slots';
 import { prisma } from '@/lib/prisma';
+import { syncTerminStornierung } from '@/lib/pvs-sync';
 import { sendeStornierungsbestaetigung } from '@/lib/notifications';
 import { validate, ValidationError } from '@/lib/validate';
 
@@ -37,6 +38,12 @@ export async function POST(req: NextRequest) {
         arztName: slot.arzt.name,
         terminTypName: slot.terminTyp.bezeichnung,
       });
+
+      // PVS-Synchronisation (BR5)
+      const patient = await prisma.patient.findUnique({ where: { id: session.id }, select: { internePatientennummer: true } });
+      if (patient) {
+        await syncTerminStornierung(patient.internePatientennummer, slot.id);
+      }
     }
 
     return NextResponse.json({ success: true });

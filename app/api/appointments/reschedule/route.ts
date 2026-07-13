@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requirePatient } from '@/lib/api-guard';
 import { umbucheOnlineTermin } from '@/lib/slots';
 import { prisma } from '@/lib/prisma';
+import { syncTerminUmbuchung } from '@/lib/pvs-sync';
 import { sendeUmbuchungsbestaetigung } from '@/lib/notifications';
 import { validate, ValidationError } from '@/lib/validate';
 
@@ -50,6 +51,12 @@ export async function POST(req: NextRequest) {
         { datum: alterSlot.datum.toISOString().split('T')[0], startzeit: alterSlot.startzeit.toISOString().split('T')[1]?.substring(0, 5) ?? '' },
         { datum: cleaned.datum as string, startzeit: cleaned.startzeit as string, arztName: neuerArzt?.name ?? '', terminTypName: neuerTyp?.bezeichnung ?? '' }
       );
+
+      // PVS-Synchronisation (BR5)
+      const patient = await prisma.patient.findUnique({ where: { id: session.id }, select: { internePatientennummer: true } });
+      if (patient) {
+        await syncTerminUmbuchung(patient.internePatientennummer, alterSlot.id, ergebnis.neuerSlotId ?? '');
+      }
     }
 
     return NextResponse.json({ success: true });

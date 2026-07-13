@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+﻿import { prisma } from '@/lib/prisma';
 import {
   SLOT_STATUS, BUCHUNGSQUELLE,
   REGEL, TERMINTYP_BEZEICHNUNG,
@@ -117,7 +117,7 @@ export async function getFreieSlots(arztId: string, terminTypId: string, datum: 
   }));
 }
 
-export async function bucheOnlineTermin(anfrage: BuchungsAnfrage): Promise<{ success: boolean; error?: string }> {
+export async function bucheOnlineTermin(anfrage: BuchungsAnfrage): Promise<{ success: boolean; slotId?: string; error?: string }> {
   if (!(await istOnlineBuchbar(anfrage.terminTypId))) return { success: false, error: 'Dieser Termintyp ist nicht online buchbar.' };
   if (!(await istArztFreigegeben(anfrage.arztId, anfrage.terminTypId))) return { success: false, error: 'Dieser Arzt bietet diesen Termintyp nicht online an.' };
 
@@ -142,7 +142,7 @@ export async function bucheOnlineTermin(anfrage: BuchungsAnfrage): Promise<{ suc
   if (!slot) return { success: false, error: 'Dieser Slot ist nicht mehr verfuegbar.' };
 
   await prisma.terminSlot.update({ where: { id: slot.id }, data: { status: SLOT_STATUS.GEBAUT, patientId: anfrage.patientId, buchungsquelle: BUCHUNGSQUELLE.ONLINE } });
-  return { success: true };
+  return { success: true, slotId: slot.id };;
 }
 
 export async function storniereTermin(slotId: string, patientId: string): Promise<{ success: boolean; error?: string }> {
@@ -164,7 +164,7 @@ export async function umbucheOnlineTermin(
   slotId: string,
   patientId: string,
   neueAnfrage: { terminTypId: string; arztId: string; datum: string; startzeit: string }
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; neuerSlotId?: string; error?: string }> {
   const storno = await storniereTermin(slotId, patientId);
   if (!storno.success) return storno;
 
@@ -176,9 +176,10 @@ export async function umbucheOnlineTermin(
     patientId,
   });
 
-  if (!buchung.success) {
+    if (!buchung.success) {
     await prisma.terminSlot.update({ where: { id: slotId }, data: { status: SLOT_STATUS.GEBAUT, patientId, buchungsquelle: BUCHUNGSQUELLE.ONLINE } });
   }
 
-  return buchung;
+  return { success: buchung.success, neuerSlotId: buchung.slotId, error: buchung.error };
 }
+

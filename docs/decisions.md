@@ -274,3 +274,29 @@ Was wurde entschieden?
 - Bestätigungen werden nur bei gesetztem Opt-in versendet (BR5 eingehalten)
 - Mock-Versand (console.log) muss für Produktion durch echtes E-Mail/SMS-Gateway ersetzt werden
 - sendeTerminerinnerung ist als Funktion bereit, aber noch nicht an einen Cron-Job gebunden
+
+## 2026-07-13 - F-SICH-3: PVS-Synchronisation implementiert
+
+**Kontext:** F-SICH-3 umfasst sechs Teil-IDs: Sync-Logik vorbereiten (STD-047), Termin-Änderungen an PVS melden (STD-048), PVS-Daten importieren (STD-049), Sync-Fehler protokollieren (STD-050), MFA bei Sync-Fehlern informieren (STD-051) und Wiederholungsrezept-Status (STD-052). Das PVS bleibt führend für Stammdaten (BR5). Die offenen Punkte OP1-OP3 aus der Spec werden adressiert.
+
+### Umsetzung
+
+- **Datenmodell:** SyncLog (ereignis, referenz, status, fehlerMeldung, versuch) + Wiederholungsrezept (patientId, rezeptStatus, letzteAktualisierung). Migration 20260713195325_add_synclog_wiederholungsrezept.
+- **Sync-Logik (STD-047, STD-049):** lib/pvs-sync.ts mit syncTerminBuchung/Stornierung/Umbuchung, importPatientAusPvs(), importRezeptAusPvs(), getSyncLogs(), countOffeneSyncs(). Alle Funktionen loggen via logSyncEintrag() ins SyncLog.
+- **Termin-Sync (STD-048):** Sync in allen 3 Termin-Routen: POST /api/appointments, cancel und reschedule rufen sofort nach der Buchung/Stornierung/Umbuchung die entsprechende sync-Funktion auf (BR5).
+- **Sync-Dashboard (STD-050, STD-051):** GET /api/pvs-sync gibt Logs + offeneSyncs zurück. POST /api/pvs-sync ermöglicht manuellen Patienten-Import. Neue Seite /praxis/pvs-sync mit SyncLogClient.tsx (Tabelle) und ManuellerImport.tsx. Navigation in /praxis ergänzt.
+- **Wiederholungsrezepte (STD-052):** Neues Prisma-Modell + API /api/wiederholungsrezepte (GET für Patient/Praxis, POST für MFA/Admin). Neue Seite /praxis/wiederholungsrezepte mit Status-Übersicht.
+
+### Offene Punkte aus Spec
+
+- OP1 (Sync-Fehler): Gelöst – SyncLog speichert fehlgeschlagene Versuche inkl. Fehlermeldung.
+- OP2 (PVS-Schnittstelle): Als Mock implementiert – loggt auf Konsole, erweiterbar auf echte Schnittstelle.
+- OP3 (MFA-Sichtbarkeit): Gelöst – Sync-Status-Seite für MFAs mit Fehlerliste und offeneSyncs-Zähler.
+
+### Konsequenzen
+
+- F-SICH-3: done (STD-047 bis STD-052: done)
+- BR5 eingehalten: Buchungen/Umbuchungen/Stornierungen werden sofort synchronisiert (Mock)
+- SyncLog ermöglicht Nachvollziehbarkeit und Fehlerdiagnose
+- In Produktion: Mock-Logs durch echte PVS-API-Aufrufe ersetzen
+- Wiederholungsrezepte sind als read-only-View aus dem PVS konzipiert (PVS bleibt führend)

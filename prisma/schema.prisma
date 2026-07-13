@@ -22,6 +22,7 @@ model Patient {
   status                   String           @default("aktiv")
   konto                    PatientenKonto?
   termine                  TerminSlot[]
+  wiederholungsRezepte     Wiederholungsrezept[]
   createdAt                DateTime         @default(now())
   updatedAt                DateTime         @updatedAt
 }
@@ -143,3 +144,26 @@ model PraxisRegel {
   erstelltAm    DateTime @default(now())
   aktualisiert  DateTime @updatedAt
 }
+model SyncLog {
+  id              String    @id @default(cuid())
+  ereignis        String    // buchung, stornierung, umbuchung, patientenImport, rezeptImport
+  referenzTyp     String?   // terminSlot, patient, wiederholungsrezept
+  referenzId      String?
+  status          String    // erfolg, fehler
+  fehlerMeldung   String?
+  versuch         Int       @default(1)
+  erstelltAm      DateTime  @default(now())
+}
+
+model Wiederholungsrezept {
+  id                  String   @id @default(cuid())
+  patientId           String
+  rezeptStatus        String   @default("ausstehend") // ausstehend, abholbereit, abgeholt
+  letzteAktualisierung DateTime @default(now())
+  bemerkung           String?
+  patient             Patient  @relation(fields: [patientId], references: [id])
+
+  @@index([patientId])
+}
+
+
