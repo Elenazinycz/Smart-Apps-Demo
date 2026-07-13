@@ -1,3 +1,4 @@
+ï»¿import { validateCsrf } from '@/lib/csrf';
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth, requirePraxis } from '@/lib/api-guard';
 import { prisma } from '@/lib/prisma';
@@ -13,7 +14,7 @@ export async function GET() {
   }
 
   const where: Record<string, unknown> = {};
-  // Ärzte sehen nur ihre eigenen Sperrzeiten
+  // ï¿½rzte sehen nur ihre eigenen Sperrzeiten
   if (session.rolle === 'Arzt') {
     const arzt = await prisma.arzt.findFirst({ where: { name: session.name }, select: { id: true } });
     if (arzt) where.arztId = arzt.id;
@@ -31,6 +32,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  if (!(await validateCsrf(req))) return NextResponse.json({ error: 'Ungueltiger CSRF-Token.' }, { status: 403 });
   const session = await requirePraxis();
   if (session instanceof NextResponse) return session;
 
@@ -38,7 +40,7 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: 'Ungültiger JSON-Body.' }, { status: 400 });
+    return NextResponse.json({ error: 'Ungï¿½ltiger JSON-Body.' }, { status: 400 });
   }
 
   try {
@@ -64,7 +66,7 @@ export async function POST(req: NextRequest) {
       grund: string;
     };
 
-    // Berechtigungsprüfung: Arzt darf nur eigene Abwesenheiten, Admin/MFA alle
+    // Berechtigungsprï¿½fung: Arzt darf nur eigene Abwesenheiten, Admin/MFA alle
     if (session.rolle === 'Arzt') {
       const arzt = await prisma.arzt.findFirst({ where: { name: session.name }, select: { id: true } });
       if (!arzt || arzt.id !== arztId) return NextResponse.json({ error: 'Sie koennen nur eigene Abwesenheiten eintragen.' }, { status: 403 });
@@ -94,6 +96,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  if (!(await validateCsrf(req))) return NextResponse.json({ error: 'Ungueltiger CSRF-Token.' }, { status: 403 });
   const session = await requireAuth();
   if (session instanceof NextResponse) return session;
 
@@ -104,7 +107,7 @@ export async function DELETE(req: NextRequest) {
   const sz = await prisma.sperrzeit.findUnique({ where: { id }, select: { erstelltVonNutzerId: true, arztId: true } });
   if (!sz) return NextResponse.json({ error: 'Nicht gefunden.' }, { status: 404 });
 
-  // Berechtigung: Admin/MFA darf alle löschen, Arzt nur eigene
+  // Berechtigung: Admin/MFA darf alle lï¿½schen, Arzt nur eigene
   if (session.type === 'praxis' && session.rolle === 'Arzt') {
     const arzt = await prisma.arzt.findFirst({ where: { name: session.name }, select: { id: true } });
     if (!arzt || sz.arztId !== arzt.id) return NextResponse.json({ error: 'Sie koennen nur eigene Sperrzeiten loeschen.' }, { status: 403 });
@@ -113,3 +116,5 @@ export async function DELETE(req: NextRequest) {
   await prisma.sperrzeit.delete({ where: { id } });
   return NextResponse.json({ success: true });
 }
+
+

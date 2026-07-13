@@ -1,4 +1,4 @@
-# decisions.md - Architektur- und Produktentscheidungen
+ï»¿# decisions.md - Architektur- und Produktentscheidungen
 
 _Chronologisches Log aller Architektur- und Produktentscheidungen._
 
@@ -218,21 +218,38 @@ Was wurde entschieden?
 
 ### Umsetzung
 
-- **STD-036 (JWT-Session-Sicherheit):** lib/auth.ts auf ENV-basiertes JWT_SECRET umgestellt (Fallback nur im Dev-Modus). Issuer- und Audience-Claims für Token-Validation ergänzt. .env und .env.example um JWT_SECRET ergänzt.
-- **STD-037 (Session-Timeout):** Bereits 24h-Expiration vorhanden. isTokenExpiringSoon()-Helper für frühzeitige Warnung bei nahendem Ablauf ergänzt.
+- **STD-036 (JWT-Session-Sicherheit):** lib/auth.ts auf ENV-basiertes JWT_SECRET umgestellt (Fallback nur im Dev-Modus). Issuer- und Audience-Claims fï¿½r Token-Validation ergï¿½nzt. .env und .env.example um JWT_SECRET ergï¿½nzt.
+- **STD-037 (Session-Timeout):** Bereits 24h-Expiration vorhanden. isTokenExpiringSoon()-Helper fï¿½r frï¿½hzeitige Warnung bei nahendem Ablauf ergï¿½nzt.
 - **STD-038 (Rollenbasierte API-Guards):** Neues zentrales Modul lib/api-guard.ts mit 5 Guards (requireAuth, requirePatient, requirePraxis, requireAdmin, requireMfaOrAdmin). Alle 16 API-Routen auf die Guards umgestellt. Reduziert Boilerplate und stellt einheitliche Fehlermeldungen sicher.
-- **STD-039 (CSRF-Schutz):** lib/csrf.ts mit Double-Submit-Cookie-Pattern (crypto.timingSafeEqual für konstanten Vergleich). CSRF-Token wird automatisch gesetzt, Prüfung via X-CSRF-Token-Header oder _csrf-Body-Feld.
-- **STD-040 (Rate-Limiting):** lib/rate-limit.ts mit In-Memory-Window-Rate-Limiter. Standard: 30 Requests/Minute. Login-Route: 10 Versuche/Minute. Automatische Bereinigung alter Einträge alle 60s.
-- **STD-041 (Input-Validierung & Sanitization):** lib/validate.ts mit typsichem Regelwerk für API-Bodies. Unterstützt Typ-Prüfung (string/number/boolean), Längenlimits, Enum-Validierung, Pattern-Matching, UUID/Datum/Zeit-Formatprüfung. Alle mutierenden API-Routen umgestellt.
-- **Middleware:** Security-Headers ergänzt (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, HSTS für Production).
+- **STD-039 (CSRF-Schutz):** lib/csrf.ts mit Double-Submit-Cookie-Pattern (crypto.timingSafeEqual fï¿½r konstanten Vergleich). CSRF-Token wird automatisch gesetzt, Prï¿½fung via X-CSRF-Token-Header oder _csrf-Body-Feld.
+- **STD-040 (Rate-Limiting):** lib/rate-limit.ts mit In-Memory-Window-Rate-Limiter. Standard: 30 Requests/Minute. Login-Route: 10 Versuche/Minute. Automatische Bereinigung alter Eintrï¿½ge alle 60s.
+- **STD-041 (Input-Validierung & Sanitization):** lib/validate.ts mit typsichem Regelwerk fï¿½r API-Bodies. Unterstï¿½tzt Typ-Prï¿½fung (string/number/boolean), Lï¿½ngenlimits, Enum-Validierung, Pattern-Matching, UUID/Datum/Zeit-Formatprï¿½fung. Alle mutierenden API-Routen umgestellt.
+- **Middleware:** Security-Headers ergï¿½nzt (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, HSTS fï¿½r Production).
 
 ### Alternativen verworfen
-- bcrypt/Passwort-Hash: Mock-Auth bleibt für Demo-Zwecke erhalten (siehe F-KERN-2)
-- NextAuth.js: Für Mock zu schwergewichtig (bereits in F-KERN-2 entschieden)
-- Redis-basiertes Rate-Limiting: In-Memory reicht für Demo, einfach migrierbar
+- bcrypt/Passwort-Hash: Mock-Auth bleibt fï¿½r Demo-Zwecke erhalten (siehe F-KERN-2)
+- NextAuth.js: Fï¿½r Mock zu schwergewichtig (bereits in F-KERN-2 entschieden)
+- Redis-basiertes Rate-Limiting: In-Memory reicht fï¿½r Demo, einfach migrierbar
 
 ### Konsequenzen
 - F-SICH-1: done (STD-036 bis STD-041: done)
-- In-Memory Rate-Limiting wird bei Server-Neustart zurückgesetzt – für Produktion auf Redis migrieren
-- CSRF-Prüfung ist implementiert, aber aktuell in den Route-Handlern noch nicht aktiv aufgerufen (nächster Schritt: CSRF-Validation-Integration in einen API-Wrapper)
-- Die API-Guards sind selbstdokumentierend und machen typsichere Guards für zukünftige Routen einfach
+- In-Memory Rate-Limiting wird bei Server-Neustart zurï¿½ckgesetzt ï¿½ fï¿½r Produktion auf Redis migrieren
+- CSRF-Prï¿½fung ist implementiert, aber aktuell in den Route-Handlern noch nicht aktiv aufgerufen (nï¿½chster Schritt: CSRF-Validation-Integration in einen API-Wrapper)
+- Die API-Guards sind selbstdokumentierend und machen typsichere Guards fï¿½r zukï¿½nftige Routen einfach
+
+## 2026-07-13 - F-SICH-1: CSRF-Aktivierung und rateLimitKey()-Bugfix
+
+**Kontext:** F-SICH-1 war im Backlog als done markiert, aber zwei Teil-IDs hatten ImplementierungslÃ¼cken: STD-039 (CSRF) war nur als Library vorhanden, aber in keiner API-Route aktiv aufgerufen; STD-040 (Rate-Limiting) hatte einen Syntax-Bug in rateLimitKey() (fehlende Template-Literal-Backticks).
+
+### Umsetzung
+
+- **STD-039 (CSRF) aktiviert:** validateCsrf() in allen 10 mutierenden API-Routen eingebaut (POST appointments, cancel, reschedule, login, logout, patienten-konten, PUT praxisregeln, POST/PUT/DELETE sprechzeiten, POST/DELETE sperrzeiten, POST/PUT/DELETE termintypen/admin, PUT zuordnungen).
+- **STD-040 (rateLimitKey-Bugfix):** rateLimitKey() gibt jetzt Backticks+Prefix+IP+Path zurÃ¼ck.
+- Backlog-Notizen fÃ¼r STD-039 und STD-040 aktualisiert (Stand 2026-07-13).
+
+### Konsequenzen
+
+- Alle 6 Teil-IDs von F-SICH-1 sind jetzt vollstÃ¤ndig implementiert.
+- In-Memory Rate-Limiting wird bei Server-Neustart zurÃ¼ckgesetzt â€“ fÃ¼r Produktion auf Redis migrieren.
+- CSRF-PrÃ¼fung lÃ¤uft jetzt fÃ¼r alle schreibenden API-Zugriffe (GET-Operationen bleiben ohne CSRF).
+

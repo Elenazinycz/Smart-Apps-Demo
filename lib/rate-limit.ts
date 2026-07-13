@@ -52,5 +52,5 @@ export function rateLimitKey(request: Request, prefix: string = "api"): string {
     request.headers.get("x-real-ip") ??
     "unknown";
   const url = new URL(request.url);
-  return ${prefix}::;
+  return `${prefix}::${ip}::${url.pathname}`;
 }

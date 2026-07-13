@@ -1,3 +1,4 @@
+ï»¿import { validateCsrf } from '@/lib/csrf';
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/api-guard';
 import { prisma } from '@/lib/prisma';
@@ -26,6 +27,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  if (!(await validateCsrf(req))) return NextResponse.json({ error: 'Ungueltiger CSRF-Token.' }, { status: 403 });
   const session = await requireAdmin();
   if (session instanceof NextResponse) return session;
 
@@ -33,7 +35,7 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: 'Ungültiger JSON-Body.' }, { status: 400 });
+    return NextResponse.json({ error: 'Ungï¿½ltiger JSON-Body.' }, { status: 400 });
   }
 
   try {
@@ -75,6 +77,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  if (!(await validateCsrf(req))) return NextResponse.json({ error: 'Ungueltiger CSRF-Token.' }, { status: 403 });
   const session = await requireAdmin();
   if (session instanceof NextResponse) return session;
 
@@ -82,7 +85,7 @@ export async function PUT(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: 'Ungültiger JSON-Body.' }, { status: 400 });
+    return NextResponse.json({ error: 'Ungï¿½ltiger JSON-Body.' }, { status: 400 });
   }
 
   try {
@@ -116,6 +119,7 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  if (!(await validateCsrf(req))) return NextResponse.json({ error: 'Ungueltiger CSRF-Token.' }, { status: 403 });
   const session = await requireAdmin();
   if (session instanceof NextResponse) return session;
 
@@ -131,3 +135,5 @@ export async function DELETE(req: NextRequest) {
   await prisma.termintyp.delete({ where: { id } });
   return NextResponse.json({ success: true });
 }
+
+

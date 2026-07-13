@@ -1,9 +1,11 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+﻿import { validateCsrf } from '@/lib/csrf';
+import { NextRequest, NextResponse } from 'next/server';
 import { requirePatient } from '@/lib/api-guard';
 import { storniereTermin } from '@/lib/slots';
 import { validate, ValidationError } from '@/lib/validate';
 
 export async function POST(req: NextRequest) {
+  if (!(await validateCsrf(req))) return NextResponse.json({ error: 'Ungueltiger CSRF-Token.' }, { status: 403 });
   const session = await requirePatient();
   if (session instanceof NextResponse) return session;
 
@@ -28,3 +30,4 @@ export async function POST(req: NextRequest) {
     throw err;
   }
 }
+

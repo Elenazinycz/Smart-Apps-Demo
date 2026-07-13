@@ -1,9 +1,11 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+﻿import { validateCsrf } from '@/lib/csrf';
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { setSessionCookie } from "@/lib/session";
 import { checkRateLimit, rateLimitKey } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
+  if (!(await validateCsrf(req))) return NextResponse.json({ error: 'Ungueltiger CSRF-Token.' }, { status: 403 });
   const rl = checkRateLimit(rateLimitKey(req, "login"), { windowSeconds: 60, maxRequests: 10 });
   if (!rl.allowed) {
     return NextResponse.json(
@@ -77,3 +79,4 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ error: "Benutzername oder Passwort falsch" }, { status: 401 });
 }
+

@@ -1,9 +1,11 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+﻿import { validateCsrf } from '@/lib/csrf';
+import { NextRequest, NextResponse } from 'next/server';
 import { requireMfaOrAdmin } from '@/lib/api-guard';
 import { prisma } from '@/lib/prisma';
 import { validate, ValidationError } from '@/lib/validate';
 
 export async function POST(req: NextRequest) {
+  if (!(await validateCsrf(req))) return NextResponse.json({ error: 'Ungueltiger CSRF-Token.' }, { status: 403 });
   const session = await requireMfaOrAdmin();
   if (session instanceof NextResponse) return session;
 
@@ -69,3 +71,4 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({ patienten: patientenOhneKonto });
 }
+

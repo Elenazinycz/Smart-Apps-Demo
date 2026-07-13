@@ -1,6 +1,6 @@
-# backlog.md - Smart-Apps-Demo
+﻿# backlog.md - Smart-Apps-Demo
 
-_Stand: 2026-07-10_
+_Stand: 2026-07-13_
 
 _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 
@@ -117,8 +117,8 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | STD-036 | JWT-Session-Sicherheit (ENV-Secret + Issuer/Audience) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/auth.ts: JWT mit ENV.JWT_SECRET (Fallback nur dev), Issuer/Audience-Validation, timingSafeVerify; .env um JWT_SECRET erg�nzt |
 | STD-037 | Session-Timeout (24h) + Expiry-Check | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/auth.ts: 24h-Expiration via setExpirationTime, isTokenExpiringSoon() pr�ft Restlaufzeit; Cookie maxAge=86400 |
 | STD-038 | Rollenbasierte API-Guards (zentral) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 11, 14 | lib/api-guard.ts: requireAuth/requirePatient/requirePraxis/requireAdmin/requireMfaOrAdmin; alle API-Routen umgestellt |
-| STD-039 | CSRF-Schutz (Double-Submit-Cookie) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/csrf.ts: Double-Submit-Cookie-Pattern mit crypto.timingSafeEqual, X-CSRF-Token-Header oder _csrf-Body-Feld |
-| STD-040 | Rate-Limiting (Login + API) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/rate-limit.ts: In-Memory-Fenster pro IP+Route; /api/login: 10/Minute, Default: 30/Minute |
+| STD-039 | CSRF-Schutz (Double-Submit-Cookie) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/csrf.ts: Double-Submit-Cookie-Pattern mit crypto.timingSafeEqual; validateCsrf() in allen 10 mutierenden API-Routen aktiviert (POST/PUT/DELETE) |
+| STD-040 | Rate-Limiting (Login + API) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/rate-limit.ts: In-Memory-Fenster pro IP+Route; /api/login: 10/Minute, Default: 30/Minute; rateLimitKey()-Bug gefixt (fehlende Template-Literal-Backticks) |
 | STD-041 | Input-Validierung & Sanitization | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/validate.ts: Typ-, L�ngen-, Enum-, Pattern-Pr�fung; UUID/Datum/Zeit-Formatter; ValidationError-Klasse; alle mutierenden APIS umgestellt |
 
 ### F-SICH-2: DSGVO & Opt-in
@@ -245,6 +245,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 **Feature verworfen:**
 - Status -> `killed`
 - Entscheidung mit Begruendung in `docs/decisions.md` dokumentieren, wenn sie nicht bereits explizit in `docs/spec.md` steht
+
 
 
 
