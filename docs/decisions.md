@@ -300,3 +300,27 @@ Was wurde entschieden?
 - SyncLog ermöglicht Nachvollziehbarkeit und Fehlerdiagnose
 - In Produktion: Mock-Logs durch echte PVS-API-Aufrufe ersetzen
 - Wiederholungsrezepte sind als read-only-View aus dem PVS konzipiert (PVS bleibt führend)
+## 2026-07-14 - F-BETR-1: Akutslots implementiert
+
+**Kontext:** F-BETR-1 umfasst fünf Teil-IDs: slotArt im Datenmodell (STD-053, bereits vorhanden), 8 Akutslots pro Tag (STD-054), MFA-Freigabe (STD-055), Online-Sperre (STD-056, bereits durch onlineBuchbar=false gedeckt) und Diensthabenden-Arzt-Zuweisung (STD-057).
+
+### Entscheidung
+- **Kein separates Datenmodell** für Akutslots: Das vorhandene TerminSlot-Modell hat bereits `slotArt` mit `"planbar"`/`"akut"` und wird über die API-Route `/api/akutslots` verwaltet.
+- **Keine automatische tägliche Generierung:** Akutslots werden nicht per Cron-Job automatisch erzeugt, sondern durch MFA manuell freigegeben (morgendliche Tätigkeit). Die API erzeugt bei Freigabe 8 Slots (4×10 Min. vormittags, 4×10 Min. nachmittags).
+- **Arzt-Zuweisung** erfolgt im selben Schritt wie die Freigabe (Dropdown-Auswahl im UI).
+- **Bereits vorhanden:** slotArt im Datenmodell (STD-053), Online-Buchbarkeitssperre für Akut (STD-056) waren bereits implementiert.
+
+### Umgesetzt
+- GET /api/akutslots – Übersicht über heutige Akutslots + Ärzt:innen-Liste
+- POST /api/akutslots – Freigabe mit arztId (legt 8 Slots an oder aktualisiert Arzt)
+- /praxis/akutslots – MFA/Admin-UI mit Freigabe-Formular und Live-Tabelle
+
+### Alternativen verworfen
+- Automatische tägliche Generierung per Cron: verworfen, weil die morgendliche MFA-Freigabe als bewusster Tätigkeit gewünscht ist (spec.md §7)
+- Dediziertes Akutslot-Datenmodell: verworfen, slotArt im TerminSlot reicht aus
+
+### Konsequenzen
+- F-BETR-1: done (STD-053 bis STD-057: done)
+- MFAs haben ein klares UI für die morgendliche Freigabe
+- Akutslots erscheinen nirgendwo in der Online-Buchung
+- Bei Arzt-Ausfall (F-BETR-4) können Akutslots über den Status gesperrt werden

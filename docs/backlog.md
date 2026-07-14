@@ -1,6 +1,6 @@
 ﻿# backlog.md - Smart-Apps-Demo
 
-_Stand: 2026-07-13_
+_Stand: 2026-07-14_
 
 _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 
@@ -147,11 +147,11 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 ### F-BETR-1: Akutslots
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-053 | Akutslot-Daten und Slot-Art abbilden | Betrieb | F-BETR-1 | hypo | docs/spec.md 4.6, 7 | Slots unterscheiden planbar und akut |
-| STD-054 | Acht Akutslots pro Tag verwalten | Betrieb | F-BETR-1 | hypo | docs/spec.md 7 | 4 vormittags, 4 nachmittags |
-| STD-055 | MFA kann Akutslots morgens freigeben | Betrieb | F-BETR-1 | hypo | docs/spec.md 7, 11 | Freigabe und Zuordnung zum diensthabenden Arzt durch MFA |
-| STD-056 | Akutslots nicht online buchbar machen | Betrieb | F-BETR-1 | hypo | docs/spec.md 7, BR2 | Akutfallentscheidung bleibt telefonische MFA-Triage |
-| STD-057 | Diensthabenden Arzt fuer Akutslots zuweisen | Betrieb | F-BETR-1 | hypo | docs/spec.md 7 | Informelle Rotation wird durch manuelle Zuweisung abgebildet |
+| STD-053 | Akutslot-Daten und Slot-Art abbilden | Betrieb | F-BETR-1 | done | docs/spec.md 4.6, 7 | Slots unterscheiden planbar und akut |
+| STD-054 | Acht Akutslots pro Tag verwalten | Betrieb | F-BETR-1 | done | docs/spec.md 7 | 4 vormittags, 4 nachmittags |
+| STD-055 | MFA kann Akutslots morgens freigeben | Betrieb | F-BETR-1 | done | docs/spec.md 7, 11 | Freigabe und Zuordnung zum diensthabenden Arzt durch MFA |
+| STD-056 | Akutslots nicht online buchbar machen | Betrieb | F-BETR-1 | done | docs/spec.md 7, BR2 | Akutfallentscheidung bleibt telefonische MFA-Triage |
+| STD-057 | Diensthabenden Arzt fuer Akutslots zuweisen | Betrieb | F-BETR-1 | done | docs/spec.md 7 | Informelle Rotation wird durch manuelle Zuweisung abgebildet |
 
 ### F-BETR-2: No-Show-Tracking
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
@@ -224,7 +224,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | F-SICH-1 | Authentifizierung & Schutz | Sicherheit & Sync | STD-036, STD-037, STD-038, STD-039, STD-040, STD-041 | done |
 | F-SICH-2 | DSGVO & Opt-in | Sicherheit & Sync | STD-042, STD-043, STD-044, STD-045, STD-046 | done |
 | F-SICH-3 | PVS-Synchronisation | Sicherheit & Sync | STD-047, STD-048, STD-049, STD-050, STD-051, STD-052 | done |
-| F-BETR-1 | Akutslots | Betrieb | STD-053, STD-054, STD-055, STD-056, STD-057 | hypo |
+| F-BETR-1 | Akutslots | Betrieb | STD-053, STD-054, STD-055, STD-056, STD-057 | done |
 | F-BETR-2 | No-Show-Tracking | Betrieb | STD-058, STD-059, STD-060, STD-061, STD-062 | hypo |
 | F-BETR-3 | Tageslisten & Uebersichten | Betrieb | STD-063, STD-064, STD-065, STD-066, STD-067, STD-068 | hypo |
 | F-BETR-4 | Arzt-Ausfall | Betrieb | STD-069, STD-070, STD-071, STD-072 | hypo |

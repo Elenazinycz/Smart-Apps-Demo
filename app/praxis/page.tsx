@@ -15,12 +15,20 @@ export default async function PraxisPage() {
       </section>
 
       {istMfaOderAdmin(session) && (
-        <section className='panel' style={{ marginBottom: 24 }}>
-          <h2>PatientenKonten</h2>
-          <ul>
-            <li><a href='/praxis/konten-anlegen'>Neues PatientenKonto anlegen</a></li>
-          </ul>
-        </section>
+        <>
+          <section className='panel' style={{ marginBottom: 24 }}>
+            <h2>PatientenKonten</h2>
+            <ul>
+              <li><a href='/praxis/konten-anlegen'>Neues PatientenKonto anlegen</a></li>
+            </ul>
+          </section>
+          <section className='panel' style={{ marginBottom: 24 }}>
+            <h2>Akutslots</h2>
+            <ul>
+              <li><a href='/praxis/akutslots'>Akutslots verwalten &amp; freigeben</a></li>
+            </ul>
+          </section>
+        </>
       )}
 
       {istAdmin(session) && (
