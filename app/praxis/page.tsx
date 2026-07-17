@@ -28,6 +28,12 @@ export default async function PraxisPage() {
               <li><a href='/praxis/akutslots'>Akutslots verwalten &amp; freigeben</a></li>
             </ul>
           </section>
+          <section className='panel' style={{ marginBottom: 24 }}>
+            <h2>No-Show-Tracking</h2>
+            <ul>
+              <li><a href='/praxis/noshow'>No-Shows erfassen &amp; Uebersicht</a></li>
+            </ul>
+          </section>
         </>
       )}
 

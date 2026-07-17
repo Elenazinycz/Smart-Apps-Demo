@@ -156,11 +156,11 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 ### F-BETR-2: No-Show-Tracking
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-058 | No-Show-Zaehler fuehren | Betrieb | F-BETR-2 | hypo | docs/spec.md 4.1, 16 | No-Shows pro Jahr zaehlen |
-| STD-059 | Erinnerung bei zweitem No-Show ausloesen | Betrieb | F-BETR-2 | hypo | docs/spec.md BR4, 16 | Bei 2 No-Shows/Jahr erfolgt schriftliche Erinnerung |
-| STD-060 | Online-Buchung ab drittem No-Show sperren | Betrieb | F-BETR-2 | hypo | docs/spec.md BR4, 16 | Ab 3 No-Shows/Jahr wird Online-Buchung gesperrt |
-| STD-061 | No-Show-Sperren manuell setzen | Betrieb | F-BETR-2 | hypo | docs/spec.md 11 | MFA darf No-Show-Sperren setzen |
-| STD-062 | Aufhebung von No-Show-Sperren klaeren | Betrieb | F-BETR-2 | hypo | docs/spec.md 18 OP4 | Offener Punkt: automatisch oder manuell? |
+| STD-058 | No-Show-Zaehler fuehren | Betrieb | F-BETR-2 | done | docs/spec.md 4.1, 16 | erfasseNoShow() in lib/no-show.ts; POST /api/noshow/mark; UI in /praxis/noshow |
+| STD-059 | Erinnerung bei zweitem No-Show ausloesen | Betrieb | F-BETR-2 | done | docs/spec.md BR4, 16 | sendeNoShowErinnerung() in erfasseNoShow(); Opt-in-Pruefung; Mock-Versand |
+| STD-060 | Online-Buchung ab drittem No-Show sperren | Betrieb | F-BETR-2 | done | docs/spec.md BR4, 16 | sperrePatientOnlineBuchung() in erfasseNoShow(); entsperrbar via POST /api/noshow |
+| STD-061 | No-Show-Sperren manuell setzen | Betrieb | F-BETR-2 | done | docs/spec.md 11 | getNoShowInfoFuerPatient() und getNoShowUebersicht() in lib/no-show.ts; /praxis/noshow Uebersicht-Tab |
+| STD-062 | Aufhebung von No-Show-Sperren klaeren | Betrieb | F-BETR-2 | done | docs/spec.md 18 OP4 | entSperrePatientOnlineBuchung() in lib/no-show.ts; Entsperren-Button in UI; Entscheidung: manuell (siehe decisions.md) |
 
 ### F-BETR-3: Tageslisten & Uebersichten
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
@@ -225,7 +225,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | F-SICH-2 | DSGVO & Opt-in | Sicherheit & Sync | STD-042, STD-043, STD-044, STD-045, STD-046 | done |
 | F-SICH-3 | PVS-Synchronisation | Sicherheit & Sync | STD-047, STD-048, STD-049, STD-050, STD-051, STD-052 | done |
 | F-BETR-1 | Akutslots | Betrieb | STD-053, STD-054, STD-055, STD-056, STD-057 | done |
-| F-BETR-2 | No-Show-Tracking | Betrieb | STD-058, STD-059, STD-060, STD-061, STD-062 | hypo |
+| F-BETR-2 | No-Show-Tracking | Betrieb | STD-058, STD-059, STD-060, STD-061, STD-062 | done |
 | F-BETR-3 | Tageslisten & Uebersichten | Betrieb | STD-063, STD-064, STD-065, STD-066, STD-067, STD-068 | hypo |
 | F-BETR-4 | Arzt-Ausfall | Betrieb | STD-069, STD-070, STD-071, STD-072 | hypo |
 | F-V11-1 | Erweiterungen | v1.1 | STD-073, STD-074, STD-075, STD-076 | hypo |
@@ -245,6 +245,8 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 **Feature verworfen:**
 - Status -> `killed`
 - Entscheidung mit Begruendung in `docs/decisions.md` dokumentieren, wenn sie nicht bereits explizit in `docs/spec.md` steht
+
+
 
 
 

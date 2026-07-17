@@ -324,3 +324,22 @@ Was wurde entschieden?
 - MFAs haben ein klares UI für die morgendliche Freigabe
 - Akutslots erscheinen nirgendwo in der Online-Buchung
 - Bei Arzt-Ausfall (F-BETR-4) können Akutslots über den Status gesperrt werden
+## 2026-07-17 - F-BETR-2: No-Show-Tracking implementiert
+
+**Kontext:** F-BETR-2 umfasst fünf Teil-IDs: No-Show erfassen (STD-058), Erinnerung bei 2. No-Show (STD-059), Sperre bei 3. No-Show (STD-060), No-Show in Patientenakte (STD-061) und Aufhebung von Sperren (STD-062). Die Business-Logik in lib/no-show.ts war bereits vorimplementiert, aber API-Routen und Praxis-UI fehlten.
+
+### Entscheidung
+- **Bestehende Logik unverändert übernommen:** lib/no-show.ts mit erfasseNoShow(), sendeNoShowErinnerung(), sperrePatientOnlineBuchung(), entSperrePatientOnlineBuchung(), getNoShowUebersicht() und getNoShowInfoFuerPatient() blieb unangetastet.
+- **Neue API-Routen:** GET /api/noshow/slots (heutige gebuchte, vergangene Slots), POST /api/noshow/mark (No-Show-Markierung löst Erinnerung/Sperre aus). Bestehendes POST /api/noshow (Entsperren) unverändert.
+- **Praxis-UI:** /praxis/noshow mit zwei Tabs: "No-Show markieren" (Tabelle mit Markier-Button) und "Übersicht" (alle Patienten mit No-Shows inkl. Entsperren-Button für gesperrte).
+- **Sperren-Aufhebung (OP4):** Manuell durch MFA/Admin, nicht automatisch. Entsperren setzt auch den No-Show-Zähler zurück.
+
+### Alternativen verworfen
+- Automatische Aufhebung nach Zeit: verworfen, da spec.md OP4 explizit offen lässt und manuelle Kontrolle für die Praxis sicherer ist.
+
+### Konsequenzen
+- F-BETR-2: done (STD-058 bis STD-062: done)
+- MFAs haben eine zentrale No-Show-Seite zum Erfassen, Anzeigen und Entsperren
+- Erinnerungs- und Sperrlogik laufen automatisch in erfasseNoShow() (BR4 eingehalten)
+- OP4 (manuelle vs. automatische Aufhebung) wurde entschieden: manuell
+- Bei Produktionseinsatz: Mock-Benachrichtigungen durch echten E-Mail/SMS-Versand ersetzen
