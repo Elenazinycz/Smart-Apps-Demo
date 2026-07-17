@@ -24,7 +24,7 @@ export async function logSyncEintrag(
 export async function syncTerminBuchung(pvsPatientenNr: string, slotId: string): Promise<boolean> {
   try {
     // Mock: PVS-Schnittstelle anrufen (hier nur Log + 200)
-    console.log([PVS-MOCK] Buchung synced: PVS-Patient , Slot );
+    console.log(`[PVS-MOCK] Buchung synced: PVS-Patient ${pvsPatientenNr}, Slot ${slotId}`);
     await logSyncEintrag('buchung', 'erfolg', 'terminSlot', slotId);
     return true;
   } catch (err: unknown) {
@@ -36,7 +36,7 @@ export async function syncTerminBuchung(pvsPatientenNr: string, slotId: string):
 
 export async function syncTerminStornierung(pvsPatientenNr: string, slotId: string): Promise<boolean> {
   try {
-    console.log([PVS-MOCK] Stornierung synced: PVS-Patient , Slot );
+    console.log(`[PVS-MOCK] Stornierung synced: PVS-Patient ${pvsPatientenNr}, Slot ${slotId}`);
     await logSyncEintrag('stornierung', 'erfolg', 'terminSlot', slotId);
     return true;
   } catch (err: unknown) {
@@ -48,7 +48,7 @@ export async function syncTerminStornierung(pvsPatientenNr: string, slotId: stri
 
 export async function syncTerminUmbuchung(pvsPatientenNr: string, alterSlotId: string, neuerSlotId: string): Promise<boolean> {
   try {
-    console.log([PVS-MOCK] Umbuchung synced: PVS-Patient , alter Slot , neuer Slot );
+    console.log(`[PVS-MOCK] Umbuchung synced: PVS-Patient ${pvsPatientenNr}, alter Slot ${alterSlotId}, neuer Slot ${neuerSlotId}`);
     await logSyncEintrag('umbuchung', 'erfolg', 'terminSlot', neuerSlotId);
     return true;
   } catch (err: unknown) {
@@ -100,7 +100,7 @@ export async function importPatientAusPvs(pvsPatientenNr: string): Promise<{ suc
     if (!patient) return { success: false, error: 'Patient nicht in der App gefunden.' };
 
     // Mock: PVS-Daten simulieren (in Produktion vom PVS abrufen)
-    console.log([PVS-MOCK] Patient  aus PVS importiert.);
+    console.log(`[PVS-MOCK] Patient ${pvsPatientenNr} aus PVS importiert.`);
     await logSyncEintrag('patientenImport', 'erfolg', 'patient', patient.id);
     return { success: true };
   } catch (err: unknown) {
