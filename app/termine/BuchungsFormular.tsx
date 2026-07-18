@@ -80,7 +80,7 @@ export default function BuchungsFormular() {
         <div style={{ marginBottom: 12 }}>
           <label>Freie Slots<br />
             <select value={selectedSlot} onChange={e => setSelectedSlot(e.target.value)} size={Math.min(slots.length, 6)} style={{ width: '100%' }}>
-              {slots.map(s => <option key={s.slotID} value={s.startzeit}>{fmtZeit(s.startzeit)} - {fmtZeit(s.endzeit)}</option>)}
+              {slots.map(s => <option key={s.slotID} value={fmtZeit(s.startzeit)}>{fmtZeit(s.startzeit)} - {fmtZeit(s.endzeit)}</option>)}
             </select>
           </label>
         </div>
