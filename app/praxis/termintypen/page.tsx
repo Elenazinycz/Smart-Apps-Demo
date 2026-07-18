@@ -57,6 +57,13 @@ export default function TermintypenPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMelding('');
+    // CSRF-Token holen
+    let csrfToken = "";
+    try {
+      const csrfRes = await fetch("/api/csrf");
+      const csrfData = await csrfRes.json();
+      csrfToken = csrfData.token;
+    } catch {}
     const method = editId ? 'PUT' : 'POST';
     const body = editId
       ? { id: editId, bezeichnung, dauerStandardMinuten: dauer, onlineBuchbar, beschreibung: beschreibung || null, prioritaet }
@@ -65,7 +72,7 @@ export default function TermintypenPage() {
     try {
       const res = await fetch('/api/termintypen/admin', {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken },
         body: JSON.stringify(body),
       });
       const data = await res.json();
@@ -85,7 +92,14 @@ export default function TermintypenPage() {
   async function handleDelete(id: string, bezeichnung: string) {
     if (!confirm('Termintyp "' + bezeichnung + '" wirklich loeschen?')) return;
     try {
-      const res = await fetch('/api/termintypen/admin?id=' + id, { method: 'DELETE' });
+    // CSRF-Token holen
+    let csrfToken = "";
+    try {
+      const csrfRes = await fetch("/api/csrf");
+      const csrfData = await csrfRes.json();
+      csrfToken = csrfData.token;
+    } catch {}
+      const res = await fetch('/api/termintypen/admin?id=' + id, { method: 'DELETE', headers: { 'x-csrf-token': csrfToken } });
       const data = await res.json();
       if (res.ok) {
         setMelding('Termintyp geloescht.');

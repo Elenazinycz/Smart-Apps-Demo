@@ -38,10 +38,17 @@ export default function SprechzeitenPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMelding('');
+    // CSRF-Token holen
+    let csrfToken = "";
+    try {
+      const csrfRes = await fetch("/api/csrf");
+      const csrfData = await csrfRes.json();
+      csrfToken = csrfData.token;
+    } catch {}
     try {
       const res = await fetch('/api/sprechzeiten', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken },
         body: JSON.stringify({ arztId, wochentag, startZeit, endZeit }),
       });
       const data = await res.json();
@@ -53,16 +60,30 @@ export default function SprechzeitenPage() {
   async function handleDelete(id: string) {
     if (!confirm('Sprechzeit loeschen?')) return;
     try {
-      await fetch('/api/sprechzeiten?id=' + id, { method: 'DELETE' });
+    // CSRF-Token holen
+    let csrfToken = "";
+    try {
+      const csrfRes = await fetch("/api/csrf");
+      const csrfData = await csrfRes.json();
+      csrfToken = csrfData.token;
+    } catch {}
+      await fetch('/api/sprechzeiten?id=' + id, { method: 'DELETE', headers: { 'x-csrf-token': csrfToken } });
       load();
     } catch { setMelding('Fehler.'); }
   }
 
   async function toggleAktiv(id: string, aktiv: boolean) {
     try {
+    // CSRF-Token holen
+    let csrfToken = "";
+    try {
+      const csrfRes = await fetch("/api/csrf");
+      const csrfData = await csrfRes.json();
+      csrfToken = csrfData.token;
+    } catch {}
       await fetch('/api/sprechzeiten', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken },
         body: JSON.stringify({ id, aktiv }),
       });
       load();

@@ -31,8 +31,15 @@ export default function BuchungsFormular() {
   async function handleBuchen() {
     if (!selectedSlot) { setMelding('Bitte wählen Sie einen freien Slot.'); return; }
     setMelding('');
+    // CSRF-Token holen
+    let csrfTokenBuch = "";
     try {
-      const res = await fetch('/api/appointments', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ terminTypId: selectedTyp, arztId: selectedArzt, datum: selectedDatum, startzeit: selectedSlot }) });
+      const csrfRes = await fetch("/api/csrf");
+      const csrfData = await csrfRes.json();
+      csrfTokenBuch = csrfData.token;
+    } catch {}
+    try {
+      const res = await fetch('/api/appointments', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfTokenBuch }, body: JSON.stringify({ terminTypId: selectedTyp, arztId: selectedArzt, datum: selectedDatum, startzeit: selectedSlot }) });
       const data = await res.json();
       if (res.ok) { setMelding('Termin erfolgreich gebucht!'); setSelectedSlot(''); setSlots([]); }
       else { setMelding(data.error || 'Fehler bei der Buchung.'); }

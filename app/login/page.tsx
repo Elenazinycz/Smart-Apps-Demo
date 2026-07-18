@@ -15,10 +15,18 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
+    // CSRF-Token holen
+    let csrfToken = "";
+    try {
+      const csrfRes = await fetch("/api/csrf");
+      const csrfData = await csrfRes.json();
+      csrfToken = csrfData.token;
+    } catch {}
+
     try {
       const res = await fetch("/api/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-csrf-token": csrfToken },
         body: JSON.stringify({ benutzername, passwort }),
       });
 

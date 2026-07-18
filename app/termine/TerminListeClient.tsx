@@ -64,10 +64,17 @@ function UmbuchungsForm({ terminId, onAbbrechen, onErfolg }: {
   async function handleUmbuchen() {
     if (!selectedSlot) { setMelding('Bitte waehlen Sie einen freien Slot.'); return; }
     setMelding('');
+    // CSRF-Token holen
+    let csrfToken = "";
+    try {
+      const csrfRes = await fetch("/api/csrf");
+      const csrfData = await csrfRes.json();
+      const csrfToken = csrfData.token;
+    } catch {}
     try {
       const res = await fetch('/api/appointments/reschedule', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken },
         body: JSON.stringify({
           slotId: terminId,
           terminTypId: selectedTyp,
@@ -151,10 +158,17 @@ export default function TerminListeClient({ termine }: { termine: TerminItem[] }
   async function handleStornieren(slotId: string) {
     if (!confirm('Moechten Sie diesen Termin wirklich stornieren?')) return;
     setMelding(null);
+    // CSRF-Token holen
+    let csrfToken = "";
+    try {
+      const csrfRes = await fetch("/api/csrf");
+      const csrfData = await csrfRes.json();
+      csrfToken = csrfData.token;
+    } catch {}
     try {
       const res = await fetch('/api/appointments/cancel', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken },
         body: JSON.stringify({ slotId }),
       });
       const data = await res.json();

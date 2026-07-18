@@ -13,9 +13,16 @@ export default function ManuellerImport() {
     setMeldung(null);
 
     try {
+    // CSRF-Token holen
+    let csrfToken = "";
+    try {
+      const csrfRes = await fetch("/api/csrf");
+      const csrfData = await csrfRes.json();
+      csrfToken = csrfData.token;
+    } catch {}
       const res = await fetch('/api/pvs-sync', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': document.cookie.replace(/.*csrf-token=([^;]*).*/, '') },
+        headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken },
         body: JSON.stringify({ pvsPatientenNr: pvsNr.trim() }),
       });
       const data = await res.json();

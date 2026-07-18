@@ -22,10 +22,17 @@ export default function KontenAnlegenPage() {
     e.preventDefault();
     if (!selectedPatient || !benutzername) { setMelding('Bitte Patient und Benutzername waehlen.'); return; }
     setMelding('');
+    // CSRF-Token holen
+    let csrfToken = "";
+    try {
+      const csrfRes = await fetch("/api/csrf");
+      const csrfData = await csrfRes.json();
+      csrfToken = csrfData.token;
+    } catch {}
     try {
       const res = await fetch('/api/patienten-konten', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken },
         body: JSON.stringify({ patientId: selectedPatient, benutzername }),
       });
       const data = await res.json();

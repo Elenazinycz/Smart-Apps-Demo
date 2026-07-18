@@ -9,7 +9,14 @@ export default function LogoutButton() {
 
   async function handleLogout() {
     setLoading(true);
-    await fetch("/api/logout", { method: "POST" });
+    // CSRF-Token holen
+    let csrfToken = "";
+    try {
+      const csrfRes = await fetch("/api/csrf");
+      const csrfData = await csrfRes.json();
+      csrfToken = csrfData.token;
+    } catch {}
+    await fetch("/api/logout", { method: "POST", headers: { "x-csrf-token": csrfToken } });
     router.push("/login");
   }
 

@@ -54,6 +54,13 @@ export default function SperrzeitenPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMelding('');
+    // CSRF-Token holen
+    let csrfToken = "";
+    try {
+      const csrfRes = await fetch("/api/csrf");
+      const csrfData = await csrfRes.json();
+      csrfToken = csrfData.token;
+    } catch {}
     try {
       const body: any = { titel, startdatum, enddatum, betrifft, grund };
       if (betrifft === 'Arzt') body.arztId = arztId;
@@ -62,7 +69,7 @@ export default function SperrzeitenPage() {
 
       const res = await fetch('/api/sperrzeiten', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken },
         body: JSON.stringify(body),
       });
       const data = await res.json();
@@ -74,7 +81,14 @@ export default function SperrzeitenPage() {
   async function handleDelete(id: string) {
     if (!confirm('Sperrzeit loeschen?')) return;
     try {
-      await fetch('/api/sperrzeiten?id=' + id, { method: 'DELETE' });
+    // CSRF-Token holen
+    let csrfToken = "";
+    try {
+      const csrfRes = await fetch("/api/csrf");
+      const csrfData = await csrfRes.json();
+      csrfToken = csrfData.token;
+    } catch {}
+      await fetch('/api/sperrzeiten?id=' + id, { method: 'DELETE', headers: { 'x-csrf-token': csrfToken } });
       load();
     } catch { setMelding('Fehler.'); }
   }
