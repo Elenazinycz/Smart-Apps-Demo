@@ -1,7 +1,7 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import { verifySessionToken } from "@/lib/auth";
 
-const PUBLIC_ROUTES = ["/login", "/api/login"];
+const PUBLIC_ROUTES = ["/login", "/api/login", "/api/csrf"];
 const STATIC_ASSETS = /\.(png|jpg|jpeg|gif|svg|css|js|ico|woff2?)$/;
 
 export async function middleware(req: NextRequest) {
