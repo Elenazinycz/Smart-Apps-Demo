@@ -127,7 +127,9 @@ export async function bucheOnlineTermin(anfrage: BuchungsAnfrage): Promise<{ suc
   if (patient.noShowZaehlerJahr >= REGEL.NO_SHOW_LIMIT_SPERRE) return { success: false, error: 'Online-Buchung gesperrt - bitte kontaktieren Sie die Praxis.' };
 
   const datumDate = new Date(anfrage.datum + 'T00:00:00.000Z');
-  const startzeit = new Date(anfrage.startzeit);
+  const [stunde, minute] = anfrage.startzeit.split(':').map(Number);
+  const startzeit = new Date(datumDate);
+  startzeit.setHours(stunde, minute, 0, 0);
   const terminTyp = await prisma.termintyp.findUnique({ where: { id: anfrage.terminTypId }, select: { dauerStandardMinuten: true } });
   if (!terminTyp) return { success: false, error: 'Termintyp nicht gefunden.' };
 
