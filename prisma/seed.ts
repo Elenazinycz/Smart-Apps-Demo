@@ -287,8 +287,7 @@ async function main() {
   console.log("  ?  " + alleSprechzeiten.length + " Sprechzeiten fuer alle Aerzt:innen angelegt");
 
   // -- 8. TerminSlots generieren (nächste 32 Tage, online buchbare Typen) --
-  const heute = new Date();
-  heute.setHours(0, 0, 0, 0);
+  const heute = new Date(Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
 
   // Nur online buchbare Bezeichnungen (deckt sich mit ONLINE_BUCHBARE_TYPEN in lib/slots.ts)
   const onlineBuchbareBezeichnungen = new Set([
@@ -341,8 +340,7 @@ async function main() {
     if (typIds.length === 0) continue;
 
     for (let tagOffset = 0; tagOffset < 32; tagOffset++) {
-      const datum = new Date(heute);
-      datum.setDate(datum.getDate() + tagOffset);
+      const datum = new Date(heute.getTime() + tagOffset * 86400000);
       // Wochentag: 1=Montag … 7=Sonntag (wie in Sprechzeit-Modell)
       const wochentag = datum.getDay() === 0 ? 7 : datum.getDay();
       const szList = szByArztWochentag[arzt.id]?.[wochentag];
@@ -409,4 +407,7 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+
+
 
