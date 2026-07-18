@@ -1,11 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+﻿import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log("??  Starte Seed fuer Praxis Demir & Kollegen ...");
 
-  // -- 1. Termintypen (aus spec.md �5) --
+  // -- 1. Termintypen (aus spec.md ï¿½5) --
   const terminTypen = await Promise.all([
     prisma.termintyp.create({
       data: {
@@ -48,7 +48,7 @@ async function main() {
         bezeichnung: "Blutabnahme",
         dauerStandardMinuten: 10,
         onlineBuchbar: false,
-        beschreibung: "Blutabnahme � nur telefonisch oder am Tresen",
+        beschreibung: "Blutabnahme ï¿½ nur telefonisch oder am Tresen",
         prioritaet: "normal",
       },
     }),
@@ -57,7 +57,7 @@ async function main() {
         bezeichnung: "Erstgespraech",
         dauerStandardMinuten: 30,
         onlineBuchbar: false,
-        beschreibung: "Erstgespraech bei Neuaufnahme � nur telefonisch",
+        beschreibung: "Erstgespraech bei Neuaufnahme ï¿½ nur telefonisch",
         prioritaet: "hoch",
       },
     }),
@@ -66,7 +66,7 @@ async function main() {
         bezeichnung: "Akut",
         dauerStandardMinuten: 10,
         onlineBuchbar: false,
-        beschreibung: "Akutfall � nur ueber MFA-Triage",
+        beschreibung: "Akutfall ï¿½ nur ueber MFA-Triage",
         prioritaet: "hoch",
       },
     }),
@@ -131,7 +131,7 @@ async function main() {
 
   console.log("  ?  1 Admin + " + mfaList.length + " MFAs angelegt");
 
-  // -- 3. Aerzt:innen (aus spec.md �6, �8) --
+  // -- 3. Aerzt:innen (aus spec.md ï¿½6, ï¿½8) --
   const aerzte = await Promise.all([
     prisma.arzt.create({
       data: {
@@ -261,39 +261,125 @@ async function main() {
   console.log("  ?  " + patienten.length + " PatientenKonten angelegt");
 
   // -- 7. Sprechzeiten (aus spec.md section 6, pflegbar) --
+  /** @type {Array<{arztId: string, wochentag: number, startZeit: string, endZeit: string}>} */
+  const szData: { arztId: string; wochentag: number; startZeit: string; endZeit: string }[] = [];
+
   // Dr. Yilmaz: Mo-Do 08:00-13:00
   for (const tag of [1,2,3,4]) {
-    await prisma.sprechzeit.create({ data: { arztId: drYilmaz.id, wochentag: tag, startZeit: "08:00", endZeit: "13:00" } });
+    szData.push({ arztId: drYilmaz.id, wochentag: tag, startZeit: "08:00", endZeit: "13:00" });
   }
   // Dr. Schaefer: Mo-Fr 08:00-13:00 + 14:00-18:00
   for (const tag of [1,2,3,4,5]) {
-    await prisma.sprechzeit.create({ data: { arztId: drSchaefer.id, wochentag: tag, startZeit: "08:00", endZeit: "13:00" } });
-    await prisma.sprechzeit.create({ data: { arztId: drSchaefer.id, wochentag: tag, startZeit: "14:00", endZeit: "18:00" } });
+    szData.push({ arztId: drSchaefer.id, wochentag: tag, startZeit: "08:00", endZeit: "13:00" });
+    szData.push({ arztId: drSchaefer.id, wochentag: tag, startZeit: "14:00", endZeit: "18:00" });
   }
   // Dr. Demir: Di-Do 08:00-13:00 + 14:00-18:00, Fr 08:00-13:00
   for (const tag of [2,3,4]) {
-    await prisma.sprechzeit.create({ data: { arztId: drDemir.id, wochentag: tag, startZeit: "08:00", endZeit: "13:00" } });
-    await prisma.sprechzeit.create({ data: { arztId: drDemir.id, wochentag: tag, startZeit: "14:00", endZeit: "18:00" } });
+    szData.push({ arztId: drDemir.id, wochentag: tag, startZeit: "08:00", endZeit: "13:00" });
+    szData.push({ arztId: drDemir.id, wochentag: tag, startZeit: "14:00", endZeit: "18:00" });
   }
-  await prisma.sprechzeit.create({ data: { arztId: drDemir.id, wochentag: 5, startZeit: "08:00", endZeit: "13:00" } });
+  szData.push({ arztId: drDemir.id, wochentag: 5, startZeit: "08:00", endZeit: "13:00" });
 
-  console.log("  ?  Sprechzeiten fuer alle Aerzt:innen angelegt");
+  const alleSprechzeiten = await Promise.all(
+    szData.map((d) => prisma.sprechzeit.create({ data: d }))
+  );
 
-  // -- 8. Beispiel-Termine --
+  console.log("  ?  " + alleSprechzeiten.length + " Sprechzeiten fuer alle Aerzt:innen angelegt");
+
+  // -- 8. TerminSlots generieren (nächste 32 Tage, online buchbare Typen) --
   const heute = new Date();
-  const exampleSlots = [
-    {
-      datum: new Date(heute.getTime() + 1 * 24 * 60 * 60 * 1000),
-      startzeit: new Date(heute.getTime() + 1 * 24 * 60 * 60 * 1000),
-      endzeit: new Date(heute.getTime() + 1 * 24 * 60 * 60 * 1000),
-      status: "frei",
-      slotArt: "planbar",
-      arztId: drYilmaz.id,
-      terminTypId: terminTypMap["Vorsorge"].id,
-    },
-  ];
+  heute.setHours(0, 0, 0, 0);
 
-  console.log("  ?  Beispiel-Slots angelegt");
+  // Nur online buchbare Bezeichnungen (deckt sich mit ONLINE_BUCHBARE_TYPEN in lib/slots.ts)
+  const onlineBuchbareBezeichnungen = new Set([
+    "Vorsorge",
+    "Beratung",
+    "Impfung / Reisemedizin",
+    "Wiederholungsrezept-Abholung",
+  ]);
+
+  // Welche online-buchbaren TermintypIds bietet welcher Arzt an?
+  const arztOnlineTypIds: Record<string, string[]> = {};
+  for (const z of zuordnungen) {
+    if (!z.onlineErlaubt) continue;
+    const tt = terminTypen.find((t) => t.id === z.terminTypId);
+    if (!tt || !onlineBuchbareBezeichnungen.has(tt.bezeichnung)) continue;
+    if (!arztOnlineTypIds[z.arztId]) arztOnlineTypIds[z.arztId] = [];
+    arztOnlineTypIds[z.arztId].push(z.terminTypId);
+  }
+
+  // Sprechzeiten nach Arzt & Wochentag gruppieren
+  type SzBlock = { startMin: number; endMin: number };
+  const szByArztWochentag: Record<string, Record<number, SzBlock[]>> = {};
+  for (const sz of alleSprechzeiten) {
+    const key = sz.arztId;
+    if (!szByArztWochentag[key]) szByArztWochentag[key] = {};
+    if (!szByArztWochentag[key][sz.wochentag]) szByArztWochentag[key][sz.wochentag] = [];
+    const [sh, sm] = sz.startZeit.split(":").map(Number);
+    const [eh, em] = sz.endZeit.split(":").map(Number);
+    szByArztWochentag[key][sz.wochentag].push({ startMin: sh * 60 + sm, endMin: eh * 60 + em });
+  }
+
+  // Dauer je Termintyp
+  const dauerMap: Record<string, number> = {};
+  for (const tt of terminTypen) {
+    dauerMap[tt.id] = tt.dauerStandardMinuten;
+  }
+
+  const alleSlots: {
+    datum: Date;
+    startzeit: Date;
+    endzeit: Date;
+    status: string;
+    slotArt: string;
+    arztId: string;
+    terminTypId: string;
+  }[] = [];
+
+  for (const arzt of aerzte) {
+    const typIds = arztOnlineTypIds[arzt.id] || [];
+    if (typIds.length === 0) continue;
+
+    for (let tagOffset = 0; tagOffset < 32; tagOffset++) {
+      const datum = new Date(heute);
+      datum.setDate(datum.getDate() + tagOffset);
+      // Wochentag: 1=Montag … 7=Sonntag (wie in Sprechzeit-Modell)
+      const wochentag = datum.getDay() === 0 ? 7 : datum.getDay();
+      const szList = szByArztWochentag[arzt.id]?.[wochentag];
+      if (!szList || szList.length === 0) continue;
+
+      for (const sz of szList) {
+        for (const terminTypId of typIds) {
+          const dauer = dauerMap[terminTypId];
+          if (!dauer) continue;
+
+          for (let startMin = sz.startMin; startMin + dauer <= sz.endMin; startMin += dauer) {
+            const startDate = new Date(datum);
+            startDate.setHours(Math.floor(startMin / 60), startMin % 60, 0, 0);
+
+            const endDate = new Date(startDate);
+            endDate.setMinutes(endDate.getMinutes() + dauer);
+
+            alleSlots.push({
+              datum: new Date(datum),
+              startzeit: startDate,
+              endzeit: endDate,
+              status: "frei",
+              slotArt: "planbar",
+              arztId: arzt.id,
+              terminTypId,
+            });
+          }
+        }
+      }
+    }
+  }
+
+  if (alleSlots.length > 0) {
+    await prisma.terminSlot.createMany({ data: alleSlots });
+  }
+
+  console.log("  ?  " + alleSlots.length + " TerminSlots (frei) für die nächsten 32 Tage generiert");
 
   // -- 9. Standard-Praxisregeln (aus lib/constants.ts, pflegbar) --
   const defaultRegeln = [
@@ -323,3 +409,4 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
