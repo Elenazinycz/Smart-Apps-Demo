@@ -165,8 +165,8 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 ### F-BETR-3: Tageslisten & Uebersichten
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-063 | MFA-Tagesliste anzeigen | Betrieb | F-BETR-3 | hypo | docs/spec.md 13 | Alle Termine mit Uhrzeit, Patient:in, Arzt, Termintyp und Buchungsweg |
-| STD-064 | Arzt-Tagesliste anzeigen | Betrieb | F-BETR-3 | hypo | docs/spec.md 13 | Aerzt:innen sehen standardmaessig nur eigene Termine |
+| STD-063 | MFA-Tagesliste anzeigen | Betrieb | F-BETR-3 | done | docs/spec.md 13 | Alle Termine mit Uhrzeit, Patient:in, Arzt, Termintyp und Buchungsweg. Commit: 89af197 |
+| STD-064 | Arzt-Tagesliste anzeigen | Betrieb | F-BETR-3 | done | docs/spec.md 13 | Aerzt:innen sehen standardmaessig nur eigene Termine (via Arzt-Filter). Commit: 89af197 |
 | STD-065 | MFA sieht offene Wiederholungsrezepte | Betrieb | F-BETR-3 | hypo | docs/spec.md 13 | Uebersicht fuer interne Rezeptbearbeitung |
 | STD-066 | Arzt sieht offene Rezeptfreigaben | Betrieb | F-BETR-3 | hypo | docs/spec.md 13 | Aerzt:innen koennen Rezeptfreigaben bearbeiten |
 | STD-067 | MFA sieht freie Akutslots live | Betrieb | F-BETR-3 | hypo | docs/spec.md 13 | Live-Uebersicht fuer Tagessteuerung |
@@ -226,7 +226,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | F-SICH-3 | PVS-Synchronisation | Sicherheit & Sync | STD-047, STD-048, STD-049, STD-050, STD-051, STD-052 | done |
 | F-BETR-1 | Akutslots | Betrieb | STD-053, STD-054, STD-055, STD-056, STD-057 | done |
 | F-BETR-2 | No-Show-Tracking | Betrieb | STD-058, STD-059, STD-060, STD-061, STD-062 | done |
-| F-BETR-3 | Tageslisten & Uebersichten | Betrieb | STD-063, STD-064, STD-065, STD-066, STD-067, STD-068 | hypo |
+| F-BETR-3 | Tageslisten & Uebersichten | Betrieb | STD-063, STD-064, STD-065, STD-066, STD-067, STD-068 | in-progress |
 | F-BETR-4 | Arzt-Ausfall | Betrieb | STD-069, STD-070, STD-071, STD-072 | hypo |
 | F-V11-1 | Erweiterungen | v1.1 | STD-073, STD-074, STD-075, STD-076 | hypo |
 
@@ -245,6 +245,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 **Feature verworfen:**
 - Status -> `killed`
 - Entscheidung mit Begruendung in `docs/decisions.md` dokumentieren, wenn sie nicht bereits explizit in `docs/spec.md` steht
+
 
 
 

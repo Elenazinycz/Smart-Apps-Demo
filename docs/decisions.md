@@ -343,3 +343,37 @@ Was wurde entschieden?
 - Erinnerungs- und Sperrlogik laufen automatisch in erfasseNoShow() (BR4 eingehalten)
 - OP4 (manuelle vs. automatische Aufhebung) wurde entschieden: manuell
 - Bei Produktionseinsatz: Mock-Benachrichtigungen durch echten E-Mail/SMS-Versand ersetzen
+
+## 2026-07-18 - Debugging: Login- und Buchungsflow repariert
+
+**Kontext:** Nach den letzten Feature-Erweiterungen war die App end-to-end nicht mehr nutzbar - Login schlug fehl, keine freien Slots wurden angezeigt, Buchung endete mit Serverfehler. Fehlerkette wurde eingegrenzt und behoben.
+
+### Umsetzung
+- **CSRF app-weit inaktiv:** `getCsrfToken()` wurde nirgends aufgerufen, Cookie fehlte, `validateCsrf()` lehnte jede Anfrage ab. Neue Route `GET /api/csrf` ergänzt, Token-Abruf in 11 Dateien nachgerüstet; `/api/csrf` zusätzlich in `PUBLIC_ROUTES` (middleware.ts) aufgenommen.
+- **Logout-Bug:** `validateCsrf()` erhielt einen leeren Fake-Request statt der echten Anfrage, Logout schlug daher immer fehl. Fix: echten Request durchgereicht.
+- **Fehlende TerminSlots:** Seed-Skript definierte Beispiel-Slots, schrieb sie aber nie in die DB. Fix: echte Slot-Generierung für 32 Tage basierend auf Sprechzeiten.
+- **Zeitzonen-Mismatch:** Slots wurden mit lokaler statt UTC-Mitternacht gespeichert, Abfrage fand dadurch nie Treffer. Fix: Seed auf `Date.UTC(...)` umgestellt.
+- **Fehlerhaftes Zeitformat beim Buchen:** Frontend sendete vollen ISO-Zeitstempel statt `HH:MM`; `bucheOnlineTermin()` kombinierte Datum+Uhrzeit zudem nicht korrekt (`Invalid Date`). Beides gefixt.
+- **Encoding-Bug:** `lib/notifications.ts` war als UTF-16LE statt UTF-8 gespeichert, Build schlug fehl. Als UTF-8 neu gespeichert.
+
+### Konsequenzen
+- Login, Terminbuchung (F-KERN-3) und No-Show-Tracking (F-BETR-2) sind jetzt end-to-end getestet, nicht nur laut Backlog-Status "done".
+- Lücke entdeckt: F-BETR-3 (Tageslisten, STD-063–068) ist `hypo`, noch nicht umgesetzt - MFA/Arzt sehen aktuell keine gebuchten Termine.
+- Lektion: "done" im Backlog garantiert kein funktionierendes Zusammenspiel - regelmäßige End-to-End-Tests vor dem nächsten Feature sinnvoll.
+## 2026-07-18 - F-BETR-3: Tageslisten (STD-063 & STD-064) implementiert
+
+**Kontext:** F-BETR-3 umfasst sechs Teil-IDs für tägliche Übersichten. STD-063 (MFA-Tagesliste) und STD-064 (Arzt-Tagesliste) wurden als erste umgesetzt. Die Spec in §13 fordert eine Auflistung aller gebuchten Termine mit Uhrzeit, Patient:in, Arzt, Termintyp und Buchungsweg.
+
+### Entscheidung
+- **Gemeinsame API-Route:** GET /api/tagesliste mit optionalem rztId- und datum-Query-Parameter. Für MFA/Admin (requireMfaOrAdmin) zugänglich. Filtert 	erminSlot.findMany nach status="gebucht" und Datum (Default: heute).
+- **Gemeinsame UI-Seite:** Eine Seite /praxis/tagesliste mit Datumswähler und Arzt-Dropdown. MFA/Admin sehen alle Termine (STD-063) und können über das Dropdown auf einen bestimmten Arzt filtern (STD-064).
+- **Arzt-Login fehlt aktuell:** Ärzte sind als Arzt-Modell in Prisma abgebildet, haben aber keinen eigenen PraxisNutzer-Eintrag und damit keinen Login. Die Rolle "Arzt" ist in lib/constants.ts definiert, wird aber weder im Seed noch im Login unterstützt. Bis dahin wird STD-064 über das Arzt-Dropdown in der MFA-Ansicht abgedeckt.
+
+### Alternativen verworfen
+- Zwei separate Seiten (eine für MFA, eine für Ärzte): verworfen, weil die Ansicht identisch ist und nur der Filter variiert.
+- Eigene API-Route pro Rolle: verworfen, eine generische Route mit Query-Parametern reicht.
+
+### Konsequenzen
+- STD-063 und STD-064 sind umgesetzt (done). Feature F-BETR-3 auf in-progress (STD-065 bis STD-068 folgen).
+- Sobald Ärzte einen eigenen Login bekommen, muss /praxis/tagesliste um eine automatische Vorfilterung ergänzt werden (Arzt sieht nur eigene Termine).
+- Buchungsweg wird aus dem uchungsquelle-Feld von TerminSlot ausgelesen und als Label (Online/Telefonisch/Intern) in der Tabelle dargestellt.

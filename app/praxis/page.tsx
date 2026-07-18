@@ -34,6 +34,12 @@ export default async function PraxisPage() {
               <li><a href='/praxis/noshow'>No-Shows erfassen &amp; Uebersicht</a></li>
             </ul>
           </section>
+          <section className='panel' style={{ marginBottom: 24 }}>
+            <h2>Tageslisten</h2>
+            <ul>
+              <li><a href='/praxis/tagesliste'>Tagesliste anzeigen</a></li>
+            </ul>
+          </section>
         </>
       )}
 
@@ -81,3 +87,4 @@ export default async function PraxisPage() {
     </div>
   );
 }
+
