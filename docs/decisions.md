@@ -413,3 +413,35 @@ Was wurde entschieden?
 - Ärzt:innen haben mit STD-066 und der neuen Sektion in der Navigation erstmals einen eigenen Arbeitsbereich in der App.
 - Die bislang undefinierten Utility-Klassen in globals.css werden nun von allen bestehenden und neuen Seiten korrekt gerendert.
 - MFAs haben zentrale Einstiegspunkte für Tagesliste, Live-Akutslots, gesperrte Patient:innen und Wiederholungsrezepte.
+## 2026-07-20 - F-BETR-4: Arzt-Ausfall implementiert
+
+**Kontext:** F-BETR-4 umfasst vier Teil-IDs für den Umgang mit kurzfristigem Arzt-Ausfall: Akutslots sperren (STD-069), betroffene Termine anzeigen (STD-070), Termine als umbuchungErforderlich markieren (STD-071) und Liste betroffener Patient:innen erzeugen (STD-072).
+
+### Entscheidungen
+
+**Gemeinsame API-Route:**
+- GET /api/arzt-ausfall?arztId=xxx&von=YYYY-MM-DD&bis=YYYY-MM-DD – Vorschau der betroffenen Akutslots, geplanten Termine und Patient:innen. Zugriff via equireMfaOrAdmin.
+- POST /api/arzt-ausfall – Führt den Ausfall-Workflow in einem transaktionalen Schritt aus:
+  1. Akutslots des Arztes im Zeitraum werden auf "gesperrt" gesetzt
+  2. Planbare Termine mit Status "gebucht" werden auf "umbuchungErforderlich" gesetzt
+  3. Ein Sperrzeit-Eintrag mit Grund "Krankheit" wird automatisch angelegt
+
+**UI-Seite /praxis/arzt-ausfall:**
+- Client Component mit drei Phasen: Arzt/Datum wählen → Vorschau betroffener Termine → Bestätigung mit Warnhinweis
+- Zeigt getrennte Tabellen für Akutslots, geplante Termine und betroffene Patient:innen
+- Zweistufiger Bestätigungsprozess (Button → roter Bestätigungsdialog) verhindert versehentliche Auslösung
+
+**Navigation:**
+- Neuer Bereich "Arzt-Ausfall" in der Praxis-Startseite für MFAs/Admins, sichtbar zwischen "Akutslots" und "No-Show-Tracking"
+
+### Alternativen verworfen
+- Automatische Erkennung ohne manuelle Auslösung: verworfen, weil der Ausfall von MFAs erkannt und bestätigt werden muss (Spec §15)
+- Integration in bestehende Sperrzeiten-Seite: verworfen, weil der Workflow umfangreicher ist (Termin-Markierung + Patient:innen-Liste)
+- Vollautomatische Umbuchung: verworfen, Spec §3 und §15 schreiben MFAs als Entscheider:innen vor
+
+### Konsequenzen
+- F-BETR-4 ist vollständig (alle vier STDs done).
+- MFAs haben einen zentralen Einstiegspunkt für Arzt-Ausfälle mit Vorschau und Bestätigung.
+- Akutslots werden gesperrt statt gelöscht (Status bleibt sichtbar).
+- Betroffene Patient:innen werden dedupliziert als Liste ausgegeben.
+- Die bestehende Sperrzeiten-Übersicht zeigt den erzeugten Eintrag mit Grund "Krankheit".

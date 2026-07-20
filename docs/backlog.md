@@ -175,10 +175,10 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 ### F-BETR-4: Arzt-Ausfall
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-069 | Akutslots bei kurzfristigem Arzt-Ausfall sperren | Betrieb | F-BETR-4 | hypo | docs/spec.md 15 | Bei Ausfall werden Akutslots gesperrt |
-| STD-070 | Betroffene Termine bei Arzt-Ausfall anzeigen | Betrieb | F-BETR-4 | hypo | docs/spec.md 13, 15 | Liste aller betroffenen geplanten Termine |
-| STD-071 | Termine als umbuchungErforderlich markieren | Betrieb | F-BETR-4 | hypo | docs/spec.md 4.6, 15 | Sammelmarkierung fuer betroffene Termine |
-| STD-072 | Liste betroffener Patient:innen erzeugen | Betrieb | F-BETR-4 | hypo | docs/spec.md 15 | MFAs koennen Patient:innen telefonisch neu vergeben |
+| STD-069 | Akutslots bei kurzfristigem Arzt-Ausfall sperren | Betrieb | F-BETR-4 | done | docs/spec.md 15 | POST /api/arzt-ausfall sperrt Akutslots im Zeitraum; Seite /praxis/arzt-ausfall mit Vorschau und Bestaetigung|
+| STD-070 | Betroffene Termine bei Arzt-Ausfall anzeigen | Betrieb | F-BETR-4 | done | docs/spec.md 13, 15 | GET /api/arzt-ausfall liefert akutSlots + geplanteTermine + patienten; Vorschau vor Ausfuehrung|
+| STD-071 | Termine als umbuchungErforderlich markieren | Betrieb | F-BETR-4 | done | docs/spec.md 4.6, 15 | POST /api/arzt-ausfall setzt planbare Termine auf umbuchungErforderlich; DB-Status aus spec.md 4.6|
+| STD-072 | Liste betroffener Patient:innen erzeugen | Betrieb | F-BETR-4 | done | docs/spec.md 15 | GET /api/arzt-ausfall dedupliziert Patienten aus akutSlots + geplanten Terminen; Anzeige in UI|
 
 ---
 
@@ -227,7 +227,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | F-BETR-1 | Akutslots | Betrieb | STD-053, STD-054, STD-055, STD-056, STD-057 | done |
 | F-BETR-2 | No-Show-Tracking | Betrieb | STD-058, STD-059, STD-060, STD-061, STD-062 | done |
 | F-BETR-3 | Tageslisten & Uebersichten | Betrieb | STD-063, STD-064, STD-065, STD-066, STD-067, STD-068 | done |
-| F-BETR-4 | Arzt-Ausfall | Betrieb | STD-069, STD-070, STD-071, STD-072 | hypo |
+| F-BETR-4 | Arzt-Ausfall | Betrieb | STD-069, STD-070, STD-071, STD-072 | done |
 | F-V11-1 | Erweiterungen | v1.1 | STD-073, STD-074, STD-075, STD-076 | hypo |
 
 ## Workflow
@@ -245,6 +245,7 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 **Feature verworfen:**
 - Status -> `killed`
 - Entscheidung mit Begruendung in `docs/decisions.md` dokumentieren, wenn sie nicht bereits explizit in `docs/spec.md` steht
+
 
 
 

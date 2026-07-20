@@ -38,6 +38,12 @@ export default async function PraxisPage() {
             </ul>
           </section>
           <section className='panel' style={{ marginBottom: 24 }}>
+            <h2>Arzt-Ausfall</h2>
+            <ul>
+              <li><a href='/praxis/arzt-ausfall'>Ausfall erfassen &amp; betroffene Termine anzeigen</a></li>
+            </ul>
+          </section>
+          <section className='panel' style={{ marginBottom: 24 }}>
             <h2>No-Show-Tracking</h2>
             <ul>
               <li><a href='/praxis/noshow'>No-Shows erfassen &amp; Übersicht</a></li>
@@ -92,4 +98,3 @@ export default async function PraxisPage() {
     </div>
   );
 }
-
