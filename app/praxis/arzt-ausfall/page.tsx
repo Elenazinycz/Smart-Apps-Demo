@@ -1,4 +1,4 @@
-ï»¿'use client';
+'use client';
 
 import { useCallback, useEffect, useState } from 'react';
 
@@ -90,7 +90,7 @@ export default function ArztAusfallPage() {
     setBis(y + '-' + m + '-' + d);
   }, []);
 
-  // Ã„rzt:innen laden
+  // Ärzt:innen laden
   useEffect(() => {
     fetch('/api/aerzte')
       .then((r) => r.json())
@@ -142,7 +142,7 @@ export default function ArztAusfallPage() {
 
       setSubmitResult(body);
       setShowConfirm(false);
-      // Vorschau nach AusfÃ¼hrung neu laden
+      // Vorschau nach Ausführung neu laden
       await vorschauLaden();
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Unbekannter Fehler');
@@ -166,7 +166,7 @@ export default function ArztAusfallPage() {
           Termine telefonisch neu.
         </p>
         <p>
-          <a href="/praxis">&larr; ZurÃ¼ck zur Praxis-Ãœbersicht</a>
+          <a href="/praxis">&larr; Zurück zur Praxis-Übersicht</a>
         </p>
       </section>
 
@@ -194,7 +194,7 @@ export default function ArztAusfallPage() {
               htmlFor="arzt-ausfall-select"
               style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}
             >
-              Arzt / Ã„rztin
+              Arzt / Ärztin
             </label>
             <select
               id="arzt-ausfall-select"
@@ -203,7 +203,7 @@ export default function ArztAusfallPage() {
               className="input"
               style={{ padding: '6px 10px', minWidth: 220 }}
             >
-              <option value="">Bitte wÃ¤hlen</option>
+              <option value="">Bitte wählen</option>
               {aerzte.map((a) => (
                 <option key={a.id} value={a.id}>
                   {a.name} ({a.fachrichtung})
@@ -267,7 +267,7 @@ export default function ArztAusfallPage() {
 
             {!hatBetroffene ? (
               <p className="empty-state">
-                Keine betroffenen Termine fÃ¼r diesen Zeitraum.
+                Keine betroffenen Termine für diesen Zeitraum.
               </p>
             ) : (
               <>
@@ -298,7 +298,7 @@ export default function ArztAusfallPage() {
                                 {formatZeit(s.startzeit)} &ndash; {formatZeit(s.endzeit)}
                               </td>
                               <td>
-                                <span className={adge }>
+                                <span className={`badge ${statusBadgeClass(s.status)}`}>
                                   {statusLabel(s.status)}
                                 </span>
                               </td>
@@ -356,7 +356,7 @@ export default function ArztAusfallPage() {
                                   {s.terminTyp.bezeichnung}
                                 </span>
                               </td>
-                              <td>{s.buchungsquelle || 'â€”'}</td>
+                              <td>{s.buchungsquelle || '—'}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -398,11 +398,11 @@ export default function ArztAusfallPage() {
             )}
           </section>
 
-          {/* AuslÃ¶se-Button */}
+          {/* Auslöse-Button */}
           {hatBetroffene && !showConfirm && (
             <section className="panel" style={{ marginBottom: 24 }}>
               <p style={{ color: '#b91c1c', marginBottom: 12, fontWeight: 600 }}>
-                âš  Diese Aktion kann nicht rÃ¼ckgÃ¤ngig gemacht werden.
+                ? Diese Aktion kann nicht rückgängig gemacht werden.
               </p>
               <button
                 onClick={() => setShowConfirm(true)}
@@ -422,18 +422,18 @@ export default function ArztAusfallPage() {
             </section>
           )}
 
-          {/* BestÃ¤tigung */}
+          {/* Bestätigung */}
           {showConfirm && (
             <section
               className="panel"
               style={{ marginBottom: 24, border: '2px solid #b91c1c' }}
             >
-              <h2 style={{ color: '#b91c1c' }}>BestÃ¤tigung erforderlich</h2>
+              <h2 style={{ color: '#b91c1c' }}>Bestätigung erforderlich</h2>
               <p>
                 Sind Sie sicher, dass Sie den Ausfall von{' '}
-                <strong>{result.arzt.name}</strong> fÃ¼r den Zeitraum{' '}
+                <strong>{result.arzt.name}</strong> für den Zeitraum{' '}
                 {formatDatum(result.datumVon)} bis {formatDatum(result.datumBis)}{' '}
-                erfassen mÃ¶chten?
+                erfassen möchten?
               </p>
               <ul style={{ marginBottom: 12 }}>
                 <li>
@@ -464,7 +464,7 @@ export default function ArztAusfallPage() {
                     fontWeight: 600,
                   }}
                 >
-                  {submitting ? 'Wird ausgefÃ¼hrt ...' : 'Ja, Ausfall erfassen'}
+                  {submitting ? 'Wird ausgeführt ...' : 'Ja, Ausfall erfassen'}
                 </button>
                 <button
                   onClick={() => setShowConfirm(false)}
@@ -484,7 +484,7 @@ export default function ArztAusfallPage() {
         <h2>Hinweise</h2>
         <ul style={{ fontSize: '0.9em', color: '#555' }}>
           <li>
-            GemÃ¤ÃŸ Spec Â§15 werden Termine nicht automatisch umgebucht, sondern
+            Gemäß Spec §15 werden Termine nicht automatisch umgebucht, sondern
             durch MFAs telefonisch neu vergeben.
           </li>
           <li>
