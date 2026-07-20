@@ -1,4 +1,4 @@
-﻿# decisions.md - Architektur- und Produktentscheidungen
+# decisions.md - Architektur- und Produktentscheidungen
 
 _Chronologisches Log aller Architektur- und Produktentscheidungen._
 
@@ -377,3 +377,39 @@ Was wurde entschieden?
 - STD-063 und STD-064 sind umgesetzt (done). Feature F-BETR-3 auf in-progress (STD-065 bis STD-068 folgen).
 - Sobald Ärzte einen eigenen Login bekommen, muss /praxis/tagesliste um eine automatische Vorfilterung ergänzt werden (Arzt sieht nur eigene Termine).
 - Buchungsweg wird aus dem uchungsquelle-Feld von TerminSlot ausgelesen und als Label (Online/Telefonisch/Intern) in der Tabelle dargestellt.
+## 2026-07-20 - F-BETR-3: Tageslisten & Übersichten (STD-065 bis STD-068) fertiggestellt
+
+**Kontext:** F-BETR-3 umfasst sechs Teil-IDs. STD-063/064 waren bereits implementiert. Es fehlten STD-065 (MFA sieht offene Wiederholungsrezepte), STD-066 (Arzt sieht offene Rezeptfreigaben), STD-067 (MFA sieht freie Akutslots live) und STD-068 (MFA sieht gesperrte Patient:innen).
+
+### Entscheidungen
+
+**STD-065 (Wiederholungsrezepte-Übersicht):**
+- Seite `/praxis/wiederholungsrezepte` existierte bereits als Server Component mit Prisma-Direktzugriff. Wurde in der Praxis-Navigation unter "Übersichten (Tagesliste & Live)" verlinkt. Keine Änderung an der Seite nötig.
+
+**STD-066 (Offene Rezeptfreigaben für Ärzt:innen):**
+- Neue API-Route `GET/PATCH /api/rezeptfreigaben` mit Guard für Rolle "Arzt" und "Admin".
+- Separate Seite `/praxis/rezeptfreigaben` als Client Component mit Freigeben/Ablehnen-Buttons.
+- `PATCH` statt `POST` für idempotente Statusänderung (ausstehend → abholbereit / abgeholt).
+- In der Praxis-Navigation unter neuer Sektion "Ärztliche Aufgaben" verlinkt – sichtbar nur für Ärzt:innen und Admins.
+
+**STD-067 (Freie Akutslots live):**
+- Neue API-Route `GET /api/akutslots-live` (schlanker als die bestehende Volldaten-Route `/api/akutslots` – nur freie Slots, kein Patient/Arzt-Detail).
+- Neue Seite `/praxis/akutslots-live` mit Live-Liste der ungebuchten Akutslots für heute.
+- In der Navigation unter "Übersichten" verlinkt.
+
+**STD-068 (Gesperrte Patient:innen):**
+- Neue API-Route `GET /api/gesperrte-patienten` mit Join über PatientenKonto (buchungsStatus="gesperrt").
+- Neue Seite `/praxis/gesperrte-patienten` mit Tabelle inkl. No-Show-Zähler, Erstelldatum und letztem Login.
+- Entsperrung erfolgt weiterhin über das bestehende No-Show-Tracking; die Seite verlinkt dorthin.
+
+**CSS-Utility-Klassen:** Fehlende Klassen (`.table`, `.badge`, `.btn`, `.alert`, `.empty-state`, `.loading`) wurden in `globals.css` ergänzt. Diese werden von mehreren Seiten genutzt (No-Show, Akutslots, Tagesliste, neue Seiten), waren aber bisher nirgends definiert.
+
+### Alternativen verworfen
+- STD-066 GET und PATCH in die bestehende `/api/wiederholungsrezepte` zu integrieren: verworfen, weil dort bereits GET (alle Rezepte für Patienten) und POST (PVS-Import) belegt sind – eigene Route ist sauberer.
+- CSS-Utility-Klassen per CSS-Module oder Tailwind: verworfen, das Projekt nutzt durchgängig globals.css – konsistent bleiben.
+
+### Konsequenzen
+- F-BETR-3 ist vollständig (alle sechs STDs done).
+- Ärzt:innen haben mit STD-066 und der neuen Sektion in der Navigation erstmals einen eigenen Arbeitsbereich in der App.
+- Die bislang undefinierten Utility-Klassen in globals.css werden nun von allen bestehenden und neuen Seiten korrekt gerendert.
+- MFAs haben zentrale Einstiegspunkte für Tagesliste, Live-Akutslots, gesperrte Patient:innen und Wiederholungsrezepte.
