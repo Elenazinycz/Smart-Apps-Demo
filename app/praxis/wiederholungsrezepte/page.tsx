@@ -1,4 +1,4 @@
-﻿import { getSession } from '@/lib/session';
+import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { istMfaOderAdmin } from '@/lib/rollen';
 import { prisma } from '@/lib/prisma';
@@ -16,7 +16,7 @@ export default async function WiederholungsrezeptePage() {
   return (
     <div className='page'>
       <section className='intro'>
-        <p className='eyebrow'>Smart-Apps-Demo</p>
+        <p className='eyebrow'>Praxis Demir &amp; Kollegen</p>
         <h1>Wiederholungsrezepte (PVS)</h1>
         <p>&Uuml;bersicht der Rezept-Status aus dem PVS</p>
       </section>
@@ -67,3 +67,4 @@ export default async function WiederholungsrezeptePage() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-Ôªø"use client";
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -47,7 +47,7 @@ export default function LoginPage() {
   return (
     <div className="login-page">
       <form className="login-form" onSubmit={handleSubmit}>
-        <p className="eyebrow">Smart-Apps-Demo</p>
+        <p className="eyebrow">Praxis Demir &amp; Kollegen</p>
         <h1>Anmelden</h1>
 
         {error && <p className="error">{error}</p>}
@@ -75,11 +75,11 @@ export default function LoginPage() {
         </label>
 
         <button type="submit" disabled={loading}>
-          {loading ? "Wird angemeldet ‚Ä¶" : "Anmelden"}
+          {loading ? "Wird angemeldet Ö" : "Anmelden"}
         </button>
 
         <details className="login-hints">
-          <summary>Test-Zug√§nge (Mock)</summary>
+          <summary>Test-Zug‰nge (Mock)</summary>
           <ul>
             <li><strong>Admin:</strong> admin@praxis-demir.de</li>
             <li><strong>MFA:</strong> s.mueller@praxis-demir.de</li>
@@ -90,3 +90,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

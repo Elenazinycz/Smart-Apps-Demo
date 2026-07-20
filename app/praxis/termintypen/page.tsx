@@ -115,7 +115,7 @@ export default function TermintypenPage() {
   return (
     <div className='page'>
       <section className='intro'>
-        <p className='eyebrow'>Smart-Apps-Demo</p>
+        <p className='eyebrow'>Praxis Demir &amp; Kollegen</p>
         <h1>Termintypen verwalten</h1>
         <p><a href='/praxis'>&larr; Zurueck zum Praxis-Bereich</a></p>
       </section>
@@ -173,3 +173,4 @@ export default function TermintypenPage() {
     </div>
   );
 }
+

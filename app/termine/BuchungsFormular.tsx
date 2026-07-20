@@ -1,4 +1,4 @@
-Ôªø'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 
@@ -29,7 +29,7 @@ export default function BuchungsFormular() {
   }, [selectedArzt, selectedTyp, selectedDatum]);
 
   async function handleBuchen() {
-    if (!selectedSlot) { setMelding('Bitte w√§hlen Sie einen freien Slot.'); return; }
+    if (!selectedSlot) { setMelding('Bitte w‰hlen Sie einen freien Slot.'); return; }
     setMelding('');
     // CSRF-Token holen
     let csrfTokenBuch = "";
@@ -53,7 +53,7 @@ export default function BuchungsFormular() {
       <div style={{ marginBottom: 12 }}>
         <label>Termintyp<br />
           <select value={selectedTyp} onChange={e => { setSelectedTyp(e.target.value); setSelectedArzt(''); setSelectedSlot(''); }}>
-            <option value=''>-- Bitte w√§hlen --</option>
+            <option value=''>-- Bitte w‰hlen --</option>
             {termintypen.map(t => <option key={t.id} value={t.id}>{t.bezeichnung} ({t.dauer} min)</option>)}
           </select>
         </label>
@@ -62,7 +62,7 @@ export default function BuchungsFormular() {
         <div style={{ marginBottom: 12 }}>
           <label>Arzt<br />
             <select value={selectedArzt} onChange={e => { setSelectedArzt(e.target.value); setSelectedSlot(''); }}>
-              <option value=''>-- Bitte w√§hlen --</option>
+              <option value=''>-- Bitte w‰hlen --</option>
               {aerzte.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
             </select>
           </label>
@@ -75,7 +75,7 @@ export default function BuchungsFormular() {
           </label>
         </div>
       )}
-      {ladeSlots && <p>Lade verf√ºgbare Slots...</p>}
+      {ladeSlots && <p>Lade verf¸gbare Slots...</p>}
       {slots.length > 0 && (
         <div style={{ marginBottom: 12 }}>
           <label>Freie Slots<br />
@@ -95,3 +95,4 @@ export default function BuchungsFormular() {
     </div>
   );
 }
+

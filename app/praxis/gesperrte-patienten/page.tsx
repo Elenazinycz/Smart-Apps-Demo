@@ -52,7 +52,7 @@ export default function GesperrtePatientenPage() {
   return (
     <div className="page">
       <section className="intro">
-        <p className="eyebrow">Smart-Apps-Demo</p>
+        <p className="eyebrow">Praxis Demir &amp; Kollegen</p>
         <h1>Gesperrte Patient:innen</h1>
         <p>
           &Uuml;bersicht aller Patient:innen, deren Online-Buchung gesperrt ist.
@@ -119,3 +119,4 @@ export default function GesperrtePatientenPage() {
     </div>
   );
 }
+

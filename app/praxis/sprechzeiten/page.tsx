@@ -93,7 +93,7 @@ export default function SprechzeitenPage() {
   return (
     <div className='page'>
       <section className='intro'>
-        <p className='eyebrow'>Smart-Apps-Demo</p>
+        <p className='eyebrow'>Praxis Demir &amp; Kollegen</p>
         <h1>Sprechzeiten verwalten</h1>
         <p><a href='/praxis'>&larr; Zurueck</a></p>
       </section>
@@ -145,3 +145,4 @@ export default function SprechzeitenPage() {
     </div>
   );
 }
+

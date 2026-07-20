@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useState } from "react";
 
@@ -110,7 +110,7 @@ export default function TageslistePage() {
   return (
     <div className="page">
       <section className="intro">
-        <p className="eyebrow">Smart-Apps-Demo</p>
+        <p className="eyebrow">Praxis Demir &amp; Kollegen</p>
         <h1>Tagesliste</h1>
         <p>
           Alle gebuchten Termine f&uuml;r ein Datum &mdash; mit Uhrzeit,
@@ -270,3 +270,4 @@ export default function TageslistePage() {
     </div>
   );
 }
+

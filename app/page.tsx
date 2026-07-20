@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <main className="page">
       <section className="intro">
-        <p className="eyebrow">Smart-Apps-Demo</p>
+        <p className="eyebrow">Praxis Demir &amp; Kollegen</p>
         <h1>Praxis-Terminsoftware fuer Demir & Kollegen</h1>
         <p>
           Demo-Anwendung fuer verbindliche Terminbuchung, Umbuchung,
@@ -28,3 +28,4 @@ export default function Home() {
     </main>
   );
 }
+

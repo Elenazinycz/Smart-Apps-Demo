@@ -49,7 +49,7 @@ export default function AkutslotsLivePage() {
   return (
     <div className="page">
       <section className="intro">
-        <p className="eyebrow">Smart-Apps-Demo</p>
+        <p className="eyebrow">Praxis Demir &amp; Kollegen</p>
         <h1>Freie Akutslots (Live)</h1>
         <p>
           Aktuell freie Akutslots f&uuml;r heute &mdash; aktualisiert beim Seitenaufruf.
@@ -115,3 +115,4 @@ export default function AkutslotsLivePage() {
     </div>
   );
 }
+

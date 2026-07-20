@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Smart Apps Demo",
+  title: "Praxis Demir & Kollegen",
   description: "Praxis-Terminsoftware fuer Demir & Kollegen",
 };
 
@@ -17,3 +17,4 @@ export default function RootLayout({
     </html>
   );
 }
+

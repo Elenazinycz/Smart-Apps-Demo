@@ -1,4 +1,4 @@
-﻿import { getSession } from '@/lib/session';
+import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { REGEL } from '@/lib/constants';
@@ -34,7 +34,7 @@ export default async function TerminePage() {
   return (
     <div className='page'>
       <section className='intro'>
-        <p className='eyebrow'>Smart-Apps-Demo</p>
+        <p className='eyebrow'>Praxis Demir &amp; Kollegen</p>
         <h1>Meine Termine</h1>
         <p>Willkommen, <strong>{session.name}</strong></p>
       </section>
@@ -58,7 +58,7 @@ export default async function TerminePage() {
           </section>
 
           <section className='panel' style={{marginBottom:24}}>
-            <h2>Einwilligungen für Benachrichtigungen</h2>
+            <h2>Einwilligungen f�r Benachrichtigungen</h2>
             <p style={{fontSize:'0.85rem', color:'#555', marginBottom:12}}>
               Sie k&ouml;nnen hier festlegen, ob Sie Benachrichtigungen per E-Mail und/oder SMS erhalten m&ouml;chten
               (Buchungsbest&auml;tigung, Stornierung, Umbuchung, Terminerinnerung).
@@ -89,3 +89,4 @@ export default async function TerminePage() {
     </div>
   );
 }
+

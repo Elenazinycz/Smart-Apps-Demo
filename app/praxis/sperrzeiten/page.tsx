@@ -23,7 +23,7 @@ function fmtD(iso: string) {
   return new Date(iso).toLocaleDateString('de-DE');
 }
 function fmtT(iso: string | null) {
-  if (!iso) return 'ganzt�gig';
+  if (!iso) return 'ganzt?gig';
   return new Date(iso).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
 }
 
@@ -96,7 +96,7 @@ export default function SperrzeitenPage() {
   return (
     <div className='page'>
       <section className='intro'>
-        <p className='eyebrow'>Smart-Apps-Demo</p>
+        <p className='eyebrow'>Praxis Demir &amp; Kollegen</p>
         <h1>Sperrzeiten verwalten</h1>
         <p><a href='/praxis'>&larr; Zurueck</a></p>
       </section>
@@ -132,7 +132,7 @@ export default function SperrzeitenPage() {
               {sperrzeiten.map(sz => (
                 <tr key={sz.id}>
                   <td>{sz.titel}</td>
-                  <td>{fmtD(sz.startdatum)} � {fmtD(sz.enddatum)}<br/>{fmtT(sz.startzeit)} � {fmtT(sz.endzeit)}</td>
+                  <td>{fmtD(sz.startdatum)} ? {fmtD(sz.enddatum)}<br/>{fmtT(sz.startzeit)} ? {fmtT(sz.endzeit)}</td>
                   <td>{sz.betrifft}{sz.arzt ? ' (' + sz.arzt.name + ')' : ''}</td>
                   <td>{sz.grund}</td>
                   <td>{sz.erstelltVon.name} ({sz.erstelltVon.rolle})</td>
@@ -147,3 +147,4 @@ export default function SperrzeitenPage() {
     </div>
   );
 }
+

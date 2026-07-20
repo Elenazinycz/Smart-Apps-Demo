@@ -244,3 +244,4 @@ export default function TerminListeClient({ termine }: { termine: TerminItem[] }
     </div>
   );
 }
+

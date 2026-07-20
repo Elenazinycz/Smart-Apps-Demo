@@ -74,7 +74,7 @@ export default function PraxisregelnPage() {
   return (
     <div className='page'>
       <section className='intro'>
-        <p className='eyebrow'>Smart-Apps-Demo</p>
+        <p className='eyebrow'>Praxis Demir &amp; Kollegen</p>
         <h1>Praxisregeln verwalten</h1>
         <p><a href='/praxis'>&larr; Zurueck zum Praxis-Bereich</a></p>
         <p style={{ fontSize: '0.9rem', color: '#666' }}>
@@ -117,3 +117,4 @@ export default function PraxisregelnPage() {
     </div>
   );
 }
+

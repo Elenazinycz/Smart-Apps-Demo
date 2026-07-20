@@ -1,4 +1,4 @@
-﻿import { getSession } from '@/lib/session';
+import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { istMfaOderAdmin } from '@/lib/rollen';
 import SyncLogClient from './SyncLogClient';
@@ -11,7 +11,7 @@ export default async function PvsSyncPage() {
   return (
     <div className='page'>
       <section className='intro'>
-        <p className='eyebrow'>Smart-Apps-Demo</p>
+        <p className='eyebrow'>Praxis Demir &amp; Kollegen</p>
         <h1>PVS-Synchronisation</h1>
         <p>Sync-Status und Logs f&uuml;r MFA/Admin</p>
       </section>
@@ -31,4 +31,5 @@ export default async function PvsSyncPage() {
     </div>
   );
 }
+
 

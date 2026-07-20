@@ -8,3 +8,4 @@ export default async function PraxisLayout({ children }: { children: React.React
 
   return children;
 }
+

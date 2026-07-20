@@ -46,7 +46,7 @@ export default function ZuordnungPage() {
   return (
     <div className='page'>
       <section className='intro'>
-        <p className='eyebrow'>Smart-Apps-Demo</p>
+        <p className='eyebrow'>Praxis Demir &amp; Kollegen</p>
         <h1>Termintyp-Arzt-Zuordnung</h1>
         <p><a href='/praxis'>&larr; Zurueck zum Praxis-Bereich</a></p>
       </section>
@@ -85,3 +85,4 @@ export default function ZuordnungPage() {
     </div>
   );
 }
+

@@ -10,7 +10,7 @@ export default async function DashboardPage() {
   return (
     <div className='page'>
       <section className='intro'>
-        <p className='eyebrow'>Smart-Apps-Demo</p>
+        <p className='eyebrow'>Praxis Demir &amp; Kollegen</p>
         <h1>Dashboard</h1>
         <p>Angemeldet als <strong>{session.name}</strong></p>
       </section>
@@ -40,3 +40,4 @@ export default async function DashboardPage() {
     </div>
   );
 }
+

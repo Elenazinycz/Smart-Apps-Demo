@@ -12,7 +12,7 @@ export default async function BuchenPage() {
   return (
     <div className='page'>
       <section className='intro'>
-        <p className='eyebrow'>Smart-Apps-Demo</p>
+        <p className='eyebrow'>Praxis Demir &amp; Kollegen</p>
         <h1>Neuen Termin buchen</h1>
         <p><a href='/termine'>&larr; Zurueck zu Meine Termine</a></p>
       </section>
@@ -22,3 +22,4 @@ export default async function BuchenPage() {
     </div>
   );
 }
+

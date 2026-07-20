@@ -86,7 +86,7 @@ export default function RezeptfreigabenPage() {
   return (
     <div className="page">
       <section className="intro">
-        <p className="eyebrow">Smart-Apps-Demo</p>
+        <p className="eyebrow">Praxis Demir &amp; Kollegen</p>
         <h1>Offene Rezeptfreigaben</h1>
         <p>
           Ausstehende Wiederholungsrezepte, die auf Freigabe oder Ablehnung durch
@@ -181,3 +181,4 @@ export default function RezeptfreigabenPage() {
     </div>
   );
 }
+
