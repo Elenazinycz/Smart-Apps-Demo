@@ -1,6 +1,6 @@
-# backlog.md - Smart-Apps-Demo
+﻿# backlog.md - Smart-Apps-Demo
 
-_Stand: 2026-07-14_
+_Stand: 2026-07-20_
 
 _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 
@@ -61,9 +61,9 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
 | STD-008 | Planbare Online-Termintypen erlauben | Kern | F-KERN-3 | done | docs/spec.md 5, BR2 | Vorsorge, Beratung, Impfung/Reisemedizin und Wiederholungsrezept-Abholung via istOnlineBuchbar() + Arzt-Freigabe; lib/slots.ts, app/api/termintypen/route.ts, app/api/aerzte/route.ts |
-| STD-009 | Nicht online buchbare Termintypen sperren | Kern | F-KERN-3 | done | docs/spec.md 5, BR2 | ONLINE_BUCHBARE_TYPEN-Whitelist in lib/slots.ts blockiert Akut, Blutabnahme, Erstgespraech; API gibt nur online-buchbare Typen zur�ck |
+| STD-009 | Nicht online buchbare Termintypen sperren | Kern | F-KERN-3 | done | docs/spec.md 5, BR2 | ONLINE_BUCHBARE_TYPEN-Whitelist in lib/slots.ts blockiert Akut, Blutabnahme, Erstgespraech; API gibt nur online-buchbare Typen zurï¿½ck |
 | STD-012 | Online-Termin verbindlich buchen | Kern | F-KERN-3 | done | docs/spec.md 3, BR4 | bucheOnlineTermin() in lib/slots.ts: Slot-Status sofort auf "gebucht" + patientId + buchungsquelle=online; API POST /api/appointments
-| STD-013 | Freie Slots anzeigen | Kern | F-KERN-3 | done | docs/spec.md 2, 9 | getFreieSlots() in lib/slots.ts: Slots via /api/slots mit Sperrzeiten-Filter; BuchungsFormular.tsx zeigt Auswahl; Doppelbuchung durch Slot-Status-Pr�fung verhindert
+| STD-013 | Freie Slots anzeigen | Kern | F-KERN-3 | done | docs/spec.md 2, 9 | getFreieSlots() in lib/slots.ts: Slots via /api/slots mit Sperrzeiten-Filter; BuchungsFormular.tsx zeigt Auswahl; Doppelbuchung durch Slot-Status-Prï¿½fung verhindert
 | STD-014 | Doppelbuchung technisch verhindern | Kern | F-KERN-3 | done | docs/spec.md 2, BR3, 14 | findFirst mit status=frei + atomares update; Slot-Sperre verhindert parallele Buchungen; DB-Index auf datum+arztId+status
 
 ### F-KERN-4: Eigene Termine verwalten
@@ -114,31 +114,31 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 ### F-SICH-1: Authentifizierung & Schutz
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-036 | JWT-Session-Sicherheit (ENV-Secret + Issuer/Audience) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/auth.ts: JWT mit ENV.JWT_SECRET (Fallback nur dev), Issuer/Audience-Validation, timingSafeVerify; .env um JWT_SECRET erg�nzt |
-| STD-037 | Session-Timeout (24h) + Expiry-Check | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/auth.ts: 24h-Expiration via setExpirationTime, isTokenExpiringSoon() pr�ft Restlaufzeit; Cookie maxAge=86400 |
+| STD-036 | JWT-Session-Sicherheit (ENV-Secret + Issuer/Audience) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/auth.ts: JWT mit ENV.JWT_SECRET (Fallback nur dev), Issuer/Audience-Validation, timingSafeVerify; .env um JWT_SECRET ergï¿½nzt |
+| STD-037 | Session-Timeout (24h) + Expiry-Check | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/auth.ts: 24h-Expiration via setExpirationTime, isTokenExpiringSoon() prï¿½ft Restlaufzeit; Cookie maxAge=86400 |
 | STD-038 | Rollenbasierte API-Guards (zentral) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 11, 14 | lib/api-guard.ts: requireAuth/requirePatient/requirePraxis/requireAdmin/requireMfaOrAdmin; alle API-Routen umgestellt |
 | STD-039 | CSRF-Schutz (Double-Submit-Cookie) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/csrf.ts: Double-Submit-Cookie-Pattern mit crypto.timingSafeEqual; validateCsrf() in allen 10 mutierenden API-Routen aktiviert (POST/PUT/DELETE) |
 | STD-040 | Rate-Limiting (Login + API) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/rate-limit.ts: In-Memory-Fenster pro IP+Route; /api/login: 10/Minute, Default: 30/Minute; rateLimitKey()-Bug gefixt (fehlende Template-Literal-Backticks) |
-| STD-041 | Input-Validierung & Sanitization | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/validate.ts: Typ-, L�ngen-, Enum-, Pattern-Pr�fung; UUID/Datum/Zeit-Formatter; ValidationError-Klasse; alle mutierenden APIS umgestellt |
+| STD-041 | Input-Validierung & Sanitization | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/validate.ts: Typ-, Lï¿½ngen-, Enum-, Pattern-Prï¿½fung; UUID/Datum/Zeit-Formatter; ValidationError-Klasse; alle mutierenden APIS umgestellt |
 
 ### F-SICH-2: DSGVO & Opt-in
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-042 | Opt-in-Einwilligungen speichern/ändern | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 4.1, 10 | EinwilligungEmail/einwilligungSms im Patient-Modell (bereits vorhanden); PUT /api/patient/einwilligung zum Ändern durch Patient:in |
-| STD-043 | Opt-in vor Nachrichtenversand prüfen | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 5, 10, BR5 | lib/notifications.ts: darfBenachrichtigen() prüft Opt-in + Kontaktdaten vor jedem Versand |
-| STD-044 | Buchungsbestätigung per E-Mail/SMS | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 10 | sendeBuchungsbestaetigung() in appointments/route.ts nach erfolgreicher Buchung; nur mit Opt-in |
-| STD-045 | Terminerinnerung 24h vorher senden | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 10, BR4 | sendeTerminerinnerung() in lib/notifications.ts (für Cron-Job/Edge); prüft Opt-in + Kontaktdaten |
-| STD-046 | Storno-/Umbuchungsbestätigung senden | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 10 | sendeStornierungsbestaetigung() in cancel/route.ts + sendeUmbuchungsbestaetigung() in reschedule/route.ts; nur mit Opt-in |
+| STD-042 | Opt-in-Einwilligungen speichern/Ã¤ndern | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 4.1, 10 | EinwilligungEmail/einwilligungSms im Patient-Modell (bereits vorhanden); PUT /api/patient/einwilligung zum Ã„ndern durch Patient:in |
+| STD-043 | Opt-in vor Nachrichtenversand prÃ¼fen | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 5, 10, BR5 | lib/notifications.ts: darfBenachrichtigen() prÃ¼ft Opt-in + Kontaktdaten vor jedem Versand |
+| STD-044 | BuchungsbestÃ¤tigung per E-Mail/SMS | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 10 | sendeBuchungsbestaetigung() in appointments/route.ts nach erfolgreicher Buchung; nur mit Opt-in |
+| STD-045 | Terminerinnerung 24h vorher senden | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 10, BR4 | sendeTerminerinnerung() in lib/notifications.ts (fÃ¼r Cron-Job/Edge); prÃ¼ft Opt-in + Kontaktdaten |
+| STD-046 | Storno-/UmbuchungsbestÃ¤tigung senden | Sicherheit & Sync | F-SICH-2 | done | docs/spec.md 10 | sendeStornierungsbestaetigung() in cancel/route.ts + sendeUmbuchungsbestaetigung() in reschedule/route.ts; nur mit Opt-in |
 
 ### F-SICH-3: PVS-Synchronisation
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-047 | Synchronisationslogik vorbereiten | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md 12, OP1, OP2 | lib/pvs-sync.ts: Sync-Funktionen mit SyncLog-Einträgen; erweiterbar auf echte PVS-Schnittstelle |
-| STD-048 | Termin-Änderungen an PVS melden | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md BR5, 12 | syncTerminBuchung/Stornierung/Umbuchung in allen 3 Termin-Routen; sofort nach Buchung/Storno/Umbuchung |
-| STD-049 | PVS-Daten importieren | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md 12, OP2 | importPatientAusPvs() + importRezeptAusPvs() in lib/pvs-sync.ts (Mock); manueller Import über /api/pvs-sync |
+| STD-047 | Synchronisationslogik vorbereiten | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md 12, OP1, OP2 | lib/pvs-sync.ts: Sync-Funktionen mit SyncLog-EintrÃ¤gen; erweiterbar auf echte PVS-Schnittstelle |
+| STD-048 | Termin-Ã„nderungen an PVS melden | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md BR5, 12 | syncTerminBuchung/Stornierung/Umbuchung in allen 3 Termin-Routen; sofort nach Buchung/Storno/Umbuchung |
+| STD-049 | PVS-Daten importieren | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md 12, OP2 | importPatientAusPvs() + importRezeptAusPvs() in lib/pvs-sync.ts (Mock); manueller Import Ã¼ber /api/pvs-sync |
 | STD-050 | Synchronisationsfehler protokollieren | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md OP1, OP3 | SyncLog-Modell + logSyncEintrag(); Fehler werden mit Status und Meldung gespeichert |
-| STD-051 | MFA bei Sync-Fehlern informieren | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md OP3 | /praxis/pvs-sync mit SyncLogClient.tsx zeigt Fehler-Liste; offeneSyncs-Zähler im Header |
-| STD-052 | Wiederholungsrezept-Status aus PVS anzeigen | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md 12 | Wiederholungsrezept-Modell + /api/wiederholungsrezepte + /praxis/wiederholungsrezepte-Übersicht |
+| STD-051 | MFA bei Sync-Fehlern informieren | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md OP3 | /praxis/pvs-sync mit SyncLogClient.tsx zeigt Fehler-Liste; offeneSyncs-ZÃ¤hler im Header |
+| STD-052 | Wiederholungsrezept-Status aus PVS anzeigen | Sicherheit & Sync | F-SICH-3 | done | docs/spec.md 12 | Wiederholungsrezept-Modell + /api/wiederholungsrezepte + /praxis/wiederholungsrezepte-Ãœbersicht |
 
 ---
 

@@ -2,6 +2,7 @@
 import { redirect } from 'next/navigation';
 import { istMfaOderAdmin } from '@/lib/rollen';
 import { prisma } from '@/lib/prisma';
+import WiederholungsrezeptImport from './WiederholungsrezeptImport';
 
 export default async function WiederholungsrezeptePage() {
   const session = await getSession();
@@ -49,13 +50,15 @@ export default async function WiederholungsrezeptePage() {
                     </span>
                   </td>
                   <td style={{fontSize:'0.85rem'}}>{r.letzteAktualisierung.toLocaleString('de-DE')}</td>
-                  <td style={{fontSize:'0.85rem'}}>{r.bemerkung ?? '—'}</td>
+                  <td style={{fontSize:'0.85rem'}}>{r.bemerkung ?? '\u2014'}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
       </section>
+
+      <WiederholungsrezeptImport />
 
       <section className='panel'>
         <h2>Patient:in &ouml;ffnen</h2>
