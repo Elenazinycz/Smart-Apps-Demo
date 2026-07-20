@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 
@@ -127,8 +127,8 @@ export default function AkutslotsPage() {
         <h2>{hatFreigabe ? "Diensthabenden Arzt aendern" : "Akutslots freigeben"}</h2>
         <p style={{ marginBottom: 12, color: "#555" }}>
           {hatFreigabe
-            ? "Die Akutslots fuer heute wurden bereits freigegeben. Sie koennen den diensthabenden Arzt aendern."
-            : "Noch keine Akutslots fuer heute freigegeben. Waehlen Sie den diensthabenden Arzt und geben Sie die Slots frei."}
+            ? "Die Akutslots für heute wurden bereits freigegeben. Sie koennen den diensthabenden Arzt aendern."
+            : "Noch keine Akutslots für heute freigegeben. Waehlen Sie den diensthabenden Arzt und geben Sie die Slots frei."}
         </p>
         <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
           <label htmlFor="arzt-select" style={{ fontWeight: 600 }}>Diensthabender Arzt:</label>
@@ -159,7 +159,7 @@ export default function AkutslotsPage() {
         <h2>Akutslots &ndash; heute ({slotsHeute.length} Slots)</h2>
 
         {slotsHeute.length === 0 ? (
-          <p className="empty-state">Noch keine Akutslots fuer heute. Bitte oben freigeben.</p>
+          <p className="empty-state">Noch keine Akutslots für heute. Bitte oben freigeben.</p>
         ) : (
           <>
             <p style={{ marginBottom: 12, color: "#555" }}>

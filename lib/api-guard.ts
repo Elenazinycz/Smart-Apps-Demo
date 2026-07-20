@@ -14,7 +14,7 @@ export async function requirePatient(): Promise<SessionPayload | NextResponse> {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Nicht authentifiziert." }, { status: 401 });
   if (session.type !== "patient") {
-    return NextResponse.json({ error: "Nur fuer Patient:innen." }, { status: 403 });
+    return NextResponse.json({ error: "Nur für Patient:innen." }, { status: 403 });
   }
   return session;
 }
@@ -23,7 +23,7 @@ export async function requirePraxis(): Promise<SessionPayload | NextResponse> {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Nicht authentifiziert." }, { status: 401 });
   if (session.type !== "praxis") {
-    return NextResponse.json({ error: "Nur fuer Praxis-Nutzer:innen." }, { status: 403 });
+    return NextResponse.json({ error: "Nur für Praxis-Nutzer:innen." }, { status: 403 });
   }
   return session;
 }

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 
@@ -113,7 +113,7 @@ export default function TageslistePage() {
         <p className="eyebrow">Praxis Demir &amp; Kollegen</p>
         <h1>Tagesliste</h1>
         <p>
-          Alle gebuchten Termine f&uuml;r ein Datum &mdash; mit Uhrzeit,
+          Alle gebuchten Termine fÜr ein Datum &mdash; mit Uhrzeit,
           Patient:in, Arzt, Termintyp und Buchungsweg.
         </p>
       </section>
@@ -143,7 +143,7 @@ export default function TageslistePage() {
               htmlFor="arzt-filter"
               style={{ display: "block", fontWeight: 600, marginBottom: 4, fontSize: "0.9rem" }}
             >
-              Arzt / &Auml;rztin
+              Arzt / Ärztin
             </label>
             <select
               id="arzt-filter"
@@ -152,7 +152,7 @@ export default function TageslistePage() {
               className="input"
               style={{ padding: "6px 10px", fontSize: "0.9rem", minWidth: 200 }}
             >
-              <option value="">Alle &Auml;rzt:innen</option>
+              <option value="">Alle Ärzt:innen</option>
               {aerzte.map((a) => (
                 <option key={a.id} value={a.id}>
                   {a.name}
@@ -197,7 +197,7 @@ export default function TageslistePage() {
           <h2>{datumAnzeige}</h2>
           <p style={{ marginBottom: 12, color: "#555" }}>
             {slots.length === 0
-              ? "Keine gebuchten Termine f&uuml;r dieses Datum."
+              ? "Keine gebuchten Termine fÜr dieses Datum."
               : slots.length + " gebuchte(r) Termin(e)"}
           </p>
 
@@ -208,7 +208,7 @@ export default function TageslistePage() {
                   <tr>
                     <th>Uhrzeit</th>
                     <th>Patient:in</th>
-                    <th>Arzt / &Auml;rztin</th>
+                    <th>Arzt / Ärztin</th>
                     <th>Termintyp</th>
                     <th>Buchungsweg</th>
                   </tr>
@@ -260,11 +260,11 @@ export default function TageslistePage() {
       <section className="panel" style={{ marginTop: 20 }}>
         <h2>Arzt-Filter</h2>
         <p style={{ fontSize: "0.9em", color: "#555" }}>
-          &Auml;rzt:innen sehen &uuml;ber das Dropdown &bdquo;Arzt / &Auml;rztin&ldquo;
-          standardm&auml;&szlig;ig nur ihre eigenen Termine.
-          Aktuell haben &Auml;rzte noch keinen eigenen Login (keine Rolle &bdquo;Arzt&ldquo;
-          in PraxisNutzer). MFAs/Admins k&ouml;nnen den Filter nutzen, um die Ansicht
-          pro Arzt einzuschr&auml;nken.
+          Ärzt:innen sehen Über das Dropdown &bdquo;Arzt / Ärztin&ldquo;
+          standardmÄßig nur ihre eigenen Termine.
+          Aktuell haben Ärzte noch keinen eigenen Login (keine Rolle &bdquo;Arzt&ldquo;
+          in PraxisNutzer). MFAs/Admins kÖnnen den Filter nutzen, um die Ansicht
+          pro Arzt einzuschrÄnken.
         </p>
       </section>
     </div>

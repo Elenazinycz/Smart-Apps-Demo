@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { requireMfaOrAdmin } from "@/lib/api-guard";
 import { prisma } from "@/lib/prisma";
 import { SLOT_ART, SLOT_STATUS } from "@/lib/constants";
 
 /** GET /api/akutslots-live
- *  Liefert die aktuell freien (ungebuchten) Akutslots fuer heute.
+ *  Liefert die aktuell freien (ungebuchten) Akutslots für heute.
  *  Zugriff: MFA/Admin
  */
 export async function GET() {

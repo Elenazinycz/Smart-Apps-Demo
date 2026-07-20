@@ -1,4 +1,4 @@
-"use client";
+Ôªø"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -75,11 +75,11 @@ export default function LoginPage() {
         </label>
 
         <button type="submit" disabled={loading}>
-          {loading ? "Wird angemeldet Ö" : "Anmelden"}
+          {loading ? "Wird angemeldet ‚Ä¶" : "Anmelden"}
         </button>
 
         <details className="login-hints">
-          <summary>Test-Zug‰nge (Mock)</summary>
+          <summary>Test-Zug√§nge (Mock)</summary>
           <ul>
             <li><strong>Admin:</strong> admin@praxis-demir.de</li>
             <li><strong>MFA:</strong> s.mueller@praxis-demir.de</li>

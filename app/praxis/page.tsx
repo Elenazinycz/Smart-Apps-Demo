@@ -1,4 +1,4 @@
-import { getSession } from '@/lib/session';
+﻿import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { istAdmin, istMfaOderAdmin, istArzt } from '@/lib/rollen';
 
@@ -11,18 +11,18 @@ export default async function PraxisPage() {
       <section className='intro'>
         <p className='eyebrow'>Praxis Demir &amp; Kollegen</p>
         <h1>Praxis-Bereich</h1>
-        <p>Angemeldet als <strong>{session.name}</strong> &mdash; Rolle: {session.rolle}</p>
+        <p>Angemeldet als <strong>{session.name}</strong> — Rolle: {session.rolle}</p>
       </section>
 
       {istMfaOderAdmin(session) && (
         <>
           <section className='panel' style={{ marginBottom: 24 }}>
-            <h2>&Uuml;bersichten (Tagesliste &amp; Live)</h2>
+            <h2>Übersichten (Tagesliste &amp; Live)</h2>
             <ul>
               <li><a href='/praxis/tagesliste'>Tagesliste anzeigen (alle Termine)</a></li>
               <li><a href='/praxis/akutslots-live'>Freie Akutslots (Live)</a></li>
               <li><a href='/praxis/gesperrte-patienten'>Gesperrte Patient:innen</a></li>
-              <li><a href='/praxis/wiederholungsrezepte'>Wiederholungsrezepte (&Uuml;bersicht)</a></li>
+              <li><a href='/praxis/wiederholungsrezepte'>Wiederholungsrezepte (Übersicht)</a></li>
             </ul>
           </section>
           <section className='panel' style={{ marginBottom: 24 }}>
@@ -40,7 +40,7 @@ export default async function PraxisPage() {
           <section className='panel' style={{ marginBottom: 24 }}>
             <h2>No-Show-Tracking</h2>
             <ul>
-              <li><a href='/praxis/noshow'>No-Shows erfassen &amp; &Uuml;bersicht</a></li>
+              <li><a href='/praxis/noshow'>No-Shows erfassen &amp; Übersicht</a></li>
             </ul>
           </section>
         </>
@@ -48,7 +48,7 @@ export default async function PraxisPage() {
 
       {istArzt(session) && (
         <section className='panel' style={{ marginBottom: 24 }}>
-          <h2>&Auml;rztliche Aufgaben</h2>
+          <h2>Ärztliche Aufgaben</h2>
           <ul>
             <li><a href='/praxis/rezeptfreigaben'>Offene Rezeptfreigaben</a></li>
             <li><a href='/praxis/sperrzeiten'>Eigene Abwesenheiten eintragen</a></li>
@@ -76,7 +76,7 @@ export default async function PraxisPage() {
               <li><a href='/praxis/termintypen'>Termintypen verwalten</a></li>
               <li><a href='/praxis/termintyp-zuordnung'>Termintyp-Arzt-Zuordnung verwalten</a></li>
               <li><a href='/praxis/praxisregeln'>Praxisregeln verwalten</a></li>
-              <li><a href='/praxis/wiederholungsrezepte'>Wiederholungsrezepte (&Uuml;bersicht)</a></li>
+              <li><a href='/praxis/wiederholungsrezepte'>Wiederholungsrezepte (Übersicht)</a></li>
             </ul>
           </section>
         </>

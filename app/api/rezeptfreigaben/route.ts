@@ -12,7 +12,7 @@ export async function GET() {
   if (session instanceof NextResponse) return session;
   // Nur Aerzt:innen und Admins duerfen Freigaben sehen
   if (session.type !== "praxis" || (session.rolle !== "Arzt" && session.rolle !== "Admin")) {
-    return NextResponse.json({ error: "Nur fuer Aerzt:innen und Admins." }, { status: 403 });
+    return NextResponse.json({ error: "Nur für Ärzt:innen und Admins." }, { status: 403 });
   }
 
   const rezepte = await prisma.wiederholungsrezept.findMany({
@@ -38,7 +38,7 @@ export async function PATCH(req: NextRequest) {
   const session = await requireAuth();
   if (session instanceof NextResponse) return session;
   if (session.type !== "praxis" || (session.rolle !== "Arzt" && session.rolle !== "Admin")) {
-    return NextResponse.json({ error: "Nur fuer Aerzt:innen und Admins." }, { status: 403 });
+    return NextResponse.json({ error: "Nur für Ärzt:innen und Admins." }, { status: 403 });
   }
 
   let body: Record<string, unknown>;

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 
@@ -134,7 +134,7 @@ export default function NoShowPage() {
     setError(null);
     setMessage(null);
 
-    if (!confirm("Sperre fuer diesen Patienten aufheben und Zaehler zuruecksetzen?")) return;
+    if (!confirm("Sperre für diesen Patienten aufheben und Zaehler zuruecksetzen?")) return;
 
     try {
       const csrfRes = await fetch("/api/csrf");

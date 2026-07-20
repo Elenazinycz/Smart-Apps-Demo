@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 
@@ -55,7 +55,7 @@ export default function GesperrtePatientenPage() {
         <p className="eyebrow">Praxis Demir &amp; Kollegen</p>
         <h1>Gesperrte Patient:innen</h1>
         <p>
-          &Uuml;bersicht aller Patient:innen, deren Online-Buchung gesperrt ist.
+          Übersicht aller Patient:innen, deren Online-Buchung gesperrt ist.
         </p>
       </section>
 
@@ -113,7 +113,7 @@ export default function GesperrtePatientenPage() {
         <h2>Hinweis</h2>
         <p style={{ fontSize: "0.9em", color: "#555" }}>
           Die Entsperrung erfolgt im Bereich <a href="/praxis/noshow">No-Show-Tracking</a>.
-          Dort k&ouml;nnen MFAs/Admins die Sperre manuell aufheben und den Z&auml;hler zur&uuml;cksetzen.
+          Dort kÖnnen MFAs/Admins die Sperre manuell aufheben und den ZÄhler zurÜcksetzen.
         </p>
       </section>
     </div>

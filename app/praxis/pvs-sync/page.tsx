@@ -1,4 +1,4 @@
-import { getSession } from '@/lib/session';
+﻿import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { istMfaOderAdmin } from '@/lib/rollen';
 import SyncLogClient from './SyncLogClient';
@@ -13,7 +13,7 @@ export default async function PvsSyncPage() {
       <section className='intro'>
         <p className='eyebrow'>Praxis Demir &amp; Kollegen</p>
         <h1>PVS-Synchronisation</h1>
-        <p>Sync-Status und Logs f&uuml;r MFA/Admin</p>
+        <p>Sync-Status und Logs fÜr MFA/Admin</p>
       </section>
 
       <section className='panel' style={{marginBottom:24}}>

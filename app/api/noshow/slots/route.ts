@@ -3,7 +3,7 @@ import { requireMfaOrAdmin } from "@/lib/api-guard";
 import { prisma } from "@/lib/prisma";
 
 /** GET /api/noshow/slots
- *  Liefert fuer heute alle TerminSlots, die potenziell als No-Show markiert werden koennen.
+ *  Liefert für heute alle TerminSlots, die potenziell als No-Show markiert werden koennen.
  *  Dazu zaehlen:
  *  - status = "gebucht" und datum = heute (oder in der Vergangenheit)
  *  - slot mit status = "frei" und in der Vergangenheit (durchgefallen, kein Patient)

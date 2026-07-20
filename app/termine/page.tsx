@@ -1,4 +1,4 @@
-import { getSession } from '@/lib/session';
+﻿import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { REGEL } from '@/lib/constants';
@@ -58,10 +58,10 @@ export default async function TerminePage() {
           </section>
 
           <section className='panel' style={{marginBottom:24}}>
-            <h2>Einwilligungen f�r Benachrichtigungen</h2>
+            <h2>Einwilligungen für Benachrichtigungen</h2>
             <p style={{fontSize:'0.85rem', color:'#555', marginBottom:12}}>
-              Sie k&ouml;nnen hier festlegen, ob Sie Benachrichtigungen per E-Mail und/oder SMS erhalten m&ouml;chten
-              (Buchungsbest&auml;tigung, Stornierung, Umbuchung, Terminerinnerung).
+              Sie kÖnnen hier festlegen, ob Sie Benachrichtigungen per E-Mail und/oder SMS erhalten mÖchten
+              (BuchungsbestÄtigung, Stornierung, Umbuchung, Terminerinnerung).
             </p>
             <EinwilligungForm
               einwilligungEmail={patient.einwilligungEmail}

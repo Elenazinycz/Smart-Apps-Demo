@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 
@@ -90,7 +90,7 @@ export default function RezeptfreigabenPage() {
         <h1>Offene Rezeptfreigaben</h1>
         <p>
           Ausstehende Wiederholungsrezepte, die auf Freigabe oder Ablehnung durch
-          &Auml;rzt:innen warten.
+          Ärzt:innen warten.
         </p>
       </section>
 
@@ -172,8 +172,8 @@ export default function RezeptfreigabenPage() {
       <section className="panel" style={{ marginTop: 20 }}>
         <h2>Hinweis</h2>
         <p style={{ fontSize: "0.9em", color: "#555" }}>
-          &Auml;rzt:innen sehen hier alle Wiederholungsrezepte mit Status
-          &bdquo;ausstehend&ldquo; und k&ouml;nnen diese freigeben oder ablehnen.
+          Ärzt:innen sehen hier alle Wiederholungsrezepte mit Status
+          &bdquo;ausstehend&ldquo; und kÖnnen diese freigeben oder ablehnen.
           Nach Freigabe wird der Rezept-Status auf &bdquo;abholbereit&ldquo; gesetzt.
           Nach Ablehnung auf &bdquo;abgeholt&ldquo;.
         </p>

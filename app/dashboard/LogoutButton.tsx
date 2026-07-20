@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -22,7 +22,7 @@ export default function LogoutButton() {
 
   return (
     <button className="btn-logout" onClick={handleLogout} disabled={loading}>
-      {loading ? "Wird abgemeldet �" : "Abmelden"}
+      {loading ? "Wird abgemeldet …" : "Abmelden"}
     </button>
   );
 }

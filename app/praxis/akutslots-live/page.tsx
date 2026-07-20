@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 
@@ -52,7 +52,7 @@ export default function AkutslotsLivePage() {
         <p className="eyebrow">Praxis Demir &amp; Kollegen</p>
         <h1>Freie Akutslots (Live)</h1>
         <p>
-          Aktuell freie Akutslots f&uuml;r heute &mdash; aktualisiert beim Seitenaufruf.
+          Aktuell freie Akutslots fÜr heute &mdash; aktualisiert beim Seitenaufruf.
         </p>
       </section>
 
@@ -67,10 +67,10 @@ export default function AkutslotsLivePage() {
           <p className="empty-state">Lade freie Akutslots ...</p>
         ) : slots.length === 0 ? (
           <>
-            <p className="empty-state">Keine freien Akutslots f&uuml;r heute.</p>
+            <p className="empty-state">Keine freien Akutslots fÜr heute.</p>
             <p style={{ marginTop: 12, color: "#555", fontSize: "0.9rem" }}>
               Entweder wurden noch keine Akutslots freigegeben, oder alle sind bereits belegt.
-              MFAs k&ouml;nnen unter <a href="/praxis/akutslots">Akutslots verwalten</a> neue Slots freigeben.
+              MFAs kÖnnen unter <a href="/praxis/akutslots">Akutslots verwalten</a> neue Slots freigeben.
             </p>
           </>
         ) : (
@@ -83,7 +83,7 @@ export default function AkutslotsLivePage() {
                 <thead>
                   <tr>
                     <th>Zeit</th>
-                    <th>Arzt / &Auml;rztin</th>
+                    <th>Arzt / Ärztin</th>
                   </tr>
                 </thead>
                 <tbody>

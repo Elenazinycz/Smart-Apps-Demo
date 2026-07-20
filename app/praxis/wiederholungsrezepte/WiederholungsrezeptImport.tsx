@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 
@@ -52,7 +52,7 @@ export default function WiederholungsrezeptImport() {
     <div className="panel" style={{marginTop:24}}>
       <h2>Rezept-Status setzen (Mock-PVS-Import)</h2>
       <p style={{fontSize:'0.85rem', color:'#555'}}>
-        PVS-Patientennummer eingeben und Rezept-Status ausw&auml;hlen.
+        PVS-Patientennummer eingeben und Rezept-Status auswÄhlen.
       </p>
       <div style={{display:'flex', flexDirection:'column', gap:12, marginTop:8}}>
         <div style={{display:'flex', gap:8, alignItems:'center'}}>

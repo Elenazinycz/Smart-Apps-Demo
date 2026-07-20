@@ -1,8 +1,8 @@
-const coreFeatures = [
-  "Online-Buchung fuer Stammpatient:innen",
+﻿const coreFeatures = [
+  "Online-Buchung für Stammpatient:innen",
   "Stornierung und Umbuchung bis 24 Stunden vorher",
   "Pflegbare Sprechzeiten, Sperrzeiten und Termintypen",
-  "Akutslot- und Arzt-Ausfall-Unterstuetzung fuer MFAs",
+  "Akutslot- und Arzt-Ausfall-Unterstützung für MFAs",
 ];
 
 export default function Home() {
@@ -10,10 +10,10 @@ export default function Home() {
     <main className="page">
       <section className="intro">
         <p className="eyebrow">Praxis Demir &amp; Kollegen</p>
-        <h1>Praxis-Terminsoftware fuer Demir & Kollegen</h1>
+        <h1>Praxis-Terminsoftware für Demir & Kollegen</h1>
         <p>
-          Demo-Anwendung fuer verbindliche Terminbuchung, Umbuchung,
-          Stornierung und zentrale Praxis-Workflows. Das PVS bleibt fuehrend.
+          Demo-Anwendung für verbindliche Terminbuchung, Umbuchung,
+          Stornierung und zentrale Praxis-Workflows. Das PVS bleibt führend.
         </p>
       </section>
 
