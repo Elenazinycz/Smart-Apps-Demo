@@ -1,8 +1,6 @@
 ﻿import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
-import { REGEL } from '@/lib/constants';
-import EinwilligungForm from './EinwilligungForm';
 import TerminListeClient from './TerminListeClient';
 
 function fmtDate(d: Date) {
@@ -16,7 +14,7 @@ export default async function TerminePage() {
   const session = await getSession();
   if (!session) redirect('/login');
   if (session.type !== 'patient') {
-    return <div className='page'><p>Dieser Bereich ist nur fuer Patient:innen.</p></div>
+    return <div className="page"><p>Dieser Bereich ist nur für Patient:innen.</p></div>
   }
 
   const [patient, gebuchte] = await Promise.all([
@@ -32,48 +30,35 @@ export default async function TerminePage() {
   ]);
 
   return (
-    <div className='page'>
-      <section className='intro'>
-        <p className='eyebrow'>Praxis Demir &amp; Kollegen</p>
+    <div className="page">
+      <section className="intro">
+        <p className="eyebrow">Praxis Demir &amp; Kollegen</p>
         <h1>Meine Termine</h1>
         <p>Willkommen, <strong>{session.name}</strong></p>
       </section>
 
       {patient && (
-        <>
-          <section className='panel' style={{marginBottom:24}}>
-            <h2>Meine Daten</h2>
-            <table className='patient-daten'>
-              <tbody>
-                <tr><td>Name</td><td>{patient.name}</td></tr>
-                <tr><td>Geburtsdatum</td><td>{fmtDate(patient.geburtsdatum)}</td></tr>
-                <tr><td>Versicherung</td><td>{patient.versicherungsart}</td></tr>
-                <tr><td>E-Mail</td><td>{patient.email ?? '\u2014'}</td></tr>
-                <tr><td>E-Mail-Opt-in</td><td>{patient.einwilligungEmail ? 'Ja' : 'Nein'}</td></tr>
-                <tr><td>SMS-Opt-in</td><td>{patient.einwilligungSms ? 'Ja' : 'Nein'}</td></tr>
-                <tr><td>No-Shows (dieses Jahr)</td><td>{patient.noShowZaehlerJahr}</td></tr>
-                <tr><td>Status</td><td>{patient.status === 'aktiv' ? 'Aktiv' : 'Gesperrt'}</td></tr>
-              </tbody>
-            </table>
-          </section>
-
-          <section className='panel' style={{marginBottom:24}}>
-            <h2>Einwilligungen für Benachrichtigungen</h2>
-            <p style={{fontSize:'0.85rem', color:'#555', marginBottom:12}}>
-              Sie kÖnnen hier festlegen, ob Sie Benachrichtigungen per E-Mail und/oder SMS erhalten mÖchten
-              (BuchungsbestÄtigung, Stornierung, Umbuchung, Terminerinnerung).
-            </p>
-            <EinwilligungForm
-              einwilligungEmail={patient.einwilligungEmail}
-              einwilligungSms={patient.einwilligungSms}
-              email={patient.email}
-              telefonnummer={patient.telefonnummer}
-            />
-          </section>
-        </>
+        <section className="panel" style={{marginBottom:24}}>
+          <h2>Meine Daten</h2>
+          <table className="patient-daten">
+            <tbody>
+              <tr><td>Name</td><td>{patient.name}</td></tr>
+              <tr><td>Geburtsdatum</td><td>{fmtDate(patient.geburtsdatum)}</td></tr>
+              <tr><td>Versicherung</td><td>{patient.versicherungsart}</td></tr>
+              <tr><td>E-Mail</td><td>{patient.email ?? '\u2014'}</td></tr>
+              <tr><td>E-Mail-Opt-in</td><td>{patient.einwilligungEmail ? 'Ja' : 'Nein'}</td></tr>
+              <tr><td>SMS-Opt-in</td><td>{patient.einwilligungSms ? 'Ja' : 'Nein'}</td></tr>
+              <tr><td>No-Shows (dieses Jahr)</td><td>{patient.noShowZaehlerJahr}</td></tr>
+              <tr><td>Status</td><td>{patient.status === 'aktiv' ? 'Aktiv' : 'Gesperrt'}</td></tr>
+            </tbody>
+          </table>
+          <p style={{marginTop:12}}>
+            <a href="/einwilligungen" style={{color:'var(--accent)'}}>Einwilligungen für Benachrichtigungen bearbeiten &rarr;</a>
+          </p>
+        </section>
       )}
 
-      <section className='panel' style={{marginBottom:24}}>
+      <section className="panel" style={{marginBottom:24}}>
         <h2>Meine Termine</h2>
         {gebuchte.length === 0 ? (
           <p>Keine bevorstehenden Termine.</p>
@@ -82,11 +67,10 @@ export default async function TerminePage() {
         )}
       </section>
 
-      <section className='panel'>
+      <section className="panel">
         <h2>Neuen Termin buchen</h2>
-        <p><a href='/termine/buchen'>Hier klicken, um einen neuen Termin zu buchen</a></p>
+        <p><a href="/termine/buchen">Hier klicken, um einen neuen Termin zu buchen</a></p>
       </section>
     </div>
   );
 }
-
