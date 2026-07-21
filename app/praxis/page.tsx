@@ -1,6 +1,6 @@
 ﻿import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
-import { istAdmin, istMfaOderAdmin, istArzt } from '@/lib/rollen';
+import { istAdmin, istMfaOderAdmin, istArzt, rolleAnzeige } from '@/lib/rollen';
 
 export default async function PraxisPage() {
   const session = await getSession();
@@ -11,7 +11,7 @@ export default async function PraxisPage() {
       <section className='intro'>
         <p className='eyebrow'>Praxis Demir &amp; Kollegen</p>
         <h1>Praxis-Bereich</h1>
-        <p>Angemeldet als <strong>{session.name}</strong> — Rolle: {session.rolle}</p>
+        <p>Angemeldet als <strong>{session.name}</strong> — Rolle: {rolleAnzeige(session.rolle)}</p>
       </section>
 
       {istMfaOderAdmin(session) && (

@@ -81,7 +81,7 @@ export default function LoginPage() {
         <details className="login-hints">
           <summary>Test-Zugänge (Mock)</summary>
           <ul>
-            <li><strong>Admin:</strong> admin@praxis-demir.de</li>
+            <li><strong>Arzt/Admin:</strong> admin@praxis-demir.de</li>
             <li><strong>MFA:</strong> s.mueller@praxis-demir.de</li>
             <li><strong>Patient:</strong> erika.mustermann</li>
           </ul>

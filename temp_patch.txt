@@ -1,0 +1,6 @@
+﻿export function rolleAnzeige(rolle: string): string {
+  const map: Record<string, string> = {
+    [ROLLE.ADMIN]: 'Arzt/Admin',
+  };
+  return map[rolle] ?? rolle;
+}

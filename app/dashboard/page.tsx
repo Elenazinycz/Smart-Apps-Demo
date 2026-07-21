@@ -1,7 +1,7 @@
 ﻿import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
-import { istMfaOderAdmin, istArzt, istAdmin } from '@/lib/rollen';
+import { istMfaOderAdmin, istArzt, istAdmin, rolleAnzeige } from '@/lib/rollen';
 import LogoutButton from './LogoutButton';
 
 function fmtDate(d: Date) {
@@ -22,7 +22,7 @@ export default async function DashboardPage() {
         <section className="intro">
           <p className="eyebrow">Praxis Demir &amp; Kollegen</p>
           <h1>Dashboard</h1>
-          <p>Angemeldet als <strong>{session.name}</strong> — Rolle: {session.rolle}</p>
+          <p>Angemeldet als <strong>{session.name}</strong> — Rolle: {rolleAnzeige(session.rolle)}</p>
           <LogoutButton />
         </section>
 
