@@ -174,7 +174,7 @@ export async function POST(req: NextRequest) {
     // Schritt 3: Sperrzeit-Eintrag anlegen
     const sperrzeit = await prisma.sperrzeit.create({
       data: {
-        titel: Arzt-Ausfall: ,
+        titel: `Arzt-Ausfall: ${arzt.name}`,
         startdatum: vonDate,
         enddatum: bisDate,
         startzeit: null,
@@ -191,7 +191,7 @@ export async function POST(req: NextRequest) {
       akutSlotsGesperrt: akutUpdate.count,
       termineMarkiert: terminUpdate.count,
       sperrzeitId: sperrzeit.id,
-      message: Arzt-Ausfall erfasst:  Akutslot(s) gesperrt,  Termin(e) als umbuchungErforderlich markiert.,
+      message: `Arzt-Ausfall erfasst: ${akutUpdate.count} Akutslot(s) gesperrt, ${terminUpdate.count} Termin(e) als umbuchungErforderlich markiert.`,
     });
   } catch (err) {
     if (err instanceof ValidationError) {
