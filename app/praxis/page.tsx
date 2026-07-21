@@ -83,7 +83,7 @@ export default async function PraxisPage() {
       <section className="intro">
         <p className="eyebrow">Praxis Demir &amp; Kollegen</p>
         <h1>Praxis-Bereich</h1>
-        <p>Angemeldet als <strong>{session.name}</strong> — Rolle: {rolleAnzeige(session.rolle)}</p>
+        <p>Angemeldet als <strong>{session.name}</strong> — Rolle: {rolleAnzeige(session.rolle ?? '')}</p>
       </section>
 
       {istMfaOderAdmin(session) && (
@@ -237,8 +237,7 @@ export default async function PraxisPage() {
       <section className="panel" style={{ marginBottom: 24 }}>
         <h2>Navigation</h2>
         <ul>
-          <li><a href="/dashboard">Dashboard</a></li>
-          <li><a href="/">Startseite</a></li>
+                    <li><a href="/">Startseite</a></li>
         </ul>
       </section>
     </div>

@@ -468,3 +468,24 @@ equireMfaOrAdmin.
 - Bei zukuenftigen Rollen-Aenderungen muss nur olleAnzeige() erweitert werden.
 - Die Login-Hilfetexte wurden ebenfalls auf \"Arzt/Admin\" aktualisiert.
 
+
+## 2026-07-21 - Dashboard-Umleitung: Praxis-Ansicht in eigene Seite ausgelagert
+
+**Kontext:** Das Dashboard enthielt sowohl die Patient:innen-Ansicht als auch die komplette Praxis-Navigation. Dadurch war die Datei aufgebläht und die Trennung war unklar. Die Praxis-Seite existierte bereits unter /praxis mit eigener Navigation.
+
+### Entscheidung
+
+- Die gesamte Praxis-Ansicht wurde aus pp/dashboard/page.tsx entfernt.
+- PraxisNutzer (Arzt, MFA, Admin) werden nun direkt nach /praxis weitergeleitet (edirect('/praxis')).
+- Das Dashboard zeigt nur noch die Patient:innen-Ansicht.
+- Aus der Navigation der Praxis-Seite (pp/praxis/page.tsx) wurde der Link /dashboard entfernt, da er nicht mehr benötigt wird. Ein Link zur Startseite (/) bleibt erhalten.
+
+### Alternativen verworfen
+
+- Praxis-Navigation und Patient:innen-Ansicht gemeinsam im Dashboard belassen: verworfen, da die Praxis-Seite bereits als eigenständiger Bereich existierte und die Dashboard-Datei unnötig groß war.
+
+### Konsequenzen
+
+- Dashboard ist jetzt schlank und auf die Patient:innen-Rolle fokussiert.
+- PraxisNutzer landen nach dem Login direkt im Praxis-Bereich.
+- Eine Rolle (session.rolle) könnte null sein — die olleAnzeige()-Funktion wird daher mit Nullish-Coalescing (?? '') aufgerufen.
