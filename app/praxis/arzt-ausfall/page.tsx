@@ -298,7 +298,7 @@ export default function ArztAusfallPage() {
                                 {formatZeit(s.startzeit)} &ndash; {formatZeit(s.endzeit)}
                               </td>
                               <td>
-                                <span className={adge }>
+                                <span className={`badge ${statusBadgeClass(s.status)}`}>
                                   {statusLabel(s.status)}
                                 </span>
                               </td>
