@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("??  Starte Seed fuer Praxis Demir & Kollegen ...");
 
-  // -- 1. Termintypen (aus spec.md ï¿½5) --
+  // -- 1. Termintypen (aus spec.md §5) --
   const terminTypen = await Promise.all([
     prisma.termintyp.create({
       data: {
@@ -48,7 +48,7 @@ async function main() {
         bezeichnung: "Blutabnahme",
         dauerStandardMinuten: 10,
         onlineBuchbar: false,
-        beschreibung: "Blutabnahme ï¿½ nur telefonisch oder am Tresen",
+        beschreibung: "Blutabnahme – nur telefonisch oder am Tresen",
         prioritaet: "normal",
       },
     }),
@@ -57,7 +57,7 @@ async function main() {
         bezeichnung: "Erstgespraech",
         dauerStandardMinuten: 30,
         onlineBuchbar: false,
-        beschreibung: "Erstgespraech bei Neuaufnahme ï¿½ nur telefonisch",
+        beschreibung: "Erstgespraech bei Neuaufnahme – nur telefonisch",
         prioritaet: "hoch",
       },
     }),
@@ -66,7 +66,7 @@ async function main() {
         bezeichnung: "Akut",
         dauerStandardMinuten: 10,
         onlineBuchbar: false,
-        beschreibung: "Akutfall ï¿½ nur ueber MFA-Triage",
+        beschreibung: "Akutfall – nur ueber MFA-Triage",
         prioritaet: "hoch",
       },
     }),
@@ -131,7 +131,7 @@ async function main() {
 
   console.log("  ?  1 Admin + " + mfaList.length + " MFAs angelegt");
 
-  // -- 3. Aerzt:innen (aus spec.md ï¿½6, ï¿½8) --
+  // -- 3. Aerzt:innen (aus spec.md §6, §8) --
   const aerzte = await Promise.all([
     prisma.arzt.create({
       data: {

@@ -61,9 +61,9 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
 | STD-008 | Planbare Online-Termintypen erlauben | Kern | F-KERN-3 | done | docs/spec.md 5, BR2 | Vorsorge, Beratung, Impfung/Reisemedizin und Wiederholungsrezept-Abholung via istOnlineBuchbar() + Arzt-Freigabe; lib/slots.ts, app/api/termintypen/route.ts, app/api/aerzte/route.ts |
-| STD-009 | Nicht online buchbare Termintypen sperren | Kern | F-KERN-3 | done | docs/spec.md 5, BR2 | ONLINE_BUCHBARE_TYPEN-Whitelist in lib/slots.ts blockiert Akut, Blutabnahme, Erstgespraech; API gibt nur online-buchbare Typen zurï¿½ck |
+| STD-009 | Nicht online buchbare Termintypen sperren | Kern | F-KERN-3 | done | docs/spec.md 5, BR2 | ONLINE_BUCHBARE_TYPEN-Whitelist in lib/slots.ts blockiert Akut, Blutabnahme, Erstgespraech; API gibt nur online-buchbare Typen zurück |
 | STD-012 | Online-Termin verbindlich buchen | Kern | F-KERN-3 | done | docs/spec.md 3, BR4 | bucheOnlineTermin() in lib/slots.ts: Slot-Status sofort auf "gebucht" + patientId + buchungsquelle=online; API POST /api/appointments
-| STD-013 | Freie Slots anzeigen | Kern | F-KERN-3 | done | docs/spec.md 2, 9 | getFreieSlots() in lib/slots.ts: Slots via /api/slots mit Sperrzeiten-Filter; BuchungsFormular.tsx zeigt Auswahl; Doppelbuchung durch Slot-Status-Prï¿½fung verhindert
+| STD-013 | Freie Slots anzeigen | Kern | F-KERN-3 | done | docs/spec.md 2, 9 | getFreieSlots() in lib/slots.ts: Slots via /api/slots mit Sperrzeiten-Filter; BuchungsFormular.tsx zeigt Auswahl; Doppelbuchung durch Slot-Status-Prüfung verhindert
 | STD-014 | Doppelbuchung technisch verhindern | Kern | F-KERN-3 | done | docs/spec.md 2, BR3, 14 | findFirst mit status=frei + atomares update; Slot-Sperre verhindert parallele Buchungen; DB-Index auf datum+arztId+status
 
 ### F-KERN-4: Eigene Termine verwalten
@@ -114,12 +114,12 @@ _Stabile Feature-IDs. Nicht umnummerieren. Killed-IDs bleiben killed._
 ### F-SICH-1: Authentifizierung & Schutz
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
 |---|---|---|---|---|---|---|
-| STD-036 | JWT-Session-Sicherheit (ENV-Secret + Issuer/Audience) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/auth.ts: JWT mit ENV.JWT_SECRET (Fallback nur dev), Issuer/Audience-Validation, timingSafeVerify; .env um JWT_SECRET ergï¿½nzt |
-| STD-037 | Session-Timeout (24h) + Expiry-Check | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/auth.ts: 24h-Expiration via setExpirationTime, isTokenExpiringSoon() prï¿½ft Restlaufzeit; Cookie maxAge=86400 |
+| STD-036 | JWT-Session-Sicherheit (ENV-Secret + Issuer/Audience) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/auth.ts: JWT mit ENV.JWT_SECRET (Fallback nur dev), Issuer/Audience-Validation, timingSafeVerify; .env um JWT_SECRET ergänzt |
+| STD-037 | Session-Timeout (24h) + Expiry-Check | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/auth.ts: 24h-Expiration via setExpirationTime, isTokenExpiringSoon() prüft Restlaufzeit; Cookie maxAge=86400 |
 | STD-038 | Rollenbasierte API-Guards (zentral) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 11, 14 | lib/api-guard.ts: requireAuth/requirePatient/requirePraxis/requireAdmin/requireMfaOrAdmin; alle API-Routen umgestellt |
 | STD-039 | CSRF-Schutz (Double-Submit-Cookie) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/csrf.ts: Double-Submit-Cookie-Pattern mit crypto.timingSafeEqual; validateCsrf() in allen 10 mutierenden API-Routen aktiviert (POST/PUT/DELETE) |
 | STD-040 | Rate-Limiting (Login + API) | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/rate-limit.ts: In-Memory-Fenster pro IP+Route; /api/login: 10/Minute, Default: 30/Minute; rateLimitKey()-Bug gefixt (fehlende Template-Literal-Backticks) |
-| STD-041 | Input-Validierung & Sanitization | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/validate.ts: Typ-, Lï¿½ngen-, Enum-, Pattern-Prï¿½fung; UUID/Datum/Zeit-Formatter; ValidationError-Klasse; alle mutierenden APIS umgestellt |
+| STD-041 | Input-Validierung & Sanitization | Sicherheit & Sync | F-SICH-1 | done | docs/spec.md 14 | lib/validate.ts: Typ-, Längen-, Enum-, Pattern-Prüfung; UUID/Datum/Zeit-Formatter; ValidationError-Klasse; alle mutierenden APIS umgestellt |
 
 ### F-SICH-2: DSGVO & Opt-in
 | ID | Name | Phase | Feature | Status | Quelle | Notiz |
