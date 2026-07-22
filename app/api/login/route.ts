@@ -1,4 +1,4 @@
-﻿import { validateCsrf } from '@/lib/csrf';
+import { validateCsrf } from '@/lib/csrf';
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { setSessionCookie } from "@/lib/session";
@@ -54,12 +54,14 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // Schritt 1: Benutzer suchen OHNE buchungsStatus-Filter
   const konto = await prisma.patientenKonto.findFirst({
-    where: { benutzername, buchungsStatus: "aktiv" },
+    where: { benutzername },
     include: { patient: true },
   });
 
-  if (konto) {
+  // Fall 1: Konto existiert und ist aktiv -> Passwort pruefen, Session erstellen
+  if (konto && konto.buchungsStatus === "aktiv") {
     if (passwort.length === 0) {
       return NextResponse.json({ error: "Passwort erforderlich" }, { status: 401 });
     }
@@ -77,6 +79,13 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // Fall 2: Konto existiert, ist aber gesperrt -> spezifische Fehlermeldung, KEINE Passwortpruefung
+  if (konto && konto.buchungsStatus !== "aktiv") {
+    return NextResponse.json({
+      error: "Ihr Konto ist gesperrt (zu viele verpasste Termine). Bitte kontaktieren Sie die Praxis.",
+    }, { status: 403 });
+  }
+
+  // Fall 3: Kein Konto mit diesem Benutzernamen -> generische Fehlermeldung
   return NextResponse.json({ error: "Benutzername oder Passwort falsch" }, { status: 401 });
 }
-
