@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 
@@ -20,9 +20,11 @@ export default function EinwilligungForm({ einwilligungEmail, einwilligungSms, e
     setMeldung(null);
 
     try {
+      const csrfRes = await fetch('/api/csrf');
+      const csrfData = await csrfRes.json();
       const res = await fetch('/api/patient/einwilligung', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': document.cookie.replace(/.*csrf-token=([^;]*).*/, '') },
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfData.token },
         body: JSON.stringify({ einwilligungEmail: emailOpt, einwilligungSms: smsOpt }),
       });
       const data = await res.json();
@@ -69,4 +71,3 @@ export default function EinwilligungForm({ einwilligungEmail, einwilligungSms, e
     </div>
   );
 }
-
