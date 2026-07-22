@@ -1,4 +1,4 @@
-ï»¿import { getSession } from '@/lib/session';
+import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { istAdmin, istMfaOderAdmin, istArzt, rolleAnzeige, hatRolle } from '@/lib/rollen';
 import { ROLLE, SLOT_ART, SLOT_STATUS } from '@/lib/constants';
@@ -28,7 +28,7 @@ async function tageslisteKurz(limit = 10) {
   return slots.map((s) => ({
     id: s.id,
     startzeit: s.startzeit.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }),
-    patientName: s.patient?.name ?? "â€”",
+    patientName: s.patient?.name ?? "—",
     arztName: s.arzt.name,
     terminTyp: s.terminTyp.bezeichnung,
   }));
@@ -111,7 +111,7 @@ export default async function PraxisPage() {
       <section className="intro">
         <p className="eyebrow">Praxis Demir &amp; Kollegen</p>
         <h1>Praxis-Bereich</h1>
-        <p>Angemeldet als <strong>{session.name}</strong> â€” Rolle: {rolleAnzeige(session.rolle ?? '')}</p>
+        <p>Angemeldet als <strong>{session.name}</strong> — Rolle: {rolleAnzeige(session.rolle ?? '')}</p>
       </section>
 
       {istMfaOderAdmin(session) && (
@@ -121,11 +121,11 @@ export default async function PraxisPage() {
             <h2>
               Heutige Termine{" "}
               <small style={{ fontWeight: 400, color: "#666" }}>
-                (nÃ¤chste {Math.min(termineKurz.length, 10)})
+                (nächste {Math.min(termineKurz.length, 10)})
               </small>
             </h2>
             {termineKurz.length === 0 ? (
-              <p style={{ color: "#888" }}>Keine Termine fÃ¼r heute.</p>
+              <p style={{ color: "#888" }}>Keine Termine für heute.</p>
             ) : (
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
                 <thead>
@@ -229,17 +229,56 @@ export default async function PraxisPage() {
             <ul>
               <li><a href="/praxis/konten-anlegen">Neues PatientenKonto anlegen</a></li>
               <li><a href="/praxis/gesperrte-patienten">Gesperrte Patient:innen</a></li>
-              <li><a href="/praxis/noshow">No-Shows erfassen &amp; Ãœbersicht</a></li>
+              <li><a href="/praxis/noshow">No-Shows erfassen &amp; Übersicht</a></li>
             </ul>
           </section>
 
+          {/* Bisherige Blöcke, die in Schritt 2 angepasst werden (vorerst unverändert) */}
+          <section className="panel" style={{ marginBottom: 24 }}>
+            <h2>Weitere Übersichten</h2>
+            <ul>
+              <li><a href="/praxis/tagesliste">Tagesliste anzeigen (alle Termine)</a></li>
+              <li><a href="/praxis/akutslots-live">Freie Akutslots (Live)</a></li>
+              <li><a href="/praxis/gesperrte-patienten">Gesperrte Patient:innen</a></li>
+            </ul>
+          </section>
+
+          <section className="panel" style={{ marginBottom: 24 }}>
+            <h2>PatientenKonten</h2>
+            <ul>
+              <li><a href="/praxis/konten-anlegen">Neues PatientenKonto anlegen</a></li>
+            </ul>
+          </section>
+
+          <section className="panel" style={{ marginBottom: 24 }}>
+            <h2>Akutslots</h2>
+            <ul>
+              <li><a href="/praxis/akutslots">Akutslots verwalten &amp; freigeben</a></li>
+            </ul>
+          </section>
+
+          <section className="panel" style={{ marginBottom: 24 }}>
+            <h2>Arzt-Ausfall</h2>
+            <ul>
+              <li><a href="/praxis/arzt-ausfall">Ausfall erfassen &amp; betroffene Termine anzeigen</a></li>
+            </ul>
+          </section>
+
+          <section className="panel" style={{ marginBottom: 24 }}>
+            <h2>No-Show-Tracking</h2>
+            <ul>
+              <li><a href="/praxis/noshow">No-Shows erfassen &amp; Übersicht</a></li>
+            </ul>
+          </section>
         </>
       )}
+
       {istArzt(session) && (
         <section className="panel" style={{ marginBottom: 24 }}>
-          <h2>Ã„rztliche Aufgaben</h2>
+          <h2>Ärztliche Aufgaben</h2>
           <ul>
             <li><a href="/praxis/rezeptfreigaben">Offene Rezeptfreigaben</a></li>
+            <li><a href="/praxis/sperrzeiten">Eigene Abwesenheiten eintragen</a></li>
           </ul>
         </section>
       )}
@@ -247,9 +286,14 @@ export default async function PraxisPage() {
       {istAdmin(session) && (
         <>
           <section className="panel" style={{ marginBottom: 24 }}>
-            <h2>Ã„rztliche Einstellungen</h2>
+            <h2>Sprechzeiten</h2>
             <ul>
               <li><a href="/praxis/sprechzeiten">Sprechzeiten verwalten</a></li>
+            </ul>
+          </section>
+          <section className="panel" style={{ marginBottom: 24 }}>
+            <h2>Sperrzeiten</h2>
+            <ul>
               <li><a href="/praxis/sperrzeiten">Sperrzeiten verwalten</a></li>
             </ul>
           </section>
