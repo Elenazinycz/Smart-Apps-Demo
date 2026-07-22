@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { requirePatient } from '@/lib/api-guard';
 import { prisma } from '@/lib/prisma';
 
@@ -7,7 +7,7 @@ export async function GET() {
   if (session instanceof NextResponse) return session;
 
   const termine = await prisma.terminSlot.findMany({
-    where: { patientId: session.id, status: 'gebucht', datum: { gte: new Date() } },
+    where: { patientId: session.id, status: 'gebucht', datum: { gte: (() => { const d = new Date(); d.setHours(0,0,0,0); return d; })() } },
     include: { arzt: { select: { name: true } }, terminTyp: { select: { bezeichnung: true, dauerStandardMinuten: true } } },
     orderBy: { datum: 'asc' },
   });

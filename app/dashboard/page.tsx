@@ -30,7 +30,7 @@ export default async function DashboardPage() {
     where: {
       patientId: session.id,
       status: 'gebucht',
-      datum: { gte: new Date() },
+      datum: { gte: (() => { const d = new Date(); d.setHours(0,0,0,0); return d; })() },
     },
     include: {
       arzt: { select: { name: true } },

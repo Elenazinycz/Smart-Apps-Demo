@@ -23,7 +23,7 @@ export default async function TerminePage() {
       select: { name: true, geburtsdatum: true, versicherungsart: true, email: true, telefonnummer: true, einwilligungEmail: true, einwilligungSms: true, noShowZaehlerJahr: true, status: true },
     }),
     prisma.terminSlot.findMany({
-      where: { patientId: session.id, status: 'gebucht', datum: { gte: new Date() } },
+      where: { patientId: session.id, status: 'gebucht', datum: { gte: (() => { const d = new Date(); d.setHours(0,0,0,0); return d; })() } },
       include: { arzt: { select: { name: true } }, terminTyp: { select: { bezeichnung: true, dauerStandardMinuten: true } } },
       orderBy: { datum: 'asc' },
     }),
