@@ -110,7 +110,7 @@ export async function getFreieSlots(arztId: string, terminTypId: string, datum: 
 
   return slots.filter(s => {
     const blocked = [...sperren, ...sprechzeitBlocks];
-    return !blocked.some(b => ueberschneidetSich(s.startzeit, s.endzeit, b));
+    return s.endzeit > new Date() && !blocked.some(b => ueberschneidetSich(s.startzeit, s.endzeit, b));
   }).map(s => ({
     slotID: s.id, datum: s.datum.toISOString(), startzeit: s.startzeit.toISOString(), endzeit: s.endzeit.toISOString(),
     arztId: s.arztId, arztName: arzt.name, terminTypId: s.terminTypId, terminTypName: terminTyp.bezeichnung, terminTypDauer: terminTyp.dauerStandardMinuten,
@@ -130,6 +130,7 @@ export async function bucheOnlineTermin(anfrage: BuchungsAnfrage): Promise<{ suc
   const [stunde, minute] = anfrage.startzeit.split(':').map(Number);
   const startzeit = new Date(datumDate);
   startzeit.setHours(stunde, minute, 0, 0);
+  if (startzeit < new Date()) return { success: false, error: 'Eine Buchung in der Vergangenheit ist nicht möglich.' };
   const terminTyp = await prisma.termintyp.findUnique({ where: { id: anfrage.terminTypId }, select: { dauerStandardMinuten: true } });
   if (!terminTyp) return { success: false, error: 'Termintyp nicht gefunden.' };
 
@@ -140,11 +141,17 @@ export async function bucheOnlineTermin(anfrage: BuchungsAnfrage): Promise<{ suc
   ]);
   if ([...sperren, ...sprechzeitBlocks].some(b => ueberschneidetSich(startzeit, endzeit, b))) return { success: false, error: 'Der gewuenschte Zeitraum liegt in einer Sperrzeit.' };
 
-  const slot = await prisma.terminSlot.findFirst({ where: { datum: datumDate, arztId: anfrage.arztId, terminTypId: anfrage.terminTypId, startzeit, status: SLOT_STATUS.FREI } });
-  if (!slot) return { success: false, error: 'Dieser Slot ist nicht mehr verfuegbar.' };
+  const result = await prisma.terminSlot.updateMany({
+    where: { datum: datumDate, arztId: anfrage.arztId, terminTypId: anfrage.terminTypId, startzeit, status: SLOT_STATUS.FREI },
+    data: { status: SLOT_STATUS.GEBAUT, patientId: anfrage.patientId, buchungsquelle: BUCHUNGSQUELLE.ONLINE },
+  });
+  if (result.count === 0) {
+    return { success: false, error: 'Dieser Slot ist nicht mehr verfuegbar.' };
+  }
 
-  await prisma.terminSlot.update({ where: { id: slot.id }, data: { status: SLOT_STATUS.GEBAUT, patientId: anfrage.patientId, buchungsquelle: BUCHUNGSQUELLE.ONLINE } });
-  return { success: true, slotId: slot.id };;
+  // Einzige moegliche Match-ID fuer Logging/Response (es gab genau einen passenden Slot)
+  const slot = await prisma.terminSlot.findFirst({ where: { datum: datumDate, arztId: anfrage.arztId, terminTypId: anfrage.terminTypId, startzeit, status: SLOT_STATUS.GEBAUT, patientId: anfrage.patientId }, select: { id: true } });
+  return { success: true, slotId: slot!.id };
 }
 
 export async function storniereTermin(slotId: string, patientId: string): Promise<{ success: boolean; error?: string }> {
