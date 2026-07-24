@@ -1,15 +1,5 @@
 # KALIBRIERUNG
 
-5 Aussagen über die App, je 2 Punkte möglich. Jede Aussage ist konkret
-und am Code prüfbar.
-
-**Bewertung pro Aussage:**
-- Richtig + Konfidenz 7–10 → 2 Punkte (geprüft & getroffen)
-- Richtig + Konfidenz 1–6 → 1 Punkt (richtig, aber nicht festgelegt)
-- Falsch + Konfidenz 1–6 → 1 Punkt (falsch, aber ehrlich unsicher)
-- Falsch + Konfidenz 7–10 → 0 Punkte (die Abhängigkeitsfalle)
-
----
 
 ## 1. Business Rule
 
