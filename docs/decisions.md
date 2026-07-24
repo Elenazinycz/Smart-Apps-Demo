@@ -489,3 +489,58 @@ equireMfaOrAdmin.
 - Dashboard ist jetzt schlank und auf die Patient:innen-Rolle fokussiert.
 - PraxisNutzer landen nach dem Login direkt im Praxis-Bereich.
 - Eine Rolle (session.rolle) könnte null sein — die olleAnzeige()-Funktion wird daher mit Nullish-Coalescing (?? '') aufgerufen.
+
+## 2026-07-22 - No-Show-Konto-Sperrung: Login verweigert mit Praxis-Kontakt-Hinweis
+
+**Kontext:** Bei drei No-Shows pro Jahr wird das PatientenKonto gesperrt (Spec §8 BR3, §16). Bisher gab es keine spezifische Fehlermeldung beim Login für gesperrte Konten — der Login-Lauf lieferte nur „Benutzername oder Passwort falsch".
+
+### Entscheidung
+
+- Die Login-API (POST /api/login) unterscheidet jetzt drei Fälle:
+  1. **Konto aktiv + Passwort korrekt** → Session erzeugen (bisheriges Verhalten)
+  2. **Konto existiert, aber gesperrt** → HTTP 403 mit Meldung: *„Ihr Konto ist gesperrt (zu viele verpasste Termine). Bitte kontaktieren Sie die Praxis."*
+  3. **Kein Konto mit diesem Benutzernamen** → HTTP 401 mit generischer Meldung
+- Der uchungsStatus-Filter wurde aus der indFirst-Abfrage entfernt, damit gesperrte Konten überhaupt gefunden und erkannt werden können.
+- Vor dem Erstellen der Session-Prüfung (uchungsStatus !== "aktiv") wird keine Passwortprüfung durchgeführt — das verhindert Information Leakage.
+
+### Alternativen verworfen
+
+- Einheitliche Fehlermeldung für alle Fehlfälle: verworfen, weil Patient:innen den Grund der Sperrung erfahren sollen (Spec §13 MFA-Übersicht „gesperrte Patient:innen" vorausgesetzt).
+- Sperrung nur intern ohne Login-Hinweis: verworfen, da die No-Show-Regel (Spec §16) explizit eine Konsequenz für die Online-Buchung vorsieht.
+
+### Konsequenzen
+
+- Patient:innen mit gesperrtem Konto erhalten eine klare, handlungsleitende Fehlermeldung.
+- Der Login-Code ist robuster gegen Information Leakage (keine Unterscheidung „existiert/nicht existiert" vor Passwortprüfung bei aktiven Konten).
+- Keine Änderung an der No-Show-Logik selbst — nur der Login spiegelt den Sperr-Status.
+
+---
+
+## 2026-07-23 - Buchung in der Vergangenheit und gleichzeitige Buchungen verhindert
+
+**Kontext:** Zwei unerwünschte Verhaltensweisen wurden in der Buchungslogik festgestellt:
+1. Termine mit startzeit in der Vergangenheit wurden in der Slot-Liste angezeigt und konnten gebucht werden.
+2. Bei parallelen Buchungsanfragen konnten zwei Nutzer denselben Slot buchen, weil indFirst + update nicht atomar war (Race Condition).
+
+### Entscheidung
+
+**Vergangenheitsfilter in getFreieSlots():**
+- Slots, deren endzeit bereits in der Vergangenheit liegt, werden in getFreieSlots() herausgefiltert (s.endzeit > new Date()).
+- Zusätzlich prüft ucheOnlineTermin() vor der Buchung, ob startzeit in der Vergangenheit liegt.
+
+**Atomare Buchung statt Find-Then-Update:**
+- indFirst + update wurde durch ein einzelnes updateMany mit where: { status: SLOT_STATUS.FREI } ersetzt.
+- Nur wenn esult.count === 0 (kein freier Slot mehr gefunden), wird ein Fehler zurückgegeben.
+- Der anschließende indFirst dient nur noch dem Logging/Response — der Slot wurde bereits atomar gebucht.
+- Diese Änderung schließt die Race-Condition zwischen Slot-Prüfung und Buchung.
+
+### Alternativen verworfen
+
+- Transaktion mit serializable Isolation: verworfen, weil updateMany mit Status-Filter denselben Effekt bei geringerer Komplexität erreicht.
+- Optimistic Locking mit Version-Spalte: verworfen, weil updateMany den einfacheren und ausreichenden Mechanismus darstellt.
+
+### Konsequenzen
+
+- Patienten können keine Termine in der Vergangenheit mehr buchen oder sehen.
+- Doppelbuchungen durch parallele Anfragen sind technisch ausgeschlossen.
+- Die Änderungen sind minimal und betreffen nur lib/slots.ts (keine API- oder UI-Anpassungen nötig).
