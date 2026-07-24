@@ -48,7 +48,7 @@ Spätere Aussage: Dr. Yilmaz arbeitet Mo–Do vormittags.
 
 **Konfidenz (1–10):** 9
 
-**Wie geprüft?** Die Termine sind belegt, sobald der Patient sie online bucht. Zudem habe ich ein Tool eingebaut, sodass die MFAs die Akuttermine morgens freigeben (mit festgelegtem Arzt, wie Demir es verlangt hat) und dann jeweils den Akuttermin "telefonisch vergeben" können. So wir auch vermieden, dass zwei MFAs den Akuttermin doppelt per Telefon vergeben. Wenn das passieren sollte, bekommt der, der es als 2. versucht die Meldung, dass der Slot bereits vergeben wird. 
+**Wie geprüft?** Die Termine, die online buchbar sind, werden belegt, sobald der Patient sie online bucht (geprüft durch Code und Test zweier Patientenkonten). Zudem habe ich ein Tool eingebaut, sodass die MFAs die Akuttermine morgens freigeben (mit festgelegtem Arzt, wie Demir es verlangt hat) und dann jeweils den Akuttermin "telefonisch vergeben" können. So wir auch vermieden, dass zwei MFAs den Akuttermin doppelt per Telefon vergeben. Wenn das passieren sollte, bekommt der, der es als 2. versucht die Meldung, dass der Slot bereits vergeben wird. 
 Nur Blutabnahmen und Erstgespräche bleiben offen, wobei das viel die MFA übernimmt - die laut Demir nicht mit in die Online-Buchungen aufgenommen werden sollen. 
 
 ---

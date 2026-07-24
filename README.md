@@ -7,7 +7,7 @@ Wiederholungsrezept-Abholung) selbst; Akut, Blutabnahme und Erstgespraech
 bleiben telefonisch/vor Ort. MFAs verwalten Sprechzeiten, Sperrzeiten,
 Akutslots und No-Show-Sperren; Aerzt:innen pflegen ihre eigenen Urlaube.
 
-Details zu Anforderungen, Business Rules und Datenmodell: [`docs/SPEC.md`](docs/SPEC.md).
+Details zu Anforderungen, Business Rules und Datenmodell: [`docs/spec.md`](docs/spec.md).
 
 ## Setup
 
